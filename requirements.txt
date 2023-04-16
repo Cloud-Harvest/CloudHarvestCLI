@@ -2,3 +2,4 @@ cmd2
 pandas
 rich
 pyyaml
+pytest
