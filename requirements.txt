@@ -1,5 +1,8 @@
 cmd2
+gnureadline
+flask
 pandas
 rich
+rich-argparse
 pyyaml
 pytest

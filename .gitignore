@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-harvest/lib/
 lib64/
 parts/
 sdist/
@@ -130,3 +129,4 @@ dmypy.json
 
 # Harvest-specific
 harvest/modules
+.idea
