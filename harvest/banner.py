@@ -271,7 +271,6 @@ def _get_eligible_banners():
     season = _get_season()
 
 
-
 def _get_season():
     from datetime import date, datetime
 
@@ -380,7 +379,7 @@ if __name__ == '__main__':
 
         harvest_config = load(harvest_stream, Loader=FullLoader)
 
-    _c = _assign_banner_colors(character_list=_b, plan=harvest_config['banners']['winter']['colors'])
+    _c = _assign_banner_colors(character_list=_b, plan=harvest_config['banners']['spring']['colors'])
 
     _d = _colorize_banner_list(character_list=_c)
 

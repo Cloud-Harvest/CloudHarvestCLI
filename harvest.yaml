@@ -1,0 +1,59 @@
+api:
+  endpoint: ''
+  port: ''
+  token: ''
+
+banners:
+  # provides seasonal and commemorative banners
+  # schema
+  #  winter:
+  #    rules:
+  #    colors:
+  #      - row: 0
+  #        start: (Optional|Default 0)
+  #        end: (Optional|Default None)
+  #        color: '#763284'  # Denim
+  winter:
+    colors:
+      0:
+        - color: '#2D5177'  # Denim
+      1:
+        - color: '#3D4E8A'  # Twilight
+      2:
+        - color: '#4F4D97'  # Blueberry
+      3:
+        - color: '#5A4396'  # Blueberry
+      4:
+        - color: '#683B90'  # Deep lavender
+      5:
+        - color: '#763284'  # Darkish purple
+
+  spring:
+    colors:
+      0:
+        - color: '#BFB240'  # Darkish green
+      1:
+        - color: '#BFBD40'  # Mid green
+      2:
+        - color: '#A6BD3F'  # Lighter green
+      3:
+        - color: '#73B23B'  # Yellowish green
+      4:
+        - color: '#4A9D34'  # Very yellowish green
+      5:
+        - color: '#317F3A'  # Dull yellow
+
+  summer:
+    colors:
+      0:
+        - color: '#F2160D'  # Red
+      1:
+        - color: '#F2350D'  # Vermillion
+      2:
+        - color: '#F2510D'  # Bright orange
+      3:
+        - color: '#F26C0D'  # Orange
+      4:
+        - color: '#F2860D'  # Very yellowish green
+      5:
+        - color: '#317F3A'  # Dull yellow
