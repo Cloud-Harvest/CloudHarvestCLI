@@ -4,7 +4,14 @@ from rich_argparse import RichHelpFormatter
 parser = Cmd2ArgumentParser(formatter_class=RichHelpFormatter)
 
 subparsers = parser.add_subparsers()
+# banner
+banner_subparser = subparsers.add_parser('banner', help='Display startup banners.')
+banner_subparser.add_argument('names', type=str, nargs='*',
+                              help='The name of the report to display. When not provided, all banners are displayed.')
+banner_subparser.add_argument('--text', type=str, default='HARVEST',
+                              help='Allows the user to display arbitrary text using the banner code.')
 
+# reporting
 report_subparser = subparsers.add_parser('report', help='Run reports.')
 report_subparser.add_argument('report_name_or_file', help='The name of the report to run or a path to a CSV or JSON file.')
 report_subparser.add_argument('-m', '--match', action='append', nargs='+', default=[],

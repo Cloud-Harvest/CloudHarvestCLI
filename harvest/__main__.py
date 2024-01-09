@@ -20,7 +20,7 @@ class Harvest(Cmd):
 
         self.prompt = '\n[harvest] '
 
-        self.console.print()    # provides a space between the first line and the banner
+        self.console.print()  # provides a space between the first line and the banner
         self.console.print(self.banner)
 
     def __enter__(self):
@@ -31,7 +31,22 @@ class Harvest(Cmd):
 
     @with_argparser(banner_subparser)
     def do_banner(self, args):
-        pass
+        if args.names:
+            names = args.names
+
+        else:
+            names = self.configuration['banners'].keys()
+
+        results = {
+            name: get_banner(banner_configuration=self.configuration['banners'],
+                             name=name,
+                             text=args.text)
+            for name in names
+        }
+
+        for name, banner in results.items():
+            self.console.print(f'\n {name}----------')
+            self.console.print(banner)
 
     @with_argparser(report_subparser)
     def do_report(self, args):
