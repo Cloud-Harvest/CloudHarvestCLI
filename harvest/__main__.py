@@ -1,18 +1,24 @@
 #!/usr/bin/env python
 
 from cmd2 import Cmd, with_argparser
+from rich.console import Console
 from arguments import report_subparser
-from startup import prepare, get_version
+from banner import get_banner
+from startup import prepare
 
 
 class Harvest(Cmd):
     def __init__(self, **kwargs):
         self.configuration = prepare()
-        self.version = get_version()
+        self.console = Console()
+        self.banner = get_banner(banner_configuration=self.configuration['banners'])
+        self.version = self.configuration['version']
 
         super().__init__(**kwargs)
 
-        self.prompt = '[harvest] '
+        self.prompt = '\n[harvest] '
+
+        self.console.print(self.banner)
 
     def __enter__(self):
         return self

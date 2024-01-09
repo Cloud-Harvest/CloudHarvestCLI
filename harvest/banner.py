@@ -3,6 +3,7 @@ Font credits:
     https://web.archive.org/web/20120819044459/http://www.roysac.com/thedrawfonts-tdf.asp
     FIGFont created with: http://patorjk.com/figfont-editor
 """
+from rich.text import Text
 
 _characters = {
     'a': ('█████╗  ',
@@ -266,9 +267,46 @@ _characters = {
 }
 
 
-def _get_eligible_banners():
+def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVEST') -> Text:
+    """
+    Generates a banner based on the banner's name. The banner must be printed with rich.Console().print().
+    :param banner_configuration: the Harvest Configuration's `banners` key
+    :param name: The name of a banner key in the harvest.yaml, banners section.
+    :param text: The text to convert to a banner.
+    :return: rich.text.Text
+    """
+
+    if name:
+        banner = banner_configuration.get(name)
+
+    else:
+        from random import randrange
+        eligible_banners = _get_eligible_banners(banner_configuration=banner_configuration)
+        banner = eligible_banners[randrange(0, len(eligible_banners))]
+
+    banner_text = _text_to_banner(text)
+    character_list = _banner_to_character_list(text=banner_text)
+    assigned_colors = _assign_banner_colors(character_list=character_list, plan=banner['colors'])
+    result = _colorize_banner_list(character_list=assigned_colors)
+
+    return result
+
+
+def _get_eligible_banners(banner_configuration: dict) -> list:
+    """
+    Generates a list of banners based on season, date, or other rules/
+    :return: List
+    """
     # we always provide a seasonal banner
-    season = _get_season()
+
+    banners = [banner_configuration[_get_season()]]
+
+    # date logic
+    # specific date
+
+    # date range
+
+    return banners
 
 
 def _get_season():

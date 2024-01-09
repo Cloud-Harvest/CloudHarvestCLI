@@ -1,9 +1,11 @@
-HARVEST_CONFIGURATION = {}
 
-
-def prepare():
+def prepare() -> dict:
     _configure_logger()
-    _load_configuration()
+    config = _load_configuration()
+
+    config['version'] = _get_version()
+
+    return config
 
 
 def _get_first_path(*args) -> str:
@@ -23,9 +25,9 @@ def _load_configuration() -> dict:
 
     from yaml import load, FullLoader
     with open(path, 'r') as config_stream:
-        HARVEST_CONFIGURATION = load(config_stream, Loader=FullLoader)
+        config = load(config_stream, Loader=FullLoader)
 
-    return HARVEST_CONFIGURATION
+    return config
 
 
 def _configure_logger():
@@ -53,7 +55,7 @@ def _configure_logger():
     return getLogger('harvest')
 
 
-def get_version() -> str:
-    with open('../version') as version_stream:
+def _get_version() -> str:
+    with open('./version') as version_stream:
         return str(version_stream.read().strip())
 
