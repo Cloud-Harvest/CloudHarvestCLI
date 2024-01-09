@@ -1,8 +1,16 @@
 
 def prepare() -> dict:
+    # creaete user directory
+    from pathlib import Path
+    Path('~/.harvest').expanduser().mkdir(parents=True, exist_ok=True)
+
+    # enable the debug log file
     _configure_logger()
+
+    # load configuration files
     config = _load_configuration()
 
+    # store the version information in the config
     config['version'] = _get_version()
 
     return config
