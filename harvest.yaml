@@ -16,44 +16,89 @@ banners:
   winter:
     colors:
       0:
-        - color: '#2D5177'  # Denim
+        - color: '#58a2d3'  # Carolina blue
       1:
-        - color: '#3D4E8A'  # Twilight
+        - color: '#0993d2'  # Rich electric
       2:
-        - color: '#4F4D97'  # Blueberry
+        - color: '#0272bc'  # French blue
       3:
-        - color: '#5A4396'  # Blueberry
+        - color: '#2c62a2'  # Nebula blue
       4:
-        - color: '#683B90'  # Deep lavender
+        - color: '#2c62a2'  # Yale blue
       5:
-        - color: '#763284'  # Darkish purple
+        - color: '#2c62a2'  # Cobolt blue
 
   spring:
     colors:
       0:
-        - color: '#BFB240'  # Darkish green
+        - color: '#48a3ce'
       1:
-        - color: '#BFBD40'  # Mid green
+        - color: '#b7ebe1'
       2:
-        - color: '#A6BD3F'  # Lighter green
+        - color: '#e6c5d8'
       3:
-        - color: '#73B23B'  # Yellowish green
+        - color: '#fed83c'
       4:
-        - color: '#4A9D34'  # Very yellowish green
+        - color: '#f5d4a8'
       5:
-        - color: '#317F3A'  # Dull yellow
+        - color: '#e09b63'
 
   summer:
     colors:
       0:
-        - color: '#F2160D'  # Red
+        - color: '#FFE100'
       1:
-        - color: '#F2350D'  # Vermillion
+        - color: '#FFF700'
       2:
-        - color: '#F2510D'  # Bright orange
+        - color: '#DDFD00'
       3:
-        - color: '#F26C0D'  # Orange
+        - color: '#7DF000'
       4:
-        - color: '#F2860D'  # Very yellowish green
+        - color: '#33D700'
       5:
-        - color: '#317F3A'  # Dull yellow
+        - color: '#0DAD0C'
+
+  autumn:
+    colors:
+      0:
+        - color: '#FF2A00'
+      1:
+        - color: '#FF4A00'
+      2:
+        - color: '#FF6700'
+      3:
+        - color: '#FF8400'
+      4:
+        - color: '#FFA000'
+      5:
+        - color: '#FFBA00'
+
+  lgbt:
+    colors:
+      0:
+        - color: '#de0000'
+      1:
+        - color: '#f78900'
+      2:
+        - color: '#f7e700'
+      3:
+        - color: '#027d20'
+      4:
+        - color: '#004af7'
+      5:
+        - color: '#730084'
+
+  transgender:
+    colors:
+      0:
+        - color: '#58c8f2'
+      1:
+        - color: '#eda4b2'
+      2:
+        - color: '#f7f7f7'
+      3:
+        - color: '#eda4b2'
+      4:
+        - color: '#58c8f2'
+#      5:
+#        - color: '#58c8f2'

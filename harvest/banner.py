@@ -361,20 +361,23 @@ def _assign_banner_colors(character_list: list, plan: dict) -> list:
     for c in character_list:
         x, y, char, color = c
 
-        for plan_colors in plan[x]:
-            start = plan_colors.get('start') or 0
-            end = plan_colors.get('end')
-            planned_color = plan_colors.get('color')
+        if plan.get(x):
+            for plan_colors in plan.get(x):
+                start = plan_colors.get('start') or 0
+                end = plan_colors.get('end')
+                planned_color = plan_colors.get('color')
 
-            # if there is no 'end' and x is greater than or equal to 'start'
-            if end is None and x >= start:
-                c[3] = planned_color
-                break
+                # if there is no 'end' and x is greater than or equal to 'start'
+                if end is None and x >= start:
+                    c[3] = planned_color
+                    break
 
-            # if start and end are defined
-            elif start <= x <= end:
-                c[3] = planned_color
-                break
+                # if start and end are defined
+                elif start <= x <= end:
+                    c[3] = planned_color
+                    break
+        else:
+            continue
 
     return character_list
 
