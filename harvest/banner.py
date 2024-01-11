@@ -358,6 +358,8 @@ def _banner_to_character_list(text: str) -> list:
 
 
 def _assign_banner_colors(character_list: list, plan: dict) -> list:
+    max_x, max_y = character_list[-1][0], character_list[-1][1]
+
     for c in character_list:
         x, y, char, color = c
 
@@ -367,19 +369,31 @@ def _assign_banner_colors(character_list: list, plan: dict) -> list:
                 end = plan_colors.get('end')
                 planned_color = plan_colors.get('color')
 
+                colorize_cell = False
+
+                # when the range is a percentage of the row length
+                if start < 1 and end:
+                    perc_start = round(start * max_y)
+                    perc_end = round(end * max_y)
+
+                    if perc_start <= y <= perc_end:
+                        colorize_cell = True
+
                 # if there is no 'end' and x is greater than or equal to 'start'
                 if end is None and x >= start:
-                    c[3] = planned_color
-                    # break
+                    colorize_cell = True
 
+                # exact cell start/end position
                 elif start == y == end:
-                    c[3] = planned_color
-                    # break
+                    colorize_cell = True
 
                 # if start and end are defined
                 elif start <= y <= end:
+                    colorize_cell = True
+
+                if colorize_cell:
                     c[3] = planned_color
-                    # break
+
         else:
             continue
 
