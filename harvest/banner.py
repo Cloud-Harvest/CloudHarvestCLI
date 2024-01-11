@@ -373,8 +373,9 @@ def _assign_banner_colors(character_list: list, plan: dict) -> list:
 
                 # when the range is a percentage of the row length
                 if start < 1 and end:
-                    perc_start = round(start * max_y)
-                    perc_end = round(end * max_y)
+                    from math import floor, ceil
+                    perc_start = floor(start * max_y)
+                    perc_end = ceil(end * max_y)
 
                     if perc_start <= y <= perc_end:
                         colorize_cell = True
