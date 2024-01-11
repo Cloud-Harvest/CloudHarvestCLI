@@ -370,12 +370,16 @@ def _assign_banner_colors(character_list: list, plan: dict) -> list:
                 # if there is no 'end' and x is greater than or equal to 'start'
                 if end is None and x >= start:
                     c[3] = planned_color
-                    break
+                    # break
+
+                elif start == y == end:
+                    c[3] = planned_color
+                    # break
 
                 # if start and end are defined
-                elif start <= x <= end:
+                elif start <= y <= end:
                     c[3] = planned_color
-                    break
+                    # break
         else:
             continue
 
