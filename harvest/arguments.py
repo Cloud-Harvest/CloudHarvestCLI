@@ -1,7 +1,7 @@
 from cmd2 import Cmd2ArgumentParser
-from rich_argparse import RichHelpFormatter
 
-parser = Cmd2ArgumentParser(formatter_class=RichHelpFormatter)
+
+parser = Cmd2ArgumentParser()
 
 subparsers = parser.add_subparsers()
 # banner
