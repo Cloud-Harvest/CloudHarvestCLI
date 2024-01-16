@@ -2,6 +2,7 @@ from rich.text import Text, Style
 
 
 class TextColors:
+    # default colors
     HEADER = '#4AF626'      # terminal green
     PROMPT = '#00FFFF'      # cyan
     INFO = '#75BFEC'        # light blue
@@ -9,7 +10,7 @@ class TextColors:
     ERROR = '#FF0F0F'       # bright red
 
     @staticmethod
-    def change_colors(**kwargs):
+    def set_colors(**kwargs):
         for k, v in kwargs.items():
             setattr(TextColors, k, v)
 
