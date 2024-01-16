@@ -1,6 +1,16 @@
+class HarvestConfiguration:
+    api = {}
+    banners = {}
+    colors = {}
+
+    @staticmethod
+    def load(config: dict):
+        for k, v in config.items():
+            setattr(HarvestConfiguration, k, v)
+
 
 def prepare() -> dict:
-    # creaete user directory
+    # create user directory
     from pathlib import Path
     Path('~/.harvest').expanduser().mkdir(parents=True, exist_ok=True)
 
@@ -12,6 +22,12 @@ def prepare() -> dict:
 
     # store the version information in the config
     config['version'] = _get_version()
+
+    HarvestConfiguration.load(config=config)
+
+    # set theme colors
+    from text import TextColors
+    TextColors.set_colors(**HarvestConfiguration.colors)
 
     return config
 

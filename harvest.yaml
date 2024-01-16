@@ -202,3 +202,10 @@ banners:
         - color: '#eda4b2'
       4:
         - color: '#58c8f2'
+
+colors:
+  HEADER: '#4AF626'
+  PROMPT: '#00FFFF'
+  INFO: '#75BFEC'
+  WARN:  '#EED202'
+  ERROR:  '#FF0F0F'
