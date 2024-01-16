@@ -1,6 +1,7 @@
 cmd2
 gnureadline
 flask
+flatten_json
 pandas
 rich
 rich-argparse
