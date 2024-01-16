@@ -14,6 +14,12 @@ format_parser = ArgumentParser(add_help=False)
 format_parser_group = format_parser.add_argument_group('Formatting')
 format_parser_group.add_argument('--format', default='tabular', choices=['csv', 'json', 'pretty-json', 'tabular'],
                                  help='Sets the command output format. Users can route output to files using `> path`.')
+format_parser_group.add_argument('--flatten', default=None, type=str,
+                                 help='Converts a nested JSON object into a one with a single key/value pair with'
+                                      ' fields separated by the character provided.')
+format_parser_group.add_argument('--unflatten', default=None,
+                                 help='Converts a flattened JSON object into a nested object based on the character'
+                                      ' provided.')
 
 # Add/Remove Keys and Headers
 key_manipulation_parser = ArgumentParser(add_help=False)
