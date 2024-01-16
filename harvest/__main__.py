@@ -5,6 +5,7 @@ from rich.console import Console
 from arguments import banner_parser, report_parser
 from banner import get_banner
 from startup import prepare
+from text import stylize, colorize, TextColors
 
 
 class Harvest(Cmd):
@@ -14,11 +15,12 @@ class Harvest(Cmd):
         self.banner = get_banner(banner_configuration=self.configuration['banners'])
         self.version = self.configuration['version']
 
-        super().__init__(persistent_history_file='~/.harvest/history',
+        from os.path import expanduser
+        super().__init__(persistent_history_file=expanduser('~/.harvest/history'),
                          persistent_history_length=5000000,
                          **kwargs)
 
-        self.prompt = '\n[harvest] '
+        self.prompt = colorize('\n[harvest] ', color=TextColors.PROMPT)
 
         self.console.print()  # provides a space between the first line and the banner
         self.console.print(self.banner)
