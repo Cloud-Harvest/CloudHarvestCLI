@@ -2,7 +2,7 @@
 
 from cmd2 import Cmd, with_argparser
 from rich.console import Console
-from arguments import banner_subparser, report_subparser
+from arguments import banner_parser, report_parser
 from banner import get_banner
 from startup import prepare
 
@@ -29,7 +29,7 @@ class Harvest(Cmd):
     def __exit__(self, exc_type, exc_val, exc_tb):
         return None
 
-    @with_argparser(banner_subparser)
+    @with_argparser(banner_parser)
     def do_banner(self, args):
         if args.names:
             names = args.names
@@ -48,7 +48,7 @@ class Harvest(Cmd):
             self.console.print(f'\n {name}----------')
             self.console.print(banner)
 
-    @with_argparser(report_subparser)
+    @with_argparser(report_parser)
     def do_report(self, args):
         pass
 
