@@ -5,7 +5,7 @@ from rich.console import Console
 from arguments import banner_parser, report_parser
 from banner import get_banner
 from startup import prepare
-from text import stylize, colorize, TextColors
+from text import colorize, TextColors
 
 
 class Harvest(Cmd):
