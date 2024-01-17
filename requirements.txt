@@ -1,8 +1,8 @@
 cmd2
 gnureadline
-flask
 flatten_json
 pandas
+requests
 rich
 rich-argparse
 pyyaml
