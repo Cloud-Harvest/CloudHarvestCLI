@@ -54,7 +54,7 @@ class RemoteCompleter(Completer):
         result = []
 
         from harvest.api import ApiRequest
-        with ApiRequest(command=self._url_path) as api:
+        with ApiRequest(path=self._url_path) as api:
             await api
 
         return result
@@ -62,7 +62,7 @@ class RemoteCompleter(Completer):
 
 class BannerCompleter(Completer):
     def _run(self, *args) -> List[str]:
-        from startup import HarvestConfiguration
+        from configuration import HarvestConfiguration
         return list(HarvestConfiguration.banners.keys())
 
 

@@ -1,4 +1,9 @@
 class HarvestConfiguration:
+    """
+    Static class which includes the contents of the harvest.yaml.
+    Although strictly not needed, it is helpful to put the top-level keys and their respective types below as pointers
+    for IDEs when developing. The content of the harvest.yaml is dynamically applied.
+    """
     api = {}
     banners = {}
     colors = {}
