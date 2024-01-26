@@ -1,5 +1,4 @@
 from rich.text import Text, Style
-from rich.table import Table
 
 
 class TextColors:
@@ -55,79 +54,6 @@ def stylize(text: str, **style) -> Text:
                   style=Style(**style))
 
     return result
-
-
-class FormattedOutput:
-    def __init__(self, data, keys: list = None):
-        self.data = data
-        self.keys = keys or []
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        del self.data
-        return None
-
-    def to_csv(self):
-        from csv import DictWriter
-        from io import StringIO
-        stream = StringIO()
-        dict_writer = DictWriter(stream, fieldnames=self.keys)
-        dict_writer.writeheader()
-        dict_writer.writerows(self.data)
-
-        return stream.getvalue()
-
-    def to_json(self, flatten: str = None, unflatten: str = None):
-        # skip if the data is not an appropriate type
-        if not isinstance(self.data, (dict, list)):
-            return self.data
-
-        if flatten:
-            data = self._flatten(separator=flatten)
-
-        elif unflatten:
-            data = self._unflatten(separator=unflatten)
-
-        else:
-            data = self.data
-
-        from json import dumps
-        result = dumps(data, default=str)
-
-        return result
-
-    def to_table(self) -> Table:
-        from rich.table import Table
-        from rich.box import SIMPLE
-
-        table = Table(box=SIMPLE)
-        [table.add_column(c) for c in self.keys]
-
-        [table.add_row(*[r.get(k) for k in self.keys]) for r in self.data]
-
-        return table
-
-    def _flatten(self, separator: str):
-        from flatten_json import flatten
-
-        if isinstance(self.data, list):
-            result = [flatten(d, separator=separator) for d in self.data]
-
-        elif isinstance(self.data, dict):
-            result = flatten(self.data, separator=separator)
-
-        else:
-            result = self.data
-
-        return result
-
-    def _unflatten(self, separator: str):
-        from flatten_json import unflatten_list
-        result = unflatten_list({'result': self.data}, separator=separator)
-
-        return result
 
 
 if __name__ == '__main__':

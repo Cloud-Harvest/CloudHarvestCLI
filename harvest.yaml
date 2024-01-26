@@ -1,7 +1,6 @@
 api:
-  endpoint: ''
-  port: ''
-  token: ''
+  host: 'http://127.0.0.1:8000'
+  auth: ''
 
 banners:
   # provides seasonal and commemorative banners

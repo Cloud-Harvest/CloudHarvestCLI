@@ -14,7 +14,7 @@ class HarvestConfiguration:
             setattr(HarvestConfiguration, k, v)
 
 
-def prepare() -> dict:
+def load() -> dict:
     # create user directory
     from pathlib import Path
     Path('~/.harvest').expanduser().mkdir(parents=True, exist_ok=True)
@@ -31,7 +31,7 @@ def prepare() -> dict:
     HarvestConfiguration.load(config=config)
 
     # set theme colors
-    from text import TextColors
+    from text.styling import TextColors
     TextColors.set_colors(**HarvestConfiguration.colors)
 
     return config

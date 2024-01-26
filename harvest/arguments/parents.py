@@ -12,7 +12,7 @@ matching_parser_group.add_argument('-m', '--match', action='append', nargs='+', 
 # Formatting --format
 format_parser = ArgumentParser(add_help=False)
 format_parser_group = format_parser.add_argument_group('Formatting')
-format_parser_group.add_argument('--format', default='tabular', choices=['csv', 'json', 'pretty-json', 'tabular'],
+format_parser_group.add_argument('--format', default='table', choices=['csv', 'json', 'pretty-json', 'table'],
                                  help='Sets the command output format. Users can route output to files using `> path`.')
 format_parser_group.add_argument('--flatten', default=None, type=str,
                                  help='Converts a nested JSON object into a one with a single key/value pair with'
