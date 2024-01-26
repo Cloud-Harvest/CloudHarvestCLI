@@ -1,4 +1,5 @@
 from configuration import HarvestConfiguration
+from argparse import Namespace
 from urllib.request import getproxies
 from requests import Request, Session
 from logging import getLogger
@@ -6,11 +7,12 @@ logger = getLogger('harvest')
 
 
 class HarvestRequest(Request):
-    def __init__(self, host: str = None, path: str = None, method: str = 'GET', **kwargs):
+    def __init__(self, host: str = None, path: str = None, method: str = 'GET', args: Namespace = None, **kwargs):
         from urllib.parse import urljoin
         url = urljoin(host or HarvestConfiguration.api.get('host'), path)
+        params = vars(args) if args else {}
 
-        super().__init__(url=url, method=method.upper(), **kwargs)
+        super().__init__(url=url, method=method.upper(), params=params, **kwargs)
 
     def query(self) -> dict or tuple:
         prepared_statement = self.prepare()

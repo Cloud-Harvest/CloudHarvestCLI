@@ -2,12 +2,12 @@
 # package imports
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
-from rich.console import Console
 
 # harvest imports
 import configuration
 from banner import get_banner
 from text.styling import colorize, TextColors
+from text import console
 
 from commands import BannerCommand, ReportCommand
 
@@ -15,9 +15,6 @@ from commands import BannerCommand, ReportCommand
 class Harvest(Cmd):
     def __init__(self, **kwargs):
         self.configuration = configuration.load()
-
-        # _console is used to print certain objects
-        self._console = Console()
 
         # _banners display loading banners
         self._banner = get_banner(banner_configuration=self.configuration['banners'])
@@ -39,8 +36,8 @@ class Harvest(Cmd):
         # the prompt will always have a new line at the beginning for spacing
         self.prompt = colorize('\n[harvest] ', color=TextColors.PROMPT)
 
-        self._console.print()  # provides a space between the first line and the banner
-        self._console.print(self._banner)
+        console.print()  # provides a space between the first line and the banner
+        console.print(self._banner)
         self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
 
     def __enter__(self):

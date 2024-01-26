@@ -1,6 +1,19 @@
-from rich.console import Console
+from typing import Literal
 from rich.table import Table
 from io import StringIO
+
+
+def get_formatter(method: Literal['from', 'to'], extension: str):
+    from importlib import import_module
+    self = import_module(__name__)
+
+    f = f'{method}_{extension}'
+
+    if hasattr(self, f):
+        return getattr(self, f)
+
+    else:
+        return None
 
 
 def from_csv(filename: str or StringIO, **kwargs) -> list:
@@ -154,26 +167,3 @@ def _strip_keys(record: dict, keys: list = None) -> dict:
 
     else:
         return record
-
-
-def print_output(data: (list or dict), keys: list = None, flatten: str = None, unflatten: str = None,
-                 output_format: str = 'table'):
-
-    from text import console
-    match output_format:
-        case 'csv':
-            console.print(to_csv(data=data, keys=keys))
-
-        case 'json':
-            console.print(to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten))
-
-        case 'pretty-json':
-            console.print_json(to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten))
-
-        case 'table':
-            console.print(to_table(data=data, keys=keys))
-
-        case _:
-            from rich.style import Style
-            from styling import TextColors
-            console.print(f'Invalid output format provided: `{output_format}`.', style=Style(color=TextColors.ERROR))

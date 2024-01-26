@@ -1,4 +1,7 @@
+from typing import Literal
 from rich.text import Text, Style
+
+DEFAULT_TEST_COLOR_NAMES = Literal['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
 
 
 class TextColors:
@@ -30,7 +33,8 @@ def _hex_to_rgb(color_hex: str) -> tuple:
 
 def colorize(text: str, color: str) -> str:
     """
-    Return a colorized string.
+    Return a colorized string designed for ascii output. This method should not be used in conjunction with rich.console
+    as it will print the literal color values.
     :param text: String to colorize.
     :param color: Color hex code.
     :return: str
@@ -54,40 +58,3 @@ def stylize(text: str, **style) -> Text:
                   style=Style(**style))
 
     return result
-
-
-if __name__ == '__main__':
-    import rich
-
-    print('rich print (stylize)-----------')
-    rich.print(stylize('A lovely header', color=TextColors.HEADER))
-    rich.print(stylize('[prompt]', color=TextColors.PROMPT))
-    rich.print(stylize('Just some info', color=TextColors.INFO))
-    rich.print(stylize('Be warned!', color=TextColors.WARN))
-    rich.print(stylize('Straight up error!', color=TextColors.ERROR))
-
-    print('colorize print-----------')
-    print(colorize('A lovely header', color=TextColors.HEADER))
-    print(colorize('[prompt]', color=TextColors.PROMPT))
-    print(colorize('Just some info', color=TextColors.INFO))
-    print(colorize('Be warned!', color=TextColors.WARN))
-    print(colorize('Straight up error!', color=TextColors.ERROR))
-
-    test_data = [
-        {"A": "a1", "B": "b1"},
-        {"A": "a2", "B": "b2"},
-        {"A": "a3", "B": "b3"},
-    ]
-
-    with FormattedOutput(data=test_data, keys=["A", "B"]) as formatter:
-        print('csv-------------')
-        print(formatter.to_csv())
-
-        print('json-------------')
-        print(formatter.to_json())
-
-        print('pretty-json-------------')
-        rich.print_json(formatter.to_json())
-
-        print('table-------------')
-        rich.print(formatter.to_table())

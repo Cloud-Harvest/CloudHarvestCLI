@@ -22,6 +22,8 @@ format_parser_group.add_argument('--flatten', default=None, type=str,
 format_parser_group.add_argument('--unflatten', default=None,
                                  help='Converts a flattened JSON object into a nested object based on the character'
                                       ' provided.')
+format_parser_group.add_argument('--page', action='store_true',
+                                 help='Output is halted when it fills the screen, similar to `less` or `more`')
 
 # Add/Remove Keys and Headers
 key_manipulation_parser = ArgumentParser(add_help=False)
