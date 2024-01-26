@@ -1,7 +1,4 @@
-from typing import Dict, List
-
-
-class Completer:
+class BaseCompleter:
     """
     A Completer is used in argument parsing to provide tab completion for users. This class is used for local data. If
     the output of a completer is generated from a remote source (such as the api), use the RemoteCompleter.
@@ -11,8 +8,8 @@ class Completer:
 
         super().__init__()
 
-    def run(self, *args, force: bool = False, **kwargs) -> list:
-        if force or not self:
+    def run(self, *args, refresh: bool = False, **kwargs) -> list:
+        if refresh or not self.result:
             self.result = self._run(*args, **kwargs)
 
         return self._select_return_value(*args)
@@ -31,21 +28,35 @@ class Completer:
         else:
             result = self.result
 
-        return [s for s in result if str(s).startswith(args[1])]
+        if result:
+            return [s for s in result if str(s).startswith(args[1])]
+
+        else:
+            return []
 
 
-class RemoteCompleter(Completer):
-    def __init__(self, path: str):
+class RemoteBaseCompleter(BaseCompleter):
+    """
+    A RemoteBaseCompleter retrieves information from the API. The data is stored in memory where it is reused.
+    """
+    def __init__(self, path: str, refresh_delay: int = 300):
         self._path = path
         self._last_checked = None
+        self.refresh_delay = refresh_delay
 
         super().__init__()
         pass
 
-    def run(self, *args, force: bool = False, **kwargs):
+    def run(self, *args, refresh: bool = False, **kwargs):
         from datetime import datetime
         if self._last_checked:
-            if force or ((self._last_checked - datetime.now()).total_seconds() > 300) or isinstance(self.result, tuple):
+            _conditions = any([
+                refresh,
+                (self._last_checked - datetime.now()).total_seconds() > self.refresh_delay,
+                isinstance(self.result, tuple)
+            ])
+
+            if _conditions:
                 query_api = True
 
             else:
@@ -54,24 +65,9 @@ class RemoteCompleter(Completer):
             query_api = True
 
         if query_api:
-            from harvest.api import HarvestRequest
+            from api import HarvestRequest
             self._last_checked = datetime.now()
             self.result = HarvestRequest(path=self._path).query()
             self.result = self._run(*args, **kwargs)
 
         return self._select_return_value(*args)
-
-
-class BannerCompleter(Completer):
-    def _run(self, *args, **kwargs) -> List[str]:
-        from configuration import HarvestConfiguration
-        return list(HarvestConfiguration.banners.keys())
-
-
-class ReportNameCompleter(RemoteCompleter):
-    def _run(self, *args, **kwargs) -> List[str]:
-        if isinstance(self.result, list):
-            return [report['name'] for report in self.result]
-
-        else:
-            return []

@@ -208,3 +208,6 @@ colors:
   INFO: '#75BFEC'
   WARN:  '#EED202'
   ERROR:  '#FF0F0F'
+
+shortcuts:
+  exit: "quit"

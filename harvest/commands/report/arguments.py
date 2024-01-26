@@ -1,17 +1,9 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
+
 from arguments.parents import *
-from arguments.completers import *
+from commands.report.completers import *
 
-# banner
-banner_completer = BannerCompleter()
-banner_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter)
-banner_parser.add_argument('names', type=str, nargs='*', completer=banner_completer.run,
-                           help='The name of the report to display. When not provided, all banners are displayed.')
-banner_parser.add_argument('--text', type=str, default='HARVEST',
-                           help='Allows the user to display arbitrary text using the banner code.')
-
-# report
 report_name_completer = ReportNameCompleter(path='/reports/list')
 report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter, parents=[key_manipulation_parser,
                                                                                       matching_parser,
