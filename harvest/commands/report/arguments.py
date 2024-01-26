@@ -1,7 +1,7 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
 
-from arguments.parents import *
+from arguments.parts import *
 from commands.report.completers import *
 
 report_name_completer = ReportNameCompleter(path='/reports/list')

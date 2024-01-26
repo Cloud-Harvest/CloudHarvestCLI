@@ -4,10 +4,12 @@ from argparse import ArgumentParser
 matching_parser = ArgumentParser(add_help=False)
 matching_parser_group = matching_parser.add_argument_group('Matching')
 matching_parser_group.add_argument('-m', '--match', action='append', nargs='+', default=[],
-                                   help='Provide matching statements. Matches are defined in the following ways:\n'
-                                        'One match statement                : `-m Field=Value`\n'
-                                        'A single `-m` are AND statements   : `-m Field=Value Field=Value`\n'
-                                        'Additional `-m` is an OR statement : `-m Field=Value` `-m Field=Value`.')
+                                   help='\n'.join([
+                                       'Provide matching statements. Matches are defined in the following ways:',
+                                       'One match statement matches on just that field/value | `-m Field=Value`',
+                                       'A single `-m` are AND statements                     | `-m Field=Value Field=Value`',
+                                       'Additional `-m` is an OR statement                   | `-m Field=Value` `-m Field=Value`.'
+                                   ]))
 
 # Formatting --format
 format_parser = ArgumentParser(add_help=False)
