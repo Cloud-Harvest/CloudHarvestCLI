@@ -1,0 +1,3 @@
+[submodule "harvest/submodules/core-data-model"]
+	path = harvest/submodules/core-data-model
+	url = git@github.com:Cloud-Harvest/core-data-model.git
