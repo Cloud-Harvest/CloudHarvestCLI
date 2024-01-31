@@ -28,4 +28,6 @@ class BannerCommand(CommandSet):
         for name, banner in results.items():
             from text import console
             console.print(f'\n {name}----------')
-            console.print(banner)
+            console.print(banner[0])
+            if banner[1]:
+                console.print(banner[1])

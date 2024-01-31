@@ -1,12 +1,24 @@
+# set the api address and token
 api:
   host: 'http://127.0.0.1:8000'
   auth: ''
 
+# provides seasonal and commemorative banners
 banners:
-  # provides seasonal and commemorative banners
   # schema
   #  winter:
   #    rules:
+  #      - date:              # specify a single month and day
+  #          month:
+  #          day: (optional)
+  #      - date:
+  #          between:         # check if a day is between two dates
+  #            start:
+  #              month:
+  #              day:
+  #            end:
+  #              month:
+  #              day:
   #    colors:
   #      - row: 0
   #        start: (Optional|Default 0)
@@ -26,7 +38,15 @@ banners:
         - color: '#2c62a2'  # Yale blue
       5:
         - color: '#2c62a2'  # Cobolt blue
-
+    rules:
+      - date:
+          between:
+            start:
+              month: 12
+              day: 21
+            end:
+              month: 3
+              day: 20
   spring:
     colors:
       0:
@@ -143,7 +163,15 @@ banners:
         - color: '#e09b63'
           start: .80
           end: .99
-
+    rules:
+      - date:
+          between:
+            start:
+              month: 3
+              day: 21
+            end:
+              month: 6
+              day: 20
   summer:
     colors:
       0:
@@ -158,7 +186,15 @@ banners:
         - color: '#33D700'
       5:
         - color: '#0DAD0C'
-
+    rules:
+      - date:
+          between:
+            start:
+              month: 6
+              day: 21
+            end:
+              month: 9
+              day: 22
   autumn:
     colors:
       0:
@@ -173,7 +209,15 @@ banners:
         - color: '#FFA000'
       5:
         - color: '#FFBA00'
-
+    rules:
+      - date:
+          between:
+            start:
+              month: 9
+              day: 23
+            end:
+              month: 12
+              day: 20
   lgbt:
     colors:
       0:
@@ -188,6 +232,12 @@ banners:
         - color: '#004af7'
       5:
         - color: '#730084'
+    rules:
+      - date:
+          month: 1
+        footer: |
+          It's Pride Month! Take a moment to learn about the LGBTQIA+ community:
+          https://en.wikipedia.org/wiki/LGBT
 
   transgender:
     colors:
@@ -201,7 +251,22 @@ banners:
         - color: '#eda4b2'
       4:
         - color: '#58c8f2'
+    rules:
+      - date:
+          month: 3
+          day: 31
+        footer: |
+          Transgender Day of Visibility
+          https://en.wikipedia.org/wiki/Transgender
+      - date:
+          month: 11
+          day: 20
+        footer: |
+          Transgender Day of Remembrance
+          https://en.wikipedia.org/wiki/Transgender_Day_of_Remembrance
 
+
+# change the terminal colors
 colors:
   HEADER: '#4AF626'
   PROMPT: '#00FFFF'
@@ -209,5 +274,6 @@ colors:
   WARN:  '#EED202'
   ERROR:  '#FF0F0F'
 
+# create shortcuts for commands
 shortcuts:
   exit: "quit"

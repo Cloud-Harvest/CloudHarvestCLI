@@ -267,7 +267,7 @@ _characters = {
 }
 
 
-def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVEST') -> Text:
+def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVEST') -> (Text, str):
     """
     Generates a banner based on the banner's name. The banner must be printed with rich.Console().print().
     :param banner_configuration: the Harvest Configuration's `banners` key
@@ -289,7 +289,7 @@ def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVES
     assigned_colors = _assign_banner_colors(character_list=character_list, plan=banner['colors'])
     result = _colorize_banner_list(character_list=assigned_colors)
 
-    return result
+    return result, banner.get('footer')
 
 
 def _get_eligible_banners(banner_configuration: dict) -> list:
@@ -297,30 +297,58 @@ def _get_eligible_banners(banner_configuration: dict) -> list:
     Generates a list of banners based on season, date, or other rules/
     :return: List
     """
-    # we always provide a seasonal banner
+    banners = []
 
-    banners = [banner_configuration[_get_season()]]
+    # loop over each banner
+    for name, config in banner_configuration.items():
+        rules = config.get('rules') or []
 
-    # date logic
-    # specific date
+        # loop over each rule, breaking when a matching rule is found
+        for rule in rules:
+            include_banner = False
+
+            # select a rule based on the date
+            if rule.get('date'):
+                date_rule = rule.get('date')
+
+                # case: date['month']
+                if date_rule.get('month') or date_rule.get('day'):
+                    from datetime import date, datetime
+                    month = date_rule.get('month') or 0
+                    day = date_rule.get('day') or 0
+
+                    now = datetime.now().date()
+                    include_banner = any([
+                        month == now.month and day == now.day,  # month and day match
+                        month == now.month                      # just the month matches (Pride Month runs through June)
+                    ])
+
+                # case: date['between']
+                elif date_rule.get('between'):
+                    from datetime import date, datetime
+                    start_date = date_rule['between']['start']
+                    end_date = date_rule['between']['end']
+                    now = datetime.now()
+
+                    # start 11, end 3
+                    if start_date['month'] > end_date['month']:
+                        start = date(**start_date, year=now.year - 1)
+                        end = date(**end_date, year=now.year)
+
+                    else:
+                        start = date(**start_date, year=now.year)
+                        end = date(**end_date, year=now.year)
+
+                    if start < now.date() < end:
+                        include_banner = True
+
+            if include_banner:
+                banners.append(config | {'footer': rule.get('footer')})
+                break
 
     # date range
 
     return banners
-
-
-def _get_season():
-    from datetime import date, datetime
-
-    now = datetime.now().date()
-    seasons = [('winter', (date(now.year, 1, 1), date(now.year, 3, 20))),
-               ('spring', (date(now.year, 3, 21), date(now.year, 6, 20))),
-               ('summer', (date(now.year, 6, 21), date(now.year, 9, 22))),
-               ('autumn', (date(now.year, 9, 23), date(now.year, 12, 20))),
-               ('winter', (date(now.year, 12, 21), date(now.year, 12, 31)))]
-
-    return next(season for season, (start, end) in seasons
-                if start <= now <= end)
 
 
 def _text_to_banner(text: str) -> str:

@@ -37,7 +37,10 @@ class Harvest(Cmd):
         self.prompt = colorize('\n[harvest] ', color=TextColors.PROMPT)
 
         console.print()  # provides a space between the first line and the banner
-        console.print(self._banner)
+        console.print(self._banner[0])
+        if self._banner[1]:
+            console.print(self._banner[1])
+
         self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
 
     def __enter__(self):
