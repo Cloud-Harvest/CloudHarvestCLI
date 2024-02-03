@@ -218,6 +218,28 @@ banners:
             end:
               month: 12
               day: 20
+
+  black-history-month:
+    colors:
+      0:
+        - color: '#e63933'
+      1:
+        - color: '#e63933'
+      2:
+        - color: '#f8b71b'
+      3:
+        - color: '#f8b71b'
+      4:
+        - color: '#117a51'
+      5:
+        - color: '#117a51'
+    rules:
+      - date:
+          month: 2
+        footer: |
+          Black History Month is here! Learn more at:
+          https://www.blackhistorymonth.gov/
+
   lgbt:
     colors:
       0:
