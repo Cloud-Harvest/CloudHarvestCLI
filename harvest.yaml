@@ -296,6 +296,13 @@ colors:
   WARN:  '#EED202'
   ERROR:  '#FF0F0F'
 
+# Gives users the ability to install plugins for different services, such as cloud services providers (AWS) and
+# databases, such as MySQL, PostgreSQL, or Microsoft SQL Server.
+modules:
+  path: ~/.harvest/plugins
+  repos:
+#    - source: ""
+#      label: main
 # create shortcuts for commands
 shortcuts:
   exit: "quit"

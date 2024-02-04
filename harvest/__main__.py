@@ -6,10 +6,15 @@ from cmd2.plugin import PrecommandData, PostcommandData
 # harvest imports
 import configuration
 from banner import get_banner
+from plugins import PluginRegistry
 from text.styling import colorize, TextColors
 from text import console
 
-from commands import BannerCommand, ReportCommand
+"""
+These imports are required to implement the Harvest command classes. IDEs will show they are not used but this is
+misleading - all imported classes which inherit the cmd2.CommandSet are automatically implemented.
+"""
+from commands import *
 
 
 class Harvest(Cmd):
@@ -18,6 +23,7 @@ class Harvest(Cmd):
 
         # _banners display loading banners
         self._banner = get_banner(banner_configuration=self.configuration['banners'])
+        self.plugin_registry = PluginRegistry(**self.configuration.get('modules') or {}).initialize_repositories()
 
         # application version
         self._version = self.configuration['version']
