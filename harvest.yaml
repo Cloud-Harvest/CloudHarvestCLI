@@ -50,119 +50,18 @@ banners:
   spring:
     colors:
       0:
-        - color: '#48a3ce'
-          start: .01
-          end: .16
-        - color: '#b7ebe1'
-          start: .16
-          end: .32
-        - color: '#e6c5d8'
-          start: .32
-          end: .48
         - color: '#fed83c'
-          start: .48
-          end: .64
-        - color: '#f5d4a8'
-          start: .64
-          end: .80
-        - color: '#e09b63'
-          start: .80
-          end: .99
       1:
         - color: '#48a3ce'
-          start: .01
-          end: .16
-        - color: '#b7ebe1'
-          start: .16
-          end: .32
-        - color: '#e6c5d8'
-          start: .32
-          end: .48
-        - color: '#fed83c'
-          start: .48
-          end: .64
-        - color: '#f5d4a8'
-          start: .64
-          end: .80
-        - color: '#e09b63'
-          start: .80
-          end: .99
       2:
-        - color: '#48a3ce'
-          start: .01
-          end: .16
         - color: '#b7ebe1'
-          start: .16
-          end: .32
-        - color: '#e6c5d8'
-          start: .32
-          end: .48
-        - color: '#fed83c'
-          start: .48
-          end: .64
-        - color: '#f5d4a8'
-          start: .64
-          end: .80
-        - color: '#e09b63'
-          start: .80
-          end: .99
       3:
-        - color: '#48a3ce'
-          start: .01
-          end: .16
-        - color: '#b7ebe1'
-          start: .16
-          end: .32
         - color: '#e6c5d8'
-          start: .32
-          end: .48
-        - color: '#fed83c'
-          start: .48
-          end: .64
-        - color: '#f5d4a8'
-          start: .64
-          end: .80
-        - color: '#e09b63'
-          start: .80
-          end: .99
       4:
-        - color: '#48a3ce'
-          start: .01
-          end: .16
-        - color: '#b7ebe1'
-          start: .16
-          end: .32
-        - color: '#e6c5d8'
-          start: .32
-          end: .48
-        - color: '#fed83c'
-          start: .48
-          end: .64
         - color: '#f5d4a8'
-          start: .64
-          end: .80
-        - color: '#e09b63'
-          start: .80
-          end: .99
       5:
-        - color: '#48a3ce'
-          start: .01
-          end: .16
-        - color: '#b7ebe1'
-          start: .16
-          end: .32
-        - color: '#e6c5d8'
-          start: .32
-          end: .48
-        - color: '#fed83c'
-          start: .48
-          end: .64
-        - color: '#f5d4a8'
-          start: .64
-          end: .80
         - color: '#e09b63'
-          start: .80
-          end: .99
+
     rules:
       - date:
           between:
@@ -219,7 +118,7 @@ banners:
               month: 12
               day: 20
 
-  black-history-month:
+  black-history:
     colors:
       0:
         - color: '#e63933'
@@ -239,6 +138,12 @@ banners:
         footer: |
           Black History Month is here! Learn more at:
           https://www.blackhistorymonth.gov/
+      - date:
+          month: 6
+          day: 13
+          footer: |
+            Today is Juneteenth! Learn more about this important day at:
+            https://en.wikipedia.org/wiki/Juneteenth
 
   lgbt:
     colors:
@@ -256,7 +161,7 @@ banners:
         - color: '#730084'
     rules:
       - date:
-          month: 1
+          month: 6
         footer: |
           It's Pride Month! Take a moment to learn about the LGBTQIA+ community:
           https://en.wikipedia.org/wiki/LGBT

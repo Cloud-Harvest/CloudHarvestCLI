@@ -4,6 +4,7 @@ Font credits:
     FIGFont created with: http://patorjk.com/figfont-editor
 """
 from rich.text import Text
+from rich.table import Table
 
 _characters = {
     'a': ('█████╗  ',
@@ -267,7 +268,7 @@ _characters = {
 }
 
 
-def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVEST') -> (Text, str):
+def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVEST') -> (Text, str, list):
     """
     Generates a banner based on the banner's name. The banner must be printed with rich.Console().print().
     :param banner_configuration: the Harvest Configuration's `banners` key
@@ -289,7 +290,7 @@ def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVES
     assigned_colors = _assign_banner_colors(character_list=character_list, plan=banner['colors'])
     result = _colorize_banner_list(character_list=assigned_colors)
 
-    return result, banner.get('footer')
+    return result, banner.get('footer'), banner.get('rules')
 
 
 def _get_eligible_banners(banner_configuration: dict) -> list:
