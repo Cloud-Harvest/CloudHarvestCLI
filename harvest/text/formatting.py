@@ -85,7 +85,7 @@ def to_json(data, keys: list = None, flatten: str = None, unflatten: str = None)
     return result
 
 
-def to_table(data: (list or dict), keys: list = None) -> Table or str:
+def to_table(data: (list or dict), flatten_data: bool = False, keys: list = None, sort_keys: Literal['ASC', 'DESC'] = None) -> Table or str:
     from rich.table import Table
     from rich.box import SIMPLE
 
@@ -93,11 +93,22 @@ def to_table(data: (list or dict), keys: list = None) -> Table or str:
 
     _keys = keys or _identify_keys(data=data)
 
+    match sort_keys:
+        case 'ASC':
+            _keys.sort()
+        case 'DESC':
+            _keys.sort(reverse=True)
+
     # add columns to table
     [table.add_column(c, overflow='fold') for c in _keys]
 
+    if flatten_data:
+        _data = _flatten(data=data)
+    else:
+        _data = data
+
     # add data to table
-    [table.add_row(*[r.get(k) for k in _keys]) for r in data]
+    [table.add_row(*[str(r.get(k)) for k in _keys]) for r in _data]
 
     return table
 
