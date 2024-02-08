@@ -1,0 +1,35 @@
+# This docker-compose file is intended to deploy an entire Cloud Harvest service for personal trial, tribulation,
+# and testing.
+# The best way to run Harvest is by leveraging a larger stack where the API, Data Collectors, and MongoDb can run on
+# their own hosts. This will not always be a practical solution, since environments vary widely between organizations,
+# but we hope this configuration will get you started.
+
+# version:
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+
+  api:
+    image: cloud-harvest-api
+    build:
+      ssh:
+        - default
+    ports:
+      - "8000:8000"
+    stop_signal: SIGINT
+    working_dir: /src
+
+  data-collector-aws:
+    image: cloud-harvest-data-collector-aws
+    ports:
+      - "8080:8080"
+    stop_signal: SIGINT
+
+networks:
+  harvest:
+    name: harvest-standalone-network
+    external: true
