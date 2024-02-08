@@ -141,9 +141,9 @@ banners:
       - date:
           month: 6
           day: 13
-          footer: |
-            Today is Juneteenth! Learn more about this important day at:
-            https://en.wikipedia.org/wiki/Juneteenth
+        footer: |
+          Today is Juneteenth! Learn more about this important day at:
+          https://en.wikipedia.org/wiki/Juneteenth
 
   lgbt:
     colors:
