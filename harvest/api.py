@@ -25,7 +25,14 @@ class HarvestRequest(Request):
         # TODO: authentication methods (like getting a token)
         # session.auth = get_auth('')
 
-        response = session.send(prepared_statement)
+        try:
+            response = session.send(prepared_statement)
+
+        # TODO: handle urllib3 connection errors
+        except ConnectionError as ce:
+            from exceptions import BaseHarvestException
+            BaseHarvestException(*ce.args, log_level='error')
+            return 400, 'Could not make connection to api.'
 
         if 200 <= response.status_code <= 299:
             return response.json()

@@ -7,3 +7,4 @@ rich
 rich-argparse
 pyyaml
 pytest
+urllib3

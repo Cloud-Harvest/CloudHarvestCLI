@@ -1,4 +1,5 @@
 from cmd2 import CommandSet, with_default_category, with_argparser
+from commands.report.exceptions import HarvestReportException
 from logging import getLogger
 
 from commands.report.arguments import report_parser
@@ -30,8 +31,9 @@ class ReportCommand(CommandSet):
             output = HarvestRequest(path='report/run', params=args).query()
 
         if isinstance(output, tuple):
-            text, color = output
-            print_feedback(text=text, color=color)
+            # this indicates an error state but query error states are already printed from HarvestRequest.api()
+            # More specific errors should be described here.
+            pass
 
         else:
             print_data(data=output,
@@ -41,7 +43,8 @@ class ReportCommand(CommandSet):
                        unflatten=args.unflatten,
                        page=args.page)
 
-    def _list_reports(self):
+    @staticmethod
+    def _list_reports():
         from api import HarvestRequest
 
         report_list = HarvestRequest(path='reports/list').query()
@@ -50,9 +53,10 @@ class ReportCommand(CommandSet):
             return report_list
 
         else:
-            return 'No reports found.', 'WARN'
+            return HarvestReportException('No reports found.', log_level='warning')
 
-    def _load_file(self, filename: str):
+    @staticmethod
+    def _load_file(filename: str):
         from text.formatting import get_formatter
 
         extension = filename.split('.')[-1]
@@ -62,4 +66,5 @@ class ReportCommand(CommandSet):
             return converter(filename=filename)
 
         else:
-            return f'Harvest does not support files with the `{extension}` extension.', 'WARN'
+            return HarvestReportException(f'Harvest does not support files with the `{extension}` extension.',
+                                          log_level='warning')
