@@ -1,5 +1,5 @@
 from typing import List
-from arguments.completers import RemoteBaseCompleter
+from commands.arguments.completers import RemoteBaseCompleter
 
 
 class ReportNameCompleter(RemoteBaseCompleter):

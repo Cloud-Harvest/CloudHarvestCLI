@@ -1,5 +1,5 @@
 from typing import List
-from arguments.completers import BaseCompleter
+from commands.arguments.completers import BaseCompleter
 
 
 class BannerCompleter(BaseCompleter):
