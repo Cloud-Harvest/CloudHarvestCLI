@@ -30,10 +30,10 @@ class BannerCommand(CommandSet):
             console.print(f'\n {name}----------')
             console.print(banner[0])
             if banner[2]:
-                console.print(self.rules_to_text(banner[2]))
+                console.print(self._rules_to_text(banner[2]))
 
     @staticmethod
-    def rules_to_text(rules: list) -> (Text, str):
+    def _rules_to_text(rules: list) -> (Text, str):
         footer = []
 
         def day_part_as_int(day_part: int) -> str:
