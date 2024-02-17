@@ -31,7 +31,7 @@ class Harvest(Cmd):
         shortcuts = DEFAULT_SHORTCUTS | self.configuration.get('shortcuts') or {}
 
         from os.path import expanduser
-        super().__init__(persistent_history_file=expanduser('~/.harvest/history'),
+        super().__init__(persistent_history_file=expanduser('~/.harvest/cli/history'),
                          persistent_history_length=5000000,
                          shortcuts=shortcuts,
                          **kwargs)

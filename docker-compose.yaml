@@ -5,7 +5,7 @@
 # but we hope this configuration will get you started.
 
 # version:
-
+name: harvest-standalone
 services:
   mongo:
     image: mongo
@@ -20,8 +20,8 @@ services:
   api:
     image: cloud-harvest-api
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../api
+      dockerfile: ../api/Dockerfile
       ssh:
         - default
     ports:

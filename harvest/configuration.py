@@ -17,7 +17,7 @@ class HarvestConfiguration:
 def load() -> dict:
     # create user directory
     from pathlib import Path
-    Path('~/.harvest').expanduser().mkdir(parents=True, exist_ok=True)
+    Path('~/.harvest/cli/').expanduser().mkdir(parents=True, exist_ok=True)
 
     # enable the debug log file
     _configure_logger()
@@ -49,7 +49,7 @@ def _get_first_path(*args) -> str:
 def _load_configuration() -> dict:
     from os import environ
     path = _get_first_path(environ.get('HARVEST_CONFIG'),
-                           '~/.harvest/harvest.yaml',
+                           '~/.harvest/cli/harvest.yaml',
                            './harvest.yaml')
 
     from yaml import load, FullLoader
@@ -69,7 +69,7 @@ def _configure_logger():
 
     from pathlib import Path
 
-    with Path('~/.harvest/logs').expanduser() as p:
+    with Path('~/.harvest/cli/logs').expanduser() as p:
         p.expanduser()
         p.mkdir(parents=True, exist_ok=True)
 
