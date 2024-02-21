@@ -10,9 +10,9 @@ class HarvestRequest(Request):
     def __init__(self, host: str = None, path: str = None, method: str = 'GET', args: Namespace = None, **kwargs):
         from urllib.parse import urljoin
         url = urljoin(host or HarvestConfiguration.api.get('host'), path)
-        params = vars(args) if args else {}
+        params = vars(args) if args else {} | kwargs
 
-        super().__init__(url=url, method=method.upper(), params=params, **kwargs)
+        super().__init__(url=url, method=method.upper(), params=params)
 
     def query(self) -> dict or tuple:
         prepared_statement = self.prepare()
