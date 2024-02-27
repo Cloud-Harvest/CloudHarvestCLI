@@ -1,6 +1,6 @@
 cmd2
 gnureadline
-flatten_json
+flatten-json
 pandas
 requests
 rich
