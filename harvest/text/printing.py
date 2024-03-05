@@ -1,6 +1,6 @@
 from rich.console import Console
-from text.formatting import to_csv, to_json, to_table
-from text.styling import DEFAULT_TEST_COLOR_NAMES
+from .formatting import to_csv, to_json, to_table
+from .styling import DEFAULT_TEST_COLOR_NAMES
 
 output_console = Console()
 feedback_console = Console(stderr=True)
@@ -56,9 +56,9 @@ def print_message(text: str, color: DEFAULT_TEST_COLOR_NAMES):
     """
 
     from rich.style import Style
-    from styling import TextColors
+    from .styling import TextColors
 
-    output_console.print(text, style=Style(color=getattr(TextColors, color)))
+    output_console.print(text, style=Style(color=getattr(TextColors, color.upper())))
 
 
 def print_feedback(text: str, color: DEFAULT_TEST_COLOR_NAMES):
