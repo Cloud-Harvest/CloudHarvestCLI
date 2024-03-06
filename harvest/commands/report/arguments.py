@@ -1,8 +1,8 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
-
-from commands.report.completers import *
 from commands.arguments.parts import *
+from .completers import *
+
 
 report_name_completer = ReportNameCompleter(path='/reports/list')
 report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter, parents=[key_manipulation_parser,

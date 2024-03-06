@@ -1,6 +1,6 @@
 from cmd2 import CommandSet, with_default_category, with_argparser
 from rich.text import Text
-from commands.banner.arguments import banner_parser
+from .arguments import banner_parser
 
 
 @with_default_category('Harvest')
