@@ -192,6 +192,26 @@ banners:
           Transgender Day of Remembrance
           https://en.wikipedia.org/wiki/Transgender_Day_of_Remembrance
 
+  womens-history:
+    colors:
+      0:
+        - color: '#45215d'
+      1:
+        - color: '#bf7ab3'
+      2:
+        - color: '#944379'
+      3:
+        - color: '#9453a1'
+      4:
+        - color: '#856faa'
+      5:
+        - color: '#d6a9ce'
+    rules:
+      - date:
+          month: 3
+        footer: |
+          Women's History Month
+          https://www.womenshistorymonth.gov/
 
 # change the terminal colors
 colors:
