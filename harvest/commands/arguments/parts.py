@@ -1,5 +1,24 @@
 from argparse import ArgumentParser
 
+# PSTAR components
+pstar_parser = ArgumentParser(add_help=False)
+pstar_group = pstar_parser.add_argument_group('PSTAR')
+pstar_group.add_argument('--platform', type=str,
+                         help='Set the platform for the data.'
+                              '\nExample: `aws`')
+pstar_group.add_argument('--service', type=str,
+                         help='Set the service name for the data.'
+                              '\nExample: `rds`')
+pstar_group.add_argument('--type', type=str,
+                         help='Set the service subtype for the data.'
+                              '\nExample: instance')
+pstar_group.add_argument('--account', type=str,
+                         help='Set the platform account name for the data.'
+                              '\nExample: aws-business-development')
+pstar_group.add_argument('--region', type=str,
+                         help='The account geographical region.'
+                              '\nExample: us-east-1')
+
 # Matching -m
 matching_parser = ArgumentParser(add_help=False)
 matching_parser_group = matching_parser.add_argument_group('Matching')
