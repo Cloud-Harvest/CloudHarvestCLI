@@ -1,3 +1,12 @@
+"""
+parts.py - Reusable argument components which show up in different areas.
+
+* When adding to parts, use the standard ArgumentParser(add_help=False).
+* Provide examples where practical, especially if this is a part which is infrequently used.
+* The calling Command's arguments.py should import the specific parers in question as parents=[].
+* When calling, use Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter) for proper syntax highlighting.
+"""
+
 from argparse import ArgumentParser
 
 # PSTAR components
@@ -5,19 +14,19 @@ pstar_parser = ArgumentParser(add_help=False)
 pstar_group = pstar_parser.add_argument_group('PSTAR')
 pstar_group.add_argument('--platform', type=str,
                          help='Set the platform for the data.'
-                              '\nExample: `aws`')
+                              ' Example: `aws`')
 pstar_group.add_argument('--service', type=str,
                          help='Set the service name for the data.'
-                              '\nExample: `rds`')
+                              ' Example: `rds`')
 pstar_group.add_argument('--type', type=str,
                          help='Set the service subtype for the data.'
-                              '\nExample: instance')
+                              ' Example: instance')
 pstar_group.add_argument('--account', type=str,
                          help='Set the platform account name for the data.'
-                              '\nExample: aws-business-development')
+                              ' Example: aws-business-development')
 pstar_group.add_argument('--region', type=str,
                          help='The account geographical region.'
-                              '\nExample: us-east-1')
+                              ' Example: us-east-1')
 
 # Matching -m
 matching_parser = ArgumentParser(add_help=False)
@@ -58,3 +67,12 @@ key_manipulation_parser_group.add_argument('-H', '--header-order', nargs='+', de
 refresh_parser = ArgumentParser(add_help=False)
 refresh_parser_group = refresh_parser.add_argument_group('Refresh')
 refresh_parser_group.add_argument('--refresh', type=float, default=0, help='Refresh the output n seconds.')
+
+# Thread Controls
+thread_parser = ArgumentParser(add_help=False)
+thread_parser_group = thread_parser.add_argument_group('Threading')
+thread_parser_group.add_argument('--background', action='store_true',
+                                 help='Sends a threaded process to the background instead of displaying the progress bar.')
+thread_parser_group.add_argument('--max-threads', type=int, default=0,
+                                 help='Sets the number of simultaneous tasks for this command.'
+                                      ' When not provided, uses a value equal to thw number of cores, minus one.')
