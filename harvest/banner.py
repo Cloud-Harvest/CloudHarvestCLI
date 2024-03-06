@@ -321,7 +321,7 @@ def _get_eligible_banners(banner_configuration: dict) -> list:
                     now = datetime.now().date()
                     include_banner = any([
                         month == now.month and day == now.day,  # month and day match
-                        month == now.month                      # just the month matches (Pride Month runs through June)
+                        month == now.month and day == 0         # just the month matches (Pride Month runs through June)
                     ])
 
                 # case: date['between']
@@ -348,7 +348,6 @@ def _get_eligible_banners(banner_configuration: dict) -> list:
                 break
 
     # date range
-
     return banners
 
 
