@@ -38,8 +38,8 @@ class HarvestRequest(Request):
             return response.json()
 
         else:
-            from messages import Messages, TextColors
-            Messages.add(response.status_code, response.reason, style=TextColors.WARN)
+            from messages import add_message
+            add_message(__name__, 'WARN', response.status_code, response.reason)
 
             return response.status_code, response.reason
 
