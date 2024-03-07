@@ -36,7 +36,7 @@ def read_messages() -> List[tuple]:
 if __name__ == '__main__':
     default_color_names = ['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
     [
-        Messages.add(__name__, color, f'test message {color}')
+        add_message(__name__, color, f'test message {color}')
         for color in default_color_names
     ]
 
@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     assert Messages.queue == expected_queue
 
-    read_result = Messages.read()
+    read_result = read_messages()
     assert read_result == expected_queue and Messages.queue == []
 
     from text.printing import print_message
