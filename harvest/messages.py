@@ -5,32 +5,32 @@ from typing import Any, List
 class Messages:
     queue = []
 
-    @staticmethod
-    def add(parent: Any, style: str, *args):
-        new_message = (parent, style, ' '.join([str(a) for a in args]))
 
-        # prevent spamming of the same message
-        if new_message not in Messages.queue:
-            Messages.queue.append(new_message)
+def add_message(parent: Any, style: str, *args):
+    new_message = (parent, style, ' '.join([str(a) for a in args]))
 
-        return Messages
+    # prevent spamming of the same message
+    if new_message not in Messages.queue:
+        Messages.queue.append(new_message)
 
-    @staticmethod
-    def read() -> List[tuple]:
-        """
-        :return: (parent, style, message)
-        """
+    return Messages
 
-        # get the last message position
-        last_message = len(Messages.queue)
 
-        # copy the messages to be read out of the queue
-        messages = Messages.queue[0: last_message]
+def read_messages() -> List[tuple]:
+    """
+    :return: (parent, style, message)
+    """
 
-        # remove the copied messages from the queue
-        del Messages.queue[0: last_message]
+    # get the last message position
+    last_message = len(Messages.queue)
 
-        return messages
+    # copy the messages to be read out of the queue
+    messages = Messages.queue[0: last_message]
+
+    # remove the copied messages from the queue
+    del Messages.queue[0: last_message]
+
+    return messages
 
 
 if __name__ == '__main__':
