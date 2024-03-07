@@ -31,7 +31,7 @@ def from_csv(filename: str or StringIO, **kwargs) -> list:
     return _dict_reader
 
 
-def to_csv(data: (list or dict), keys: list = None):
+def to_csv(data: (list or dict), keys: list = None) -> str:
     """
     Convert a flattened dictionary to CSV.
     :param data:
