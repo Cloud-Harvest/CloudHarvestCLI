@@ -12,7 +12,7 @@ class ReportCommand(CommandSet):
     @with_argparser(report_parser)
     def do_report(self, args):
         from os.path import expanduser, exists
-        from text.printing import print_feedback, print_data
+        from text.printing import print_message, print_data
 
         keys = []
         if args.report_name_or_file == 'list':
@@ -21,7 +21,7 @@ class ReportCommand(CommandSet):
 
         elif exists(expanduser(args.report_name_or_file)):
             filename = expanduser(args.report_name_or_file)
-            print_feedback(f'Loading data from {filename}', color='INFO')
+            print_message(f'Loading data from {filename}', color='INFO', as_feedback=True)
 
             output = self._load_file(filename=filename)
 
@@ -40,7 +40,8 @@ class ReportCommand(CommandSet):
                        output_format=args.format,
                        flatten=args.flatten,
                        unflatten=args.unflatten,
-                       page=args.page)
+                       page=args.page,
+                       with_record_count=True)
 
     @staticmethod
     def _list_reports():

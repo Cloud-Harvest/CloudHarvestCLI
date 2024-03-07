@@ -47,8 +47,8 @@ class Harvest(Cmd):
 
         # print any messages generated during load
         from messages import read_messages
-        from text.printing import print_feedback
-        [print_feedback(text=message[2], color=message[1]) for message in read_messages()]
+        from text.printing import print_message
+        [print_message(text=message[2], color=message[1], as_feedback=True) for message in read_messages()]
 
         self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
 
