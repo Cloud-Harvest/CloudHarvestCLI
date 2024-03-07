@@ -73,6 +73,6 @@ thread_parser = ArgumentParser(add_help=False)
 thread_parser_group = thread_parser.add_argument_group('Threading')
 thread_parser_group.add_argument('--background', action='store_true',
                                  help='Sends a threaded process to the background instead of displaying the progress bar.')
-thread_parser_group.add_argument('--max-threads', type=int, default=0,
+thread_parser_group.add_argument('--max-workers', type=int, default=0,
                                  help='Sets the number of simultaneous tasks for this command.'
                                       ' When not provided, uses a value equal to thw number of cores, minus one.')
