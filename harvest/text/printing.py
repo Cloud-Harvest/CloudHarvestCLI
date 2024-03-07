@@ -23,10 +23,7 @@ def print_data(data: (list or dict), keys: list = None, flatten: str = None, unf
         case 'csv':
             output = to_csv(data=data, keys=keys)
 
-        case 'json':
-            output = to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten)
-
-        case 'pretty-json':
+        case 'json' | 'pretty-json':
             output = to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten)
 
         case 'table':
@@ -65,4 +62,4 @@ def print_feedback(text: str, color: DEFAULT_TEST_COLOR_NAMES):
     from text.styling import TextColors
     from rich.style import Style
 
-    feedback_console.print(text, style=Style(color=getattr(TextColors, color)))
+    feedback_console.print(text, style=Style(color=getattr(TextColors, color.upper())))
