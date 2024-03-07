@@ -17,7 +17,7 @@ class PluginRegistry:
     plugins = []
     objects = {}
 
-    def __init__(self, path: str, repos: List[Dict[str, str]]):
+    def __init__(self, path: str, repos: List[Dict[str, str]], **kwargs):
         # create module_path if it does not exist
         from pathlib import Path
         p = Path(path).expanduser().absolute()

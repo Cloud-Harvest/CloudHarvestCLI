@@ -1,0 +1,12 @@
+.schema:
+  version: 2024.01.09
+
+active_theme: default
+
+themes:
+  default:
+    HEADER: '#4AF626'
+    PROMPT: '#00FFFF'
+    INFO: '#75BFEC'
+    WARN: '#EED202'
+    ERROR: '#FF0F0F'

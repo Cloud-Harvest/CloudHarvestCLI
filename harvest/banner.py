@@ -272,7 +272,7 @@ def get_banner(banner_configuration: dict, name: str = None, text: str = 'HARVES
     """
     Generates a banner based on the banner's name. The banner must be printed with rich.Console().print().
     :param banner_configuration: the Harvest Configuration's `banners` key
-    :param name: The name of a banner key in the harvest.yaml, banners section.
+    :param name: The name of a banner key in the banners.yaml, banners section.
     :param text: The text to convert to a banner.
     :return: rich.text.Text
     """
@@ -462,7 +462,7 @@ if __name__ == '__main__':
 
     _b = _banner_to_character_list(text=_a)
 
-    with open('../harvest.yaml', 'r') as harvest_stream:
+    with open('config/banners.yaml', 'r') as harvest_stream:
         from yaml import load, FullLoader
 
         harvest_config = load(harvest_stream, Loader=FullLoader)
