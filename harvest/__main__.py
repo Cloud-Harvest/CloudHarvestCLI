@@ -10,10 +10,8 @@ from plugins import PluginRegistry
 from text.styling import colorize, TextColors
 from text import console
 
-"""
-These imports are required to implement the Harvest command classes. IDEs will show they are not used but this is
-misleading - all imported classes which inherit the cmd2.CommandSet are automatically implemented.
-"""
+# These imports are required to implement the Harvest command classes. IDEs will show they are not used but this is
+# misleading - all imported classes which inherit the cmd2.CommandSet are automatically implemented.
 from commands import *
 
 
@@ -47,6 +45,11 @@ class Harvest(Cmd):
         if self._banner[1]:
             console.print(self._banner[1])
 
+        # print any messages generated during load
+        from messages import read_messages
+        from text.printing import print_feedback
+        [print_feedback(text=message[2], color=message[1]) for message in read_messages()]
+
         self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
 
     def __enter__(self):
@@ -60,8 +63,8 @@ class Harvest(Cmd):
         return data
 
     def _post_command_hooks(self, data: PostcommandData) -> PostcommandData:
-        from messages import Messages
-        for message in Messages.read():
+        from messages import read_messages
+        for message in read_messages():
             text, color = message
 
             self.pfeedback(colorize(text=text, color=color))
