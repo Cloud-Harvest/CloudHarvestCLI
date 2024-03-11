@@ -16,7 +16,7 @@ class BannerCommand(CommandSet):
             names = args.names
 
         else:
-            names = _banners
+            names = {name: config for name, config in _banners.items() if not str(name).startswith('.')}
 
         results = {
             name: get_banner(banner_configuration=_banners,
