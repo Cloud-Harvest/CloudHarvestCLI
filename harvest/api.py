@@ -7,12 +7,12 @@ logger = getLogger('harvest')
 
 
 class HarvestRequest(Request):
-    def __init__(self, host: str = None, path: str = None, method: str = 'GET', args: Namespace = None, **kwargs):
+    def __init__(self, host: str = None, path: str = None, method: str = 'GET', json: str = None, args: Namespace = None, **kwargs):
         from urllib.parse import urljoin
         url = urljoin(host or HarvestConfiguration.api.get('host'), path)
         params = vars(args) if args else {} | kwargs
 
-        super().__init__(url=url, method=method.upper(), params=params)
+        super().__init__(url=url, method=method.upper(), params=params, json=json)
 
     def query(self) -> dict or tuple:
         prepared_statement = self.prepare()
@@ -34,6 +34,8 @@ class HarvestRequest(Request):
             BaseHarvestException(*ce.args, log_level='error')
             return 400, 'Could not make connection to api.'
 
+        logger.debug(f'{prepared_statement}[{response.status_code}')
+
         if 200 <= response.status_code <= 299:
             return response.json()
 
@@ -42,6 +44,7 @@ class HarvestRequest(Request):
             add_message(__name__, 'WARN', response.status_code, response.reason)
 
             return response.status_code, response.reason
+
 
 
 def get_auth(method: str) -> tuple:
