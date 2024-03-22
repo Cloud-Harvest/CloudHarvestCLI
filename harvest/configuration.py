@@ -12,6 +12,7 @@ class HarvestConfiguration:
     api = {}
     banners = {}
     themes = {}
+    version: str = '0.0.0'
 
     @staticmethod
     def load(config: dict):
