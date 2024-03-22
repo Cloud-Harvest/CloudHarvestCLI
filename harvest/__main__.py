@@ -64,10 +64,11 @@ class Harvest(Cmd):
 
     def _post_command_hooks(self, data: PostcommandData) -> PostcommandData:
         from messages import read_messages
+        from text.printing import print_message
         for message in read_messages():
-            text, color = message
+            source, color, text = message
 
-            self.pfeedback(colorize(text=text, color=color))
+            print_message(text=text, color=color, as_feedback=True)
 
         return data
 
