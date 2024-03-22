@@ -46,7 +46,6 @@ class HarvestRequest(Request):
             return response.status_code, response.reason
 
 
-
 def get_auth(method: str) -> tuple:
     result = ()
 
