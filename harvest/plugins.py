@@ -29,17 +29,18 @@ class PluginRegistry:
 
     def initialize_repositories(self):
         # check if git is installed
-        if run(args=['git', '--version']).returncode != 0:
-            raise FileNotFoundError('git was not found in the path',
-                                    'git is required to retrieve remote modules')
+        from shutil import which
+        if which('git'):
+            plugins = [Plugin(**repo) for repo in self.repos or []]
 
-        plugins = [Plugin(**repo) for repo in self.repos or []]
+            for plugin in plugins:
+                plugin.clone()
+                plugin.install_python_requirements()
+                plugin.run_setup_bash()
+                plugin.load()
 
-        for plugin in plugins:
-            plugin.clone()
-            plugin.install_python_requirements()
-            plugin.run_setup_bash()
-            plugin.load()
+        else:
+            logger.warning('git is not installed, please install git to use the plugin system')
 
         return self
 
