@@ -27,12 +27,13 @@ class ReportCommand(CommandSet):
 
         else:
             from api import HarvestRequest
-            output = HarvestRequest(path='report/run', params=args).query()
+            output = HarvestRequest(path='reports/run', json=dict(vars(args))).query()
 
-        if isinstance(output, tuple):
+        if isinstance(output, dict):
             # this indicates an error state but query error states are already printed from HarvestRequest.api()
             # More specific errors should be described here.
-            pass
+            from messages import add_message
+            add_message(__name__, 'ERROR', output.get('error'))
 
         else:
             print_data(data=output,
