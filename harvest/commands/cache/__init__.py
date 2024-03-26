@@ -95,39 +95,3 @@ class CacheCommand(CommandSet):
         pool.attach_progressbar()
 
         return
-
-
-def generate_metadata(platform: str, service: str, type: str, account: str, region: str) -> dict:
-    def random_bool():
-        from random import choice
-        return choice([True, False])
-
-    def random_date():
-        from datetime import datetime
-        from random import randint
-        now_timestamp = int(datetime.now().timestamp())
-        six_months_ago = int(now_timestamp - (60 * 60 * 24 * 30 * 6))
-        return datetime.fromtimestamp(randint(six_months_ago, now_timestamp))
-
-    from configuration import HarvestConfiguration
-
-    result = {
-        'Platform': platform,
-        'Service': service,
-        'Type': type,
-        'Account': account,
-        'Region': region,
-        'Module': {
-            'FilterCriteria': [''],
-            'Name': 'harvest-client-cli',
-            'Repository': 'https://github.com/Cloud-Harvest/client-cli',
-            'Version': HarvestConfiguration.version
-        },
-        'Dates': {
-            'DeactivatedOn': '',
-            'LastSeen': random_date()
-        },
-        'Active': random_bool()
-    }
-
-    return result

@@ -129,3 +129,4 @@ dmypy.json
 
 # Harvest-specific
 harvest/modules
+.idea
