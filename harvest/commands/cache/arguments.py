@@ -1,4 +1,5 @@
 from cmd2 import Cmd2ArgumentParser
+from cmd2 import Cmd
 
 from commands.arguments.parts import pstar_parser, thread_parser
 from rich_argparse import RawTextRichHelpFormatter
@@ -18,4 +19,5 @@ map_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
 # cache upload command
 upload_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
                                    parents=[pstar_parser, thread_parser])
-upload_parser.add_argument('paths', nargs='*', help='Path containing the file(s) to upload.')
+upload_parser.add_argument('paths', nargs='*', completer=Cmd.path_complete,
+                           help='Path containing the file(s) to upload.')
