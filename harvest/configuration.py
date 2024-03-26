@@ -64,7 +64,6 @@ def _load_configuration_files() -> dict:
     }
 
     for file in listdir(source_path):
-        copy_source_to_target = False
         source_file = join(source_path, file)
         target_file = join(target_path, file)
 
@@ -105,15 +104,6 @@ def load_yaml_file(path: str, safe_loader: bool = True) -> (list or dict):
     return result
 
 
-def hash_file(path: str) -> str:
-    from hashlib import file_digest
-
-    with open(path, 'rb') as file:
-        result = file_digest(file, 'md5').hexdigest()
-
-    return result
-
-
 def _configure_logger():
     from logging import getLogger, DEBUG
     from logging.handlers import RotatingFileHandler
@@ -142,4 +132,3 @@ def _configure_logger():
 def _get_version() -> str:
     with open('./version') as version_stream:
         return str(version_stream.read().strip())
-

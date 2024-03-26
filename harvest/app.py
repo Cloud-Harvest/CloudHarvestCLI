@@ -49,6 +49,9 @@ class Harvest(Cmd):
 
         self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
 
+        # start background processes
+        self._start_notify_unread_messages_thread()
+
     def __enter__(self):
         return self
 
@@ -56,15 +59,49 @@ class Harvest(Cmd):
         return None
 
     def _pre_command_hook(self, data: PrecommandData) -> PrecommandData:
-
+        self.last_command_timestamp = None
         return data
 
     def _post_command_hooks(self, data: PostcommandData) -> PostcommandData:
-        from messages import read_messages
-        from text.printing import print_message
-        for message in read_messages():
-            source, color, text = message
+        try:
+            from messages import read_messages
+            from text.printing import print_message
+            for message in read_messages():
+                source, color, text = message
 
-            print_message(text=text, color=color, as_feedback=True)
+                print_message(text=text, color=color, as_feedback=True)
 
-        return data
+        finally:
+            from datetime import datetime
+            self.last_command_timestamp = datetime.now().timestamp()
+
+            return data
+
+    def _start_notify_unread_messages_thread(self):
+        def _thread():
+            from datetime import datetime
+            from messages import Messages, read_messages
+            from text.printing import print_message
+            from time import sleep
+            while True:
+                messages = len(Messages.queue)
+
+                if messages and self.last_command_timestamp > (datetime.now().timestamp() + 300):
+                    for message in read_messages():
+                        print_message(text=f'{message[0]}: {message[2]}',
+                                      color=message[1],
+                                      as_feedback=True)
+
+                sleep(1)
+
+        from processes import HarvestThread
+        t = HarvestThread(**{
+            'name': 'message_monitor',
+            'target': _thread,
+            'daemon': True
+        })
+
+        from processes import ConcurrentProcesses
+        ConcurrentProcesses.add(t)
+
+        t.start()

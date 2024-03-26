@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# harvest imports
 from app import Harvest
 
 
