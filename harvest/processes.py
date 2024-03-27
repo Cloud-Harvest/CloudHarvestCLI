@@ -93,9 +93,6 @@ class ThreadPool(ThreadPoolExecutor):
                 pb.attach()
 
         except KeyboardInterrupt:
-            pass
-
-        finally:
             from text.printing import print_message
             print_message('Interrupt acknowledged.', color='INFO', as_feedback=True)
 
@@ -114,6 +111,10 @@ class ThreadPool(ThreadPoolExecutor):
             self.status = ProcessStatusCodes.KILL
 
         return self
+
+    @property
+    def completed(self) -> int:
+        return len([future for future in self.futures if future.done()])
 
     @property
     def progress(self) -> dict:
@@ -164,43 +165,45 @@ class HarvestProgressBar:
 
             with Progress(*config) as progress:
                 main_task = progress.add_task(description=f'{self.description} ({self.pool.max_workers})')
+                while True:
+                    if subprocesses_as_tasks:
+                        for future, parent in self.pool.futures.items():
+                            if future.running():
+                                # don't add a task that shows 0/0
+                                if parent.total == 0 and parent.status == 0:
+                                    continue
 
-                if subprocesses_as_tasks:
-                    for future, parent in self.pool.futures.items():
-                        if future.running():
+                                elif future in subtask_ids.keys():
+                                    progress.update(task_id=subtask_ids.get(future),
+                                                    completed=parent.completed,
+                                                    total=parent.total)
 
-                            # don't add a task that shows 0/0
-                            if parent.total == 0 and parent.status == 0:
-                                continue
+                                else:
+                                    subtask_id = progress.add_task(description=f'└── {parent.name}',
+                                                                   total=parent.total)
 
-                            elif future in subtask_ids.keys():
-                                progress.update(task_id=subtask_ids.get(future),
-                                                completed=parent.completed,
-                                                total=parent.total)
+                                    logger.debug(f'Created {subtask_id} for {parent.name} / {future}')
+                                    subtask_ids[future] = subtask_id
 
-                            else:
-                                subtask_id = progress.add_task(description=f'└── {parent.name}',
-                                                               total=parent.total)
+                            elif future.done():
+                                if future in subtask_ids.keys():
+                                    try:
+                                        progress.remove_task(subtask_ids.get(future))
+                                    finally:
+                                        subtask_ids.pop(future)
 
-                                logger.debug(f'Created {subtask_id} for {parent.name} / {future}')
-                                subtask_ids[future] = subtask_id
+                            if self.pool.progress.get('completed') == self.pool.total:
+                                break
 
-                        elif future.done():
-                            if future in subtask_ids.keys():
-                                try:
-                                    progress.remove_task(subtask_ids.get(future))
-                                finally:
-                                    subtask_ids.pop(future)
+                    if self.pool.completed == self.pool.total:
+                        break
 
-                        if self.pool.progress.get('completed') == self.pool.total:
-                            break
-
-                        from time import sleep
-
-                        sleep(.25)
+                    from time import sleep
+                    sleep(.25)
 
         except KeyboardInterrupt:
             from text.printing import print_message
+            print_message('Interrupt acknowledged.', color='INFO', as_feedback=True)
 
 
 if __name__ == '__main__':
