@@ -76,14 +76,13 @@ class CacheCommand(CommandSet):
         from text.printing import print_message
         print_message(f'Preparing to upload {str(len(files))} files.', color='INFO')
 
+        # cache upload ~/git/cloud-harvest/api-plugin-aws/tests/data/cache/rds.*random.json
+
         pool = ThreadPool(name='Upload', description='Upload files to cache', max_workers=args.max_workers)
-        [
-            pool.add(parent=self,
-                     function=HarvestRequest(path='/cache/upload',
-                                             method='POST',
-                                             json=read_file(file)).query())
-            for file in files
-        ]
+        for file in files:
+            with HarvestRequest(path='/cache/upload', method='POST', json=read_file(file)) as hr:
+                pool.add(parent=hr,
+                         function=hr.query)
 
         pool.attach_progressbar()
 
