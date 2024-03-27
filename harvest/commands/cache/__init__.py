@@ -81,14 +81,7 @@ class CacheCommand(CommandSet):
             pool.add(parent=self,
                      function=HarvestRequest(path='/cache/upload',
                                              method='POST',
-                                             json=[
-                                                 line.update(generate_metadata(platform=args.platform,
-                                                                               service=args.service,
-                                                                               type=args.type,
-                                                                               account=args.account,
-                                                                               region=args.region))
-                                                 for line in read_file(file)
-                                             ]).query())
+                                             json=read_file(file)).query())
             for file in files
         ]
 
