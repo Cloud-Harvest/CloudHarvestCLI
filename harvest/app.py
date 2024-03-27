@@ -50,6 +50,7 @@ class Harvest(Cmd):
         self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
 
         # start background processes
+        self.last_command_timestamp = None
         self._start_notify_unread_messages_thread()
 
     def __enter__(self):
@@ -86,11 +87,12 @@ class Harvest(Cmd):
             while True:
                 messages = len(Messages.queue)
 
-                if messages and self.last_command_timestamp > (datetime.now().timestamp() + 300):
-                    for message in read_messages():
-                        print_message(text=f'{message[0]}: {message[2]}',
-                                      color=message[1],
-                                      as_feedback=True)
+                if self.last_command_timestamp:
+                    if messages and self.last_command_timestamp > (datetime.now().timestamp() + 300):
+                        for message in read_messages():
+                            print_message(text=f'{message[0]}: {message[2]}',
+                                          color=message[1],
+                                          as_feedback=True)
 
                 sleep(1)
 
