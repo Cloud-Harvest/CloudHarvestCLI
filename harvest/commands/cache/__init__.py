@@ -80,9 +80,11 @@ class CacheCommand(CommandSet):
 
         pool = ThreadPool(name='Upload', description='Upload files to cache', max_workers=args.max_workers)
         for file in files:
-            with HarvestRequest(path='/cache/upload', method='POST', json=read_file(file)) as hr:
-                pool.add(parent=hr,
-                         function=hr.query)
+            j = read_file(file)
+            if isinstance(j, (dict or list)):
+                with HarvestRequest(path='/cache/upload', method='POST', json=j) as hr:
+                    pool.add(parent=hr,
+                             function=hr.query)
 
         pool.attach_progressbar()
 
