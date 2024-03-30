@@ -1,6 +1,7 @@
 cmd2
 gnureadline
 flatten-json
+natsort
 pandas
 requests
 rich
