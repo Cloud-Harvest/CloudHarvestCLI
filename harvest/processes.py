@@ -66,9 +66,11 @@ class HarvestThread(Thread):
 
 
 class ThreadPool(ThreadPoolExecutor):
-    def __init__(self, name: str = None, description: str = None, max_workers: int = None, **kwargs):
+    def __init__(self, name: str = None, description: str = None, max_workers: int = None,
+                 alert_on_complete: bool = False, **kwargs):
         self.name = name
         self.description = description
+        self.alert_on_complete = alert_on_complete
         self.futures: Dict[Future, Any] = {}
         self.status = ProcessStatusCodes.INITIALIZED
 
@@ -86,6 +88,12 @@ class ThreadPool(ThreadPoolExecutor):
 
         return self
 
+    def shutdown(self, wait: bool = True, *, cancel_futures: bool = False):
+        super().shutdown(wait=wait, cancel_futures=cancel_futures)
+
+        if self.alert_on_complete and all(future.done() for future in self.futures):
+            self.on_complete()
+
     def attach_progressbar(self):
         # attaches a progressbar to the console
         try:
@@ -94,7 +102,9 @@ class ThreadPool(ThreadPoolExecutor):
 
         except KeyboardInterrupt:
             from text.printing import print_message
-            print_message('Interrupt acknowledged.', color='INFO', as_feedback=True)
+            print_message(f'Sending process {self.name} to background.', color='INFO', as_feedback=True)
+            if self.alert_on_complete:
+                self.start_monitor_thread()
 
     def kill(self):
         # notify the pool it needs to cancel
@@ -127,6 +137,31 @@ class ThreadPool(ThreadPoolExecutor):
     @property
     def total(self) -> int:
         return len(self.futures)
+
+    def on_complete(self):
+        from text.printing import print_message
+        print_message(f'{self.name} job has completed.', color='INFO', as_feedback=True)
+
+    def start_monitor_thread(self):
+        from threading import Thread
+
+        def monitor():
+            while True:
+                if self.status == ProcessStatusCodes.KILL:
+                    self.kill()
+                    break
+
+                elif self.status == ProcessStatusCodes.COMPLETE:
+                    self.shutdown()
+                    break
+
+                from time import sleep
+                sleep(1)
+
+        t = Thread(target=monitor)
+        t.start()
+
+        return self
 
 
 class HarvestProgressBar:
@@ -195,6 +230,7 @@ class HarvestProgressBar:
                             if self.pool.progress.get('completed') == self.pool.total:
                                 break
 
+                    progress.update(main_task, completed=self.pool.completed, total=self.pool.total)
                     if self.pool.completed == self.pool.total:
                         break
 
