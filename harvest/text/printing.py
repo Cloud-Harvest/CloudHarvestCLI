@@ -8,7 +8,7 @@ feedback_console = Console(stderr=True)
 
 def print_data(data: (list or dict), keys: list = None, flatten: str = None, unflatten: str = None,
                output_format: str = 'table', page: bool = False, as_feedback: bool = False,
-               with_record_count: bool = False):
+               record_index_keyname: str = None, sort_by_keys: list = None, with_record_count: bool = False):
     """
     Displays data in one of many formats.
     :param data: printable data
@@ -19,8 +19,10 @@ def print_data(data: (list or dict), keys: list = None, flatten: str = None, unf
     :param page: when true, output will be paged like `less` or `more`
     :param as_feedback: When True, output will use the feedback_console which writes information to stderr.
     This distinction is important when deciding if information should be capture by terminal routing operators such as >
+    :param record_index_keyname: Include a column with the record index
+    :param sort_by_keys: A list of keys used to sort the data by
     :param with_record_count: Include a line with the total number of records as defined by data
-    :return:
+    :return: None (prints information to feedback_ or output_console)
     """
 
     if as_feedback:
@@ -28,6 +30,14 @@ def print_data(data: (list or dict), keys: list = None, flatten: str = None, unf
 
     else:
         console = output_console
+
+    if record_index_keyname and isinstance(data, list):
+        data = [{**{record_index_keyname: index}, **record} for index, record in enumerate(data)]
+        keys += [record_index_keyname]
+
+    if sort_by_keys:
+        from natsort import natsorted
+        data = natsorted(data, key=lambda d: [d.get(k) for k in keys])
 
     match output_format:
         case 'csv':
