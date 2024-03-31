@@ -110,12 +110,13 @@ class Harvest(Cmd):
         t.start()
 
 
-def upload_files(parent: Any, paths: List[str], max_workers: int = None, yes: bool = False, description: str = None):
+def upload_files(parent: Any, paths: List[str], api_path: str, max_workers: int = None, yes: bool = False, description: str = None):
     """
     Upload files to the cache.
     Args:
         parent: Parent process calling the upload.
         paths: Globs of files to upload.
+        api_path: API path to upload the files to.
         max_workers: Maximum number of threads to use.
         yes: Automatically confirm the upload.
         description: Description of the upload process.
@@ -164,9 +165,9 @@ def upload_files(parent: Any, paths: List[str], max_workers: int = None, yes: bo
             j = read_file(file)
             if isinstance(j, (dict, list)):
                 from api import HarvestRequest
-                with HarvestRequest(path='/cache/upload', method='POST', json=j) as hr:
-                    pool.add(parent=hr,
-                             function=hr.query)
+                with HarvestRequest(path=api_path, method='POST', json=j) as hr:
+                    pool.add(parent=hr, function=hr.query)
+
             else:
                 add_message(parent, 'WARN', 'Invalid JSON format: ', file)
 

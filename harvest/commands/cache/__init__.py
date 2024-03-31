@@ -52,4 +52,4 @@ class CacheCommand(CommandSet):
     @as_subcommand_to('cache', 'upload', upload_parser, help='Upload documents to the database.')
     def upload(self, args):
         from app import upload_files
-        upload_files(self, args.paths, max_workers=args.max_workers, yes=args.yes)
+        upload_files(parent=self, paths=args.paths, api_path='/cache/upload', max_workers=args.max_workers, yes=args.yes)
