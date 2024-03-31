@@ -76,3 +76,7 @@ thread_parser_group.add_argument('--background', action='store_true',
 thread_parser_group.add_argument('--max-workers', type=int, default=0,
                                  help='Sets the number of simultaneous tasks for this command.'
                                       ' When not provided, uses a value equal to thw number of cores, minus one.')
+
+# Yes
+yes_parser = ArgumentParser(add_help=False)
+yes_parser.add_argument('-y', '--yes', action='store_true', help='Automatically answer yes to all prompts.')
