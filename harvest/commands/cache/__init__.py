@@ -49,43 +49,7 @@ class CacheCommand(CommandSet):
     def map(self, args):
         pass
 
-    @as_subcommand_to('cache', 'upload', upload_parser, help='Upload documents to the backend.')
+    @as_subcommand_to('cache', 'upload', upload_parser, help='Upload documents to the database.')
     def upload(self, args):
-        from glob import glob
-
-        def read_file(p: str) -> List[dict]:
-            from json import load
-            with open(p, 'r') as stream:
-                try:
-                    return load(stream)
-
-                except Exception as ex:
-                    messages.add_message(self, 'WARN', 'Could not load json file', p, *ex.args)
-
-        from api import HarvestRequest
-        from processes import ThreadPool
-        from os.path import abspath, isfile
-
-        files = [
-            abspath(file)
-            for path in args.paths
-            for file in glob(path)
-            if isfile(file) and file.endswith('.json')
-        ]
-
-        from text.printing import print_message
-        print_message(f'Preparing to upload {str(len(files))} files.', color='INFO')
-
-        # cache upload ~/git/cloud-harvest/api-plugin-aws/tests/data/cache/rds.*random.json
-
-        pool = ThreadPool(name='Upload', description='Upload files to cache', max_workers=args.max_workers)
-        for file in files:
-            j = read_file(file)
-            if isinstance(j, (dict or list)):
-                with HarvestRequest(path='/cache/upload', method='POST', json=j) as hr:
-                    pool.add(parent=hr,
-                             function=hr.query)
-
-        pool.attach_progressbar()
-
-        return
+        from app import upload_files
+        upload_files(self, args.paths, max_workers=args.max_workers, yes=args.yes)
