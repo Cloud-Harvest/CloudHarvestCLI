@@ -1,4 +1,5 @@
 from rich.console import Console
+from typing import List
 from .formatting import to_csv, to_json, to_table
 from .styling import DEFAULT_TEST_COLOR_NAMES
 
@@ -6,13 +7,13 @@ output_console = Console()
 feedback_console = Console(stderr=True)
 
 
-def print_data(data: (list or dict), keys: list = None, flatten: str = None, unflatten: str = None,
+def print_data(data: (dict, List[dict]), keys: (list, tuple), flatten: str = None, unflatten: str = None,
                output_format: str = 'table', page: bool = False, as_feedback: bool = False,
                record_index_keyname: str = None, sort_by_keys: list = None, with_record_count: bool = False):
     """
     Displays data in one of many formats.
     :param data: printable data
-    :param keys: the dictionary keys which shall be displayed (others will be hidden)
+    :param keys: the dictionary keys which shall be displayed (others will be hidden).
     :param flatten: flatten a dictionary based on the provided character
     :param unflatten: unflatten a dictionary based on the provided character
     :param output_format: the desired output format
