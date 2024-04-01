@@ -27,19 +27,8 @@ class CacheCommand(CommandSet):
 
     @with_argparser(parser)
     def do_cache(self, args):
-        argv = args.cmd2_statement._Cmd2AttributeWrapper__attribute.argv
-
-        if len(argv) > 0:
-            command = argv[1]
-
-        else:
-            command = ''
-
-        if hasattr(self, command):
-            getattr(self, command)(args)
-
-        else:
-            parser.print_help()
+        from commands.base import get_subtask
+        get_subtask(parent=self, parser=parser, args=args)
 
     @as_subcommand_to('cache', 'collect', map_parser, help='Start metadata collection jobs.')
     def collect(self, args):
