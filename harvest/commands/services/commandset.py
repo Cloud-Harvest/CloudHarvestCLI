@@ -12,6 +12,14 @@ class ServicesCommand(CommandSet):
     @as_subcommand_to('services', 'attach', services_attach_parser, help='Attach a progress bar to a running job.')
     def attach(self, args):
         from processes import ConcurrentProcesses
+        from text.printing import print_message
+
+        for process in ConcurrentProcesses.objects:
+            if process.name == args.name and hasattr(process, 'attach_progressbar'):
+                process.attach_progressbar()
+
+            else:
+                print_message(text=f'No eligible running processes named `{args.name}`.', color='INFO', as_feedback=True)
 
     @as_subcommand_to('services', 'list', services_list_parser, help='Get a list of running jobs')
     def list(self, args):

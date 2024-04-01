@@ -10,7 +10,7 @@ subparser = parser.add_subparsers()
 
 # services attach
 services_attach_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter)
-services_attach_parser.add_argument('process_name',
+services_attach_parser.add_argument('name',
                                     completer=services_completer.run,
                                     help='The name of a process')
 services_attach_parser.add_argument('--show-subtasks',
