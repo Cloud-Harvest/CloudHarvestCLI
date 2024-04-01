@@ -100,6 +100,7 @@ class Harvest(Cmd):
         from processes import HarvestThread
         t = HarvestThread(**{
             'name': 'message_monitor',
+            'description': 'Delivers messages to users after commands are executed or when the system is idle.',
             'target': _thread,
             'daemon': True
         })
