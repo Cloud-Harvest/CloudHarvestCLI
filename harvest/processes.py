@@ -1,7 +1,7 @@
 from messages import Messages
 from enum import Enum
 from threading import Thread
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
 from logging import getLogger
 
@@ -28,12 +28,23 @@ class ConcurrentProcesses:
         return ConcurrentProcesses
 
     @staticmethod
-    def report() -> List[dict]:
-        return [
-            {
-                'Name': o.name,
-                'Status': o.status
+    def report() -> Tuple[tuple, List[dict]]:
+        report_keys = (
+            'Name',
+            'Status',
+            'Progress',
+            'Total',
+            'Completed',
+            'Description'
+        )
+
+        from collections import OrderedDict
+        return report_keys, [OrderedDict(
+            **{
+                k: getattr(o, k.lower()) if hasattr(o, k.lower()) else ''
+                for k in report_keys
             }
+        )
             for o in ConcurrentProcesses.objects
         ]
 
@@ -47,9 +58,10 @@ class ProcessStatusCodes(Enum):
 
 
 class HarvestThread(Thread):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, description: str = None, **kwargs):
+        self.description = description
 
+        super().__init__(**kwargs)
         self.status = ProcessStatusCodes.INITIALIZED
 
     def start(self):
@@ -68,11 +80,16 @@ class HarvestThread(Thread):
 class ThreadPool(ThreadPoolExecutor):
     def __init__(self, name: str = None, description: str = None, max_workers: int = None,
                  alert_on_complete: bool = False, **kwargs):
-        self.name = name
+
+        from uuid import uuid4
+        self.name = name or str(uuid4())
         self.description = description
         self.alert_on_complete = alert_on_complete
         self.futures: Dict[Future, Any] = {}
         self.status = ProcessStatusCodes.INITIALIZED
+
+        from datetime import datetime
+        self.started = datetime.now()
 
         from multiprocessing import cpu_count
         self.max_workers = max_workers if max_workers > 0 else cpu_count() * 2
@@ -82,6 +99,8 @@ class ThreadPool(ThreadPoolExecutor):
         ConcurrentProcesses.add(self)
 
     def add(self, parent: Any, function, *args, **kwargs):
+        self.status = ProcessStatusCodes.RUNNING
+
         future = self.submit(function, *args, **kwargs)
 
         self.futures[future] = parent
@@ -106,25 +125,29 @@ class ThreadPool(ThreadPoolExecutor):
             if self.alert_on_complete:
                 self.start_monitor_thread()
 
-    def kill(self):
-        # notify the pool it needs to cancel
-        self.shutdown(wait=False, cancel_futures=True)
+    def kill(self, wait: bool = False):
+        self.status = ProcessStatusCodes.KILL
 
         # notify the parent objects that they need to stop if the parent supports the kill() function
         [parent.kill() for parent in self.futures.values() if hasattr(parent, 'kill')]
 
+        # notify the pool it needs to cancel
+        self.shutdown(wait=wait, cancel_futures=True)
+
         # sets this process status to KILL
         if all([parent.status == ProcessStatusCodes.COMPLETE for parent in self.futures.values()]):
             self.status = ProcessStatusCodes.COMPLETE
-
-        else:
-            self.status = ProcessStatusCodes.KILL
 
         return self
 
     @property
     def completed(self) -> int:
         return len([future for future in self.futures if future.done()])
+
+    @property
+    def duration(self) -> float:
+        from datetime import datetime
+        return (datetime.now() - self.started).total_seconds()
 
     @property
     def progress(self) -> dict:
@@ -148,7 +171,8 @@ class ThreadPool(ThreadPoolExecutor):
         def monitor():
             while True:
                 if self.status == ProcessStatusCodes.KILL:
-                    self.kill()
+                    # we can wait here because the shutdown is happening in the background via the monitoring thread
+                    self.kill(wait=True)
                     break
 
                 elif self.status == ProcessStatusCodes.COMPLETE:
@@ -239,7 +263,7 @@ class HarvestProgressBar:
 
         except KeyboardInterrupt:
             from text.printing import print_message
-            print_message('Interrupt acknowledged.', color='INFO', as_feedback=True)
+            print_message(f'Sending thread `{self.pool.name}` to background.', color='INFO', as_feedback=True)
 
 
 if __name__ == '__main__':
