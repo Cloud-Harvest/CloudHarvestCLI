@@ -9,8 +9,8 @@ report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter, par
                                                                                       matching_parser,
                                                                                       format_parser,
                                                                                       refresh_parser])
-report_parser.add_argument('report_name_or_file', default='list', completer=report_name_completer.run,
-                           help='The name of the report to run or a path to a CSV or JSON file.')
+report_parser.add_argument('report_name', default='list', completer=report_name_completer.run,
+                           help='The name of the report to run. Use `list` to see available reports.')
 report_parser.add_argument('--count', action='store_true', help='Displays a count of records instead of'
                                                                 ' the records themselves.')
 report_parser.add_argument('--describe', action='store_true',
