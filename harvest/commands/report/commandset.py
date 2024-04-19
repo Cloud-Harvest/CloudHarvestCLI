@@ -21,31 +21,43 @@ class ReportCommand(CommandSet):
         #     output = self._load_file(filename=filename)
 
         else:
-            from api import HarvestRequest
-            output = HarvestRequest(path='reports/run', json=dict(vars(args))).query()
+            input_variables = dict(vars(args))
 
-        error = output.get('error')
-        data = output.get('data')
-        meta = output.get('meta')
+            from api import HarvestRequest
+            output = HarvestRequest(path='reports/run', json={
+                k: v for k,  v in input_variables.items()
+                if not k.startswith('cmd2')
+            }).query()
+
+        if not isinstance(output, dict):
+            return
+
+        error = output.get('error') or {}
+        data = output.get('data') or {}
+        meta = output.get('meta') or {}
 
         if error:
             print_message(text=output['error'], color='ERROR', as_feedback=True)
 
         if data:
             print_data(data=output['data'],
-                       keys=args.header_order or meta['headers'] if meta and meta.get('headers') else [],
-                       output_format=args.format,
+                       keys=args.header_order or meta.get('headers'),
+                       output_format='pretty-json' if args.describe else args.format,
                        flatten=args.flatten,
                        unflatten=args.unflatten,
                        page=args.page,
-                       with_record_count=True)
+                       with_record_count=False)
 
         if meta:
-            print_message(text=f'{len(output["data"])}'
-                               + f'records in {output["meta"]["duration"]} seconds'
-                                 if output['meta'].get('duration') else '',
-                          color='INFO',
-                          as_feedback=True)
+            if isinstance(meta, list):
+                print_message(text=' '.join(meta), color='WARN', as_feedback=True)
+
+            else:
+                print_message(text=f'{len(data)} '
+                                   + f'records in {meta["duration"]} seconds'
+                                     if meta.get('duration') else '',
+                              color='INFO',
+                              as_feedback=True)
 
             # from api import HarvestRequest
             # test_request = HarvestRequest(path='/test/aws').query()

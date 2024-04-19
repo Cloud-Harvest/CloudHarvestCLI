@@ -45,7 +45,8 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple), flatten: str = Non
             output = to_csv(data=data, keys=keys)
 
         case 'json' | 'pretty-json':
-            output = to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten)
+            from json import dumps
+            output = dumps(to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten), default=str)
 
         case 'table':
             output = to_table(data=data, keys=keys)
@@ -59,10 +60,10 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple), flatten: str = Non
         environ['MANPAGER'] = 'less -R'
 
         with console.pager(styles=True, links=True):
-            console.print(output)
+            console.print_json(output, indent=2, highlight=True) if 'json' in output_format else console.print(output)
 
     else:
-        console.print(output)
+        console.print_json(output, indent=2, highlight=True) if 'json' in output_format else console.print(output)
 
     if with_record_count and isinstance(data, list):
         print_message(f'records: {len(data)}', color='INFO', as_feedback=True)

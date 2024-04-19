@@ -13,5 +13,6 @@ report_parser.add_argument('report_name', default='list', completer=report_name_
                            help='The name of the report to run. Use `list` to see available reports.')
 report_parser.add_argument('--count', action='store_true', help='Displays a count of records instead of'
                                                                 ' the records themselves.')
+report_parser.add_argument('--limit', type=int, help='Maximum number of records to return.')
 report_parser.add_argument('--describe', action='store_true',
                            help='Show the report headers, description, and logic.')

@@ -31,7 +31,7 @@ pstar_group.add_argument('--region', type=str,
 # Matching -m
 matching_parser = ArgumentParser(add_help=False)
 matching_parser_group = matching_parser.add_argument_group('Matching')
-matching_parser_group.add_argument('-m', '--match', action='append', nargs='+', default=[],
+matching_parser_group.add_argument('-m', '--matches', action='append', nargs='+', default=[],
                                    help='\n'.join([
                                        'Provide matching statements. Matches are defined in the following ways:',
                                        'One match statement matches on just that field/value | `-m Field=Value`',
