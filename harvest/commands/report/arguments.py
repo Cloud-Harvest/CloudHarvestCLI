@@ -18,5 +18,7 @@ report_parser.add_argument('--describe', action='store_true',
 report_parser.add_argument('--limit', type=int, help='Maximum number of records to return.')
 report_parser.add_argument('--sort', nargs='*', type=str,
                            help='\n'.join(['Override the sort order for the report.',
-                                           'Each entry can be a key or a key with a direction.',
-                                           'Example: `--sort key1 key2:asc key3:desc`']))
+                                           'Each entry can be a key or a key with a direction (default \'asc\').',
+                                           'Example: `--sort key1 key2:asc key3:desc`',
+                                           'When not provided, the report will use the default sort order based on'
+                                           ' the visible fields.']))
