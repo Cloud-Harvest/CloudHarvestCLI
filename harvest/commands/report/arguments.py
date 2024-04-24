@@ -5,10 +5,15 @@ from .completers import *
 
 
 report_name_completer = ReportNameCompleter(path='/reports/list')
-report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter, parents=[key_manipulation_parser,
-                                                                                      matching_parser,
-                                                                                      format_parser,
-                                                                                      refresh_parser])
+report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
+                                   parents=[
+                                       key_manipulation_parser,
+                                       matching_parser,
+                                       format_parser,
+                                       refresh_parser
+                                   ],
+                                   description='Run a report on the Harvest cache.')
+
 report_parser.add_argument('report_name', default='list', completer=report_name_completer.run,
                            help='The name of the report to run. Use `list` to see available reports.')
 report_parser.add_argument('--count', action='store_true', help='Displays a count of records instead of'
