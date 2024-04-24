@@ -34,9 +34,15 @@ matching_parser_group = matching_parser.add_argument_group('Matching')
 matching_parser_group.add_argument('-m', '--matches', action='append', nargs='+', default=[],
                                    help='\n'.join([
                                        'Provide matching statements. Matches are defined in the following ways:',
-                                       'One match statement matches on just that field/value | `-m Field=Value`',
-                                       'A single `-m` are AND statements                     | `-m Field=Value Field=Value`',
-                                       'Additional `-m` is an OR statement                   | `-m Field=Value` `-m Field=Value`.'
+                                       'Syntax                              | Description',
+                                       '----------------------------------- | -------------------------------------------------',
+                                       '`-m Field=Value`                    | Just match this field/value.',
+                                       '`-m Field=Value Field=Value`        | One `-m` and multiple field/value pairs is an `AND`.',
+                                       '`-m Field=Value` `-m Field=Value`   | Additional `-m` are an `OR`.',
+                                       '',
+                                       'Note: When using the `|`, `<`, and `>` characters, you must enclose the',
+                                       '      entire -m statement in quotes: `-m "Field=Value|Value"` else the command',
+                                       '      will be interpreted as a redirect to another command.'
                                    ]))
 
 # Formatting --format
