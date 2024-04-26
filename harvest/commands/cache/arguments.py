@@ -1,17 +1,14 @@
 from cmd2 import Cmd2ArgumentParser
 from cmd2 import Cmd
 
-from commands.arguments.parts import format_parser, pstar_parser_optional, thread_parser, yes_parser
+from commands.arguments.parts import pstar_parser_optional, thread_parser, yes_parser
 from rich_argparse import RawTextRichHelpFormatter
 
 # completers
-from .completers import AvailablePstarRemoteCompleter
-platform_remote_completer = AvailablePstarRemoteCompleter(path='/cache/get/pstar_dimensions',
-                                                          remote_api_kwargs={'dimension': 'platform'})
-service_remote_completer = AvailablePstarRemoteCompleter(path='/cache/get/pstar_dimensions',
-                                                         remote_api_kwargs={'dimension': 'service'})
-type_remote_completer = AvailablePstarRemoteCompleter(path='/cache/get/pstar_dimensions',
-                                                      remote_api_kwargs={'dimension': 'type'})
+from .completers import PlatformRemoteCompleter, ServiceRemoteCompleter, TypeRemoteCompleter
+platform_remote_completer = PlatformRemoteCompleter(path='/cache/get/data_collections')
+service_remote_completer = ServiceRemoteCompleter(path='/cache/get/data_collections')
+type_remote_completer = TypeRemoteCompleter(path='/cache/get/data_collections')
 
 # base parser
 parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter)
