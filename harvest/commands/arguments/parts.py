@@ -10,23 +10,23 @@ parts.py - Reusable argument components which show up in different areas.
 from argparse import ArgumentParser
 
 # PSTAR components
-pstar_parser = ArgumentParser(add_help=False)
-pstar_group = pstar_parser.add_argument_group('PSTAR')
-pstar_group.add_argument('--platform', type=str,
-                         help='Set the platform for the data.'
-                              ' Example: `aws`')
-pstar_group.add_argument('--service', type=str,
-                         help='Set the service name for the data.'
-                              ' Example: `rds`')
-pstar_group.add_argument('--type', type=str,
-                         help='Set the service subtype for the data.'
-                              ' Example: instance')
-pstar_group.add_argument('--account', type=str,
-                         help='Set the platform account name for the data.'
-                              ' Example: aws-business-development')
-pstar_group.add_argument('--region', type=str,
-                         help='The account geographical region.'
-                              ' Example: us-east-1')
+pstar_parser_optional = ArgumentParser(add_help=False)
+pstar_group_optional = pstar_parser_optional.add_argument_group('PSTAR')
+pstar_group_optional.add_argument('--platform', type=str,
+                                  help='Set the platform for the data.'
+                                       ' Example: `aws`')
+pstar_group_optional.add_argument('--service', type=str,
+                                  help='Set the service name for the data.'
+                                       ' Example: `rds`')
+pstar_group_optional.add_argument('--type', type=str,
+                                  help='Set the service subtype for the data.'
+                                       ' Example: instance')
+pstar_group_optional.add_argument('--account', type=str,
+                                  help='Set the platform account name for the data.'
+                                       ' Example: aws-business-development')
+pstar_group_optional.add_argument('--region', type=str,
+                                  help='The account geographical region.'
+                                       ' Example: us-east-1')
 
 # Matching -m
 matching_parser = ArgumentParser(add_help=False)
@@ -48,7 +48,7 @@ matching_parser_group.add_argument('-m', '--matches', action='append', nargs='+'
 # Formatting --format
 format_parser = ArgumentParser(add_help=False)
 format_parser_group = format_parser.add_argument_group('Formatting')
-format_parser_group.add_argument('--format', default='table', choices=['csv', 'json', 'pretty-json', 'table'],
+format_parser_group.add_argument('--format', default=None, choices=['csv', 'json', 'pretty-json', 'table'],
                                  help='Sets the command output format. Users can route output to files using `> path`.')
 format_parser_group.add_argument('--flatten', default=None, type=str,
                                  help='Converts a nested JSON object into a one with a single key/value pair with'
