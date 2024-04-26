@@ -17,15 +17,10 @@ class ReportCommand(CommandSet):
 
             return
 
-        input_variables = dict(vars(args))
-
         try:
             while True:
                 from api import HarvestRequest
-                output = HarvestRequest(path='reports/run', json={
-                    k: v for k,  v in input_variables.items()
-                    if not k.startswith('cmd2')
-                }).query()
+                output = HarvestRequest(path='reports/run', json=args).query()
 
                 if not isinstance(output, dict):
                     return
@@ -98,7 +93,7 @@ class ReportCommand(CommandSet):
         if data:
             print_data(data=output['data'],
                        keys=args.header_order or meta.get('headers'),
-                       output_format='pretty-json' if args.describe else args.format,
+                       output_format='pretty-json' if args.describe else (args.format or 'table'),
                        flatten=args.flatten,
                        unflatten=args.unflatten,
                        page=args.page,
