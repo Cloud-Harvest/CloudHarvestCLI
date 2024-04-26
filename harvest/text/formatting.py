@@ -85,7 +85,7 @@ def to_json(data, keys: list = None, flatten: str = None, unflatten: str = None)
     return result
 
 
-def to_table(data: (list or dict), flatten_data: bool = False, keys: list = None, sort_keys: Literal['ASC', 'DESC'] = None) -> Table or str:
+def to_table(data: (list or dict), flatten_data: str = False, keys: list = None, sort_keys: Literal['ASC', 'DESC'] = None) -> Table or str:
     from rich.table import Table
     from rich.box import SIMPLE
 
@@ -103,7 +103,7 @@ def to_table(data: (list or dict), flatten_data: bool = False, keys: list = None
     [table.add_column(c, overflow='fold') for c in _keys]
 
     if flatten_data:
-        _data = _flatten(data=data)
+        _data = _flatten(data=data, separator=flatten_data)
     else:
         _data = data
 
