@@ -10,13 +10,34 @@ class CacheCommand(CommandSet):
         from commands.base import get_subtask
         get_subtask(parent=self, parser=parser, args=args)
 
+    @as_subcommand_to('cache', 'attach', map_parser, help='Attaches a progress bar to a data collection job.')
+    def attach(self, args):
+        pass
+
     @as_subcommand_to('cache', 'collect', map_parser, help='Start metadata collection jobs.')
     def collect(self, args):
         pass
 
     @as_subcommand_to('cache', 'map', map_parser, help='Display a JSON map of a resource type.')
     def map(self, args):
-        pass
+        from api import HarvestRequest
+        with HarvestRequest(path='/cache/map', json=args) as request:
+            result = request.query()
+
+        if isinstance(result, dict):
+            from text.printing import print_data
+            data = result.get('result')
+            meta = result.get('meta')
+
+            print_data(data=data,
+                       flatten=args.flatten,
+                       output_format='pretty-json')
+
+            if meta:
+                from text.printing import print_message
+                print_message(f"\nReturned {meta.get('collection')} in {meta.get('duration')} seconds.",
+                              color='INFO',
+                              as_feedback=True)
 
     @as_subcommand_to('cache', 'upload', upload_parser, help='Upload documents to the database.')
     def upload(self, args):
