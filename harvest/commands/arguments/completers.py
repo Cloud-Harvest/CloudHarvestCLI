@@ -39,9 +39,10 @@ class RemoteBaseCompleter(BaseCompleter):
     """
     A RemoteBaseCompleter retrieves information from the API. The data is stored in memory where it is reused.
     """
-    def __init__(self, path: str, refresh_delay: int = 300):
+    def __init__(self, path: str, refresh_delay: int = 300, remote_api_kwargs: dict = None):
         self._path = path
         self._last_checked = None
+        self._api_kwargs = remote_api_kwargs or {}
         self.refresh_delay = refresh_delay
 
         super().__init__()
@@ -67,7 +68,7 @@ class RemoteBaseCompleter(BaseCompleter):
         if query_api:
             from api import HarvestRequest
             self._last_checked = datetime.now()
-            self.result = HarvestRequest(path=self._path).query()
+            self.result = HarvestRequest(path=self._path, json=self._api_kwargs).query()
             self.result = self._run(*args, **kwargs)
 
         return self._select_return_value(*args)
