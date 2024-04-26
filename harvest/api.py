@@ -10,19 +10,27 @@ logger = getLogger('harvest')
 
 
 class HarvestRequest(Request):
-    def __init__(self, host: str = None, path: str = None, method: str = 'GET', json: Any = None, args: Namespace = None, **kwargs):
+    def __init__(self, host: str = None, path: str = None, method: str = 'GET', json: Any = None):
         from urllib.parse import urljoin
         url = urljoin(host or HarvestConfiguration.api.get('host'), path)
-        params = vars(args) if args else {} | kwargs
 
         if isinstance(json, str):
             str_json = json
+
+        elif isinstance(json, Namespace):
+            from json import dumps
+            str_json = dumps({
+                k: v for k, v in vars(json).items()
+                if not k.startswith('cmd2')
+            }, default=str)
 
         else:
             from json import dumps
             str_json = dumps(json, default=str)
 
-        super().__init__(url=url, method=method.upper(), params=params, json=str_json)
+        super().__init__(url=url,
+                         method=method.upper(),
+                         json=str_json)
 
         self.status = ProcessStatusCodes.INITIALIZED
 
