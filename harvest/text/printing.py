@@ -7,7 +7,7 @@ output_console = Console()
 feedback_console = Console(stderr=True)
 
 
-def print_data(data: (dict, List[dict]), keys: (list, tuple), flatten: str = None, unflatten: str = None,
+def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: str = None, unflatten: str = None,
                output_format: str = 'table', page: bool = False, as_feedback: bool = False,
                record_index_keyname: str = None, sort_by_keys: list = None, with_record_count: bool = False):
     """
@@ -32,24 +32,37 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple), flatten: str = Non
     else:
         console = output_console
 
+    if not keys:
+        _keys = []
+        [
+            _keys.extend(list(record.keys()))
+            for record in data if isinstance(record, dict)
+        ]
+
+        _keys = list(set(_keys))
+        _keys.sort()
+
+    else:
+        _keys = keys
+
     if record_index_keyname and isinstance(data, list):
         data = [{**{record_index_keyname: index}, **record} for index, record in enumerate(data)]
-        keys += [record_index_keyname]
+        _keys += [record_index_keyname]
 
     if sort_by_keys:
         from natsort import natsorted
-        data = natsorted(data, key=lambda d: [d.get(k) for k in keys])
+        data = natsorted(data, key=lambda d: [d.get(k) for k in _keys])
 
     match output_format:
         case 'csv':
-            output = to_csv(data=data, keys=keys)
+            output = to_csv(data=data, keys=_keys)
 
         case 'json' | 'pretty-json':
             from json import dumps
-            output = dumps(to_json(data=data, keys=keys, flatten=flatten, unflatten=unflatten), default=str)
+            output = dumps(to_json(data=data, keys=_keys, flatten=flatten, unflatten=unflatten), default=str)
 
         case 'table':
-            output = to_table(data=data, keys=keys)
+            output = to_table(data=data, keys=_keys, flatten_data=flatten, sort_keys=sort_by_keys)
 
         case _:
             print_message(f'Invalid output format provided: `{output_format}`.', 'ERROR', as_feedback=True)
