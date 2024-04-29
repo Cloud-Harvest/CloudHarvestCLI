@@ -15,7 +15,7 @@ report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
                                    description='Run a report on the Harvest cache.')
 
 report_parser.add_argument('report_name', default='list', completer=report_name_completer.run,
-                           help='The name of the report to run. Use `list` to see available reports.')
+                           nargs='?', help='The name of the report to run. Use `list` to see available reports.')
 report_parser.add_argument('--count', action='store_true', help='Displays a count of records instead of'
                                                                 ' the records themselves.')
 report_parser.add_argument('--describe', action='store_true',
