@@ -1,3 +1,4 @@
+PyYAML
 cmd2
 gnureadline
 flatten-json
@@ -7,6 +8,5 @@ requests
 rich
 rich-argparse
 setuptools
-pyyaml
 pytest
 urllib3
