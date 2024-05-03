@@ -10,3 +10,5 @@ rich-argparse
 setuptools
 pytest
 urllib3
+git+ssh://git@github.com/Cloud-Harvest/CloudHarvestCoreTasks.git
+git+ssh://git@github.com/Cloud-Harvest/CloudHarvestCoreDataModel.git
