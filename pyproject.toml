@@ -1,11 +1,8 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-
-[project]
-name = "CloudHarvestApi"
+[tool.poetry]
+name = "CloudHarvestCLI"
 version = "0.1.0"
 description = "This is the Command Line Interface for CloudHarvest."
-authors = [{name = "Cloud Harvest"}]
+authors = ["Cloud Harvest"]
 readme = "README.md"
 homepage = "https://github.com/Cloud-Harvest/CloudHarvestCLI"
 license = "MIT"
@@ -16,17 +13,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
-[project.urls]
+[tool.poetry.urls]
 Source = "https://github.com/Cloud-Harvest/CloudHarvestCLI"
 
-[project.packages]
-include = ["cloud_harvest_cli.*"]
-exclude = ["tests", "tests.*"]
-
-[project.scripts]
-# Add your scripts here
-
-[project.dependencies]
+[tool.poetry.dependencies]
+python = "^3.12"
 PyYAML = "*"
 cmd2 = "*"
 gnureadline = "*"
@@ -41,3 +32,9 @@ pytest = "*"
 urllib3 = "*"
 CloudHarvestCoreTasks = { git = "https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git" }
 CloudHarvestCoreDataModel = { git = "https://github.com/Cloud-Harvest/CloudHarvestCoreDataModel.git" }
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
