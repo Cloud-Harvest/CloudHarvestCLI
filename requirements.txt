@@ -6,6 +6,7 @@ pandas
 requests
 rich
 rich-argparse
+setuptools
 pyyaml
 pytest
 urllib3
