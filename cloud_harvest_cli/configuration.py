@@ -54,7 +54,7 @@ def _load_configuration_files() -> dict:
     from os import listdir
     from os.path import abspath, basename, exists, isfile, join
 
-    source_path = abspath('./harvest/config')
+    source_path = abspath('./config')
     target_path = abspath(_get_first_path(environ.get('HARVEST_CONFIG'), '~/.harvest/cli/'))
 
     version = _get_version()

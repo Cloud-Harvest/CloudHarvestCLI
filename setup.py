@@ -9,7 +9,8 @@ setup(
     description='This is the Command Line Interface for CloudHarvest.',
     author='Cloud Harvest',
     url='https://github.com/Cloud-Harvest/CloudHarvestCLI',
-    packages=find_packages(exclude=['tests', 'tests.*']),
+    packages=find_packages(exclude=['tests', 'tests.*'],
+                           include=['cloud_harvest_cli.*']),
     install_requires=requirements,
     classifiers=[
         'Development Status :: 3 - Alpha',
