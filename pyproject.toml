@@ -2,10 +2,10 @@
 name = "CloudHarvestCLI"
 version = "0.1.0"
 description = "This is the Command Line Interface for CloudHarvest."
-authors = ["Cloud Harvest"]
+authors = ["Cloud Harvest", "Fiona June Leathers"]
 readme = "README.md"
 homepage = "https://github.com/Cloud-Harvest/CloudHarvestCLI"
-license = "MIT"
+license = "CC Attribution-NonCommercial-ShareAlike 4.0 International"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -29,6 +29,7 @@ rich = "*"
 rich-argparse = "*"
 setuptools = "*"
 pytest = "*"
+toml = "*"
 urllib3 = "*"
 CloudHarvestCoreTasks = { git = "https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git" }
 CloudHarvestCoreDataModel = { git = "https://github.com/Cloud-Harvest/CloudHarvestCoreDataModel.git" }
