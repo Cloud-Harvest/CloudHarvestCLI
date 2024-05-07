@@ -54,7 +54,7 @@ def _load_configuration_files() -> dict:
     from os import listdir
     from os.path import abspath, basename, exists, isfile, join
 
-    source_path = abspath('./config')
+    source_path = abspath('./cloud_harvest_cli/config')
     target_path = abspath(_get_first_path(environ.get('HARVEST_CONFIG'), '~/.harvest/cli/'))
 
     version = _get_version()
@@ -130,5 +130,7 @@ def _configure_logger():
 
 
 def _get_version() -> str:
-    with open('./version') as version_stream:
-        return str(version_stream.read().strip())
+    import toml
+    data = toml.load('./pyproject.toml')
+
+    return data['tool']['poetry']['version']
