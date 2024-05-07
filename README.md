@@ -19,7 +19,7 @@ v0.1.0
 - [License](#license)
 
 # Usage
-See the [docs](./cloud_harvest_cli/docs/README.md) for detailed information on the commands and data conventions used in this appliation.
+See the [docs](CloudHarvestCLI/docs/README.md) for detailed information on the commands and data conventions used in this appliation.
 
 # License
 Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]

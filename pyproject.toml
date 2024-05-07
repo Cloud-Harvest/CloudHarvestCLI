@@ -13,6 +13,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
+[[tool.poetry.packages]]
+include = "CloudHarvestCLI"
+
 [tool.poetry.urls]
 Source = "https://github.com/Cloud-Harvest/CloudHarvestCLI"
 
