@@ -1,14 +1,13 @@
 FROM python:3.12-bookworm as python
 
-USER root
-
-RUN apt-get update \
-    && apt-get -y autoclean
-
 WORKDIR /src
+
+ENV PIP_ROOT_USER_ACTION=ignore
 
 COPY . .
 
-RUN pip install -r ./requirements.txt
+# TODO: add pytest tests/ to the RUN command
+RUN pip install setuptools \
+    && python -m pip install .
 
-ENTRYPOINT python harvest
+ENTRYPOINT python CloudHarvestApi/wsgi.py

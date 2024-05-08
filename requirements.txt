@@ -1,0 +1,15 @@
+CloudHarvestCoreDataModel @ git+https://github.com/Cloud-Harvest/CloudHarvestCoreDataModel.git@main
+CloudHarvestCoreTasks @ git+https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git@main
+PyYAML
+cmd2
+gnureadline
+flatten-json
+natsort
+pandas
+requests
+rich
+rich-argparse
+setuptools
+pytest
+toml
+urllib3
