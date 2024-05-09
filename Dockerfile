@@ -3,6 +3,7 @@ FROM python:3.12-bookworm as python
 WORKDIR /src
 
 ENV PIP_ROOT_USER_ACTION=ignore
+ENV TERM xterm-256color
 
 COPY . .
 
@@ -10,4 +11,4 @@ COPY . .
 RUN pip install setuptools \
     && python -m pip install .
 
-ENTRYPOINT python CloudHarvestApi/wsgi.py
+ENTRYPOINT python CloudHarvestCLI
