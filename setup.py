@@ -18,4 +18,10 @@ config = dict(name='CloudHarvestCLI',
                   'Programming Language :: Python :: 3.12',
               ])
 
-setup(**config)
+
+def main():
+    setup(**config)
+
+
+if __name__ == '__main__':
+    main()
