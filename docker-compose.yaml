@@ -1,40 +1,19 @@
-# This docker-compose file is intended to deploy an entire Cloud Harvest service for personal trial, tribulation,
-# and testing.
-# The best way to run Harvest is by leveraging a larger stack where the API, Data Collectors, and MongoDb can run on
-# their own hosts. This will not always be a practical solution, since environments vary widely between organizations,
-# but we hope this configuration will get you started.
-
-# version:
-name: harvest-standalone
+name: HarvestCLI
 services:
-  mongo:
-    image: mongo
-    command: "/bin/bash -c 'mongod --bind_ip_all --dbpath=/data/ --directoryperdb --logpath=/var/log/mongodb/mongo.log --logRotate=reopen --logappend'"
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - "~/.harvest/mongo/data/:/data/"
-      - "~/.harvest/mongo/log/:/var/log/mongodb/"
 
-  api:
-    image: cloud-harvest-api
+  cli:
+    image: cloud-harvest-cli:latest
     build:
-      context: ../api
-      dockerfile: ../api/Dockerfile
+      dockerfile: Dockerfile
       ssh:
         - default
-    ports:
-      - "8000:8000"
-    stop_signal: SIGINT
+    environment:
+      - "TERM=xterm-256color"
+    stdin_open: true
+    tty: true
     volumes:
+      -
       - "~/.ssh:/root/.ssh"
-      - "~/.harvest/api/:/etc/harvest.d/api"
+      - "./app/:/src/app/"
     working_dir: /src
-    expose:
-      - "8000"
-
-networks:
-  harvest:
-    name: harvest-standalone-network
-    external: true
+    user: "${UID}:${GID}"
