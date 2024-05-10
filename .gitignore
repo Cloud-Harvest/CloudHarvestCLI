@@ -131,3 +131,4 @@ dmypy.json
 CloudHarvestCLI/modules
 .idea
 poetry.lock
+app
