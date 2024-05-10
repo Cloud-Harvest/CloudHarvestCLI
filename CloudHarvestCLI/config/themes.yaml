@@ -1,12 +1,158 @@
-.schema:
-  version: 2024.01.09
+# Governs the themes available for users.
+# A theme's structure is as follows:
+# name:             The name of the theme.
+#   HEADER:         The color of the header text in hex format.
+#   PROMPT:         The color of the prompt text in hex format.
+#   INFO:           The color of the info text in hex format.
+#   WARN:           The color of the warning text in hex format.
+#   ERROR:          The color of the error text in hex format.
+#
+# Considerations:
+# - Limitations of the operator's terminal may prevent some themes from displaying correctly.
+# - Limitations of YAML require that the hex code be surrounded by single quotes.
 
-active_theme: default
+default:
+  HEADER: '#4AF626'        # Bright Green
+  PROMPT: '#00FFFF'        # Aqua
+  INFO: '#75BFEC'          # Light Steel Blue
+  WARN: '#EED202'          # Goldenrod
+  ERROR: '#FF0F0F'         # Red
 
-themes:
-  default:
-    HEADER: '#4AF626'
-    PROMPT: '#00FFFF'
-    INFO: '#75BFEC'
-    WARN: '#EED202'
-    ERROR: '#FF0F0F'
+# Old school themes
+solarized-dark:
+  HEADER: '#073642'        # Dark Cyan
+  PROMPT: '#586e75'        # Slate Gray
+  INFO: '#839496'          # Light Slate Gray
+  WARN: '#b58900'          # Dark Goldenrod
+  ERROR: '#dc322f'         # Firebrick
+
+solarized-light:
+  HEADER: '#657b83'        # Light Slate Gray
+  PROMPT: '#586e75'        # Slate Gray
+  INFO: '#839496'          # Light Slate Gray
+  WARN: '#b58900'          # Dark Goldenrod
+  ERROR: '#dc322f'         # Firebrick
+
+tango-light:
+  HEADER: '#2E3436'        # Dark Slate Gray
+  PROMPT: '#555753'        # Dim Gray
+  INFO: '#C4A000'          # Dark Goldenrod
+  WARN: '#CE5C00'          # Dark Orange
+  ERROR: '#CC0000'         # Red
+
+tango-dark:
+  HEADER: '#555753'        # Dim Gray
+  PROMPT: '#D3D7CF'        # Light Gray
+  INFO: '#C4A000'          # Dark Goldenrod
+  WARN: '#F57900'          # Dark Orange
+  ERROR: '#EF2929'         # Firebrick
+
+# Seasonal / Nature themes
+spring:
+  HEADER: '#2E8B57'        # Sea Green
+  PROMPT: '#3CB371'        # Medium Sea Green
+  INFO: '#32CD32'          # Lime Green
+  WARN: '#ADFF2F'          # Green Yellow
+  ERROR: '#7FFF00'         # Chartreuse
+
+summer:
+  HEADER: '#FFA500'        # Orange
+  PROMPT: '#FF4500'        # Orange Red
+  INFO: '#FFD700'          # Gold
+  WARN: '#32CD32'          # Lime Green
+  ERROR: '#008000'         # Green
+
+autumn:
+  HEADER: '#FF4500'        # Orange Red
+  PROMPT: '#FF6347'        # Tomato
+  INFO: '#FFA500'          # Orange
+  WARN: '#FFD700'          # Gold
+  ERROR: '#B8860B'         # Dark Goldenrod
+
+winter:
+  HEADER: '#ADD8E6'        # Light Blue
+  PROMPT: '#87CEFA'        # Light Sky Blue
+  INFO: '#00BFFF'          # Deep Sky Blue
+  WARN: '#1E90FF'          # Dodger Blue
+  ERROR: '#0000FF'         # Blue
+
+sakura-morning:
+  HEADER: '#FFB7C5'        # Pink
+  PROMPT: '#FF69B4'        # Hot Pink
+  INFO: '#FF1493'          # Deep Pink
+  WARN: '#C71585'          # Medium Violet Red
+  ERROR: '#8B008B'         # Dark Magenta
+
+sakura-night:
+  HEADER: '#FF34B3'        # Deep Pink
+  PROMPT: '#EE30A7'        # Medium Violet Red
+  INFO: '#CD2990'          # Deep Pink
+  WARN: '#8B1C62'          # Dark Magenta
+  ERROR: '#711A56'         # Dark Magenta
+
+# Just for fun!
+lcars:
+  HEADER: '#CC99CC'        # Plum
+  PROMPT: '#9999CC'        # Light Slate Blue
+  INFO: '#CCCC99'          # Khaki
+  WARN: '#CC9999'          # Rosy Brown
+  ERROR: '#CC6666'         # Red
+
+synthwave:
+  HEADER: '#FF00FF'        # Magenta
+  PROMPT: '#FF77FF'        # Pink
+  INFO: '#007FFF'          # Azure
+  WARN: '#FFD700'          # Gold
+  ERROR: '#FF0000'         # Red
+
+soft-pastels:
+  HEADER: '#FED7D7'        # Light Pink
+  PROMPT: '#FEEBC8'        # Light Yellow
+  INFO: '#B2F7EF'          # Pale Turquoise
+  WARN: '#C6F6D5'          # Pale Green
+  ERROR: '#F9A8D4'         # Light Pink
+
+bright-pastels:
+  HEADER: '#77DD77'        # Pastel Green
+  PROMPT: '#AEC6CF'        # Pastel Blue
+  INFO: '#B19CD9'          # Pastel Purple
+  WARN: '#FFB347'          # Pastel Orange
+  ERROR: '#FF6961'         # Pastel Red
+
+# Color Vision Deficiency (CVD) Themes
+
+# Protanopia (red-green CVD): This type of CVD makes it hard to see reds, oranges, and yellows.
+# Blues and violets are easier to distinguish.
+protanopia:
+  HEADER: '#0000FF'        # Blue
+  PROMPT: '#8A2BE2'        # Blue Violet
+  INFO: '#4B0082'          # Indigo
+  WARN: '#7B68EE'          # Medium Slate Blue
+  ERROR: '#483D8B'         # Dark Slate Blue
+
+# Deuteranopia (green CVD): This type of CVD makes it hard to see greens, yellows, and oranges.
+# Blues and violets are easier to distinguish.
+deuteranopia:
+  HEADER: '#0000FF'        # Blue
+  PROMPT: '#8A2BE2'        # Blue Violet
+  INFO: '#4B0082'          # Indigo
+  WARN: '#7B68EE'          # Medium Slate Blue
+  ERROR: '#483D8B'         # Dark Slate Blue
+
+# Tritanopia (blue-yellow CVD): This type of CVD makes it hard to see blues and yellows.
+# Reds and greens are easier to distinguish.
+tritanopia:
+  HEADER: '#ADFF2F'        # Green Yellow
+  PROMPT: '#32CD32'        # Lime Green
+  INFO: '#006400'          # Dark Green
+  WARN: '#FF0000'          # Red
+  ERROR: '#8B0000'         # Dark Red
+
+# Achromatopsia (total CVD): This type of CVD makes it hard to see any colors.
+# Grays are the easiest to distinguish.
+achromatopsia:
+  HEADER: '#808080'        # Gray
+  PROMPT: '#A9A9A9'        # Dark Gray
+  INFO: '#C0C0C0'          # Silver
+  WARN: '#D3D3D3'          # Light Gray
+  ERROR: '#696969'         # Dim Gray
