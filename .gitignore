@@ -132,3 +132,4 @@ CloudHarvestCLI/modules
 .idea
 poetry.lock
 app
+/harvest
