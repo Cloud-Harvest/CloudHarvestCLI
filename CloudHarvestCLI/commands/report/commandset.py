@@ -14,7 +14,6 @@ class ReportCommand(CommandSet):
         if args.report_name == 'list':
             output = self._list_reports()
             self._print_report_output(output=output, args=args)
-
             return
 
         try:
@@ -82,6 +81,9 @@ class ReportCommand(CommandSet):
     @staticmethod
     def _print_report_output(output: dict, args: Namespace):
         from text.printing import print_message, print_data
+
+        if not isinstance(output, dict):
+            return
 
         error = output.get('error') or {}
         data = output.get('data') or {}
