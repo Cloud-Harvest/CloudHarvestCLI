@@ -11,7 +11,8 @@ def main(reset: bool = False):
     defaults = {
         'api': {
             'host': 'localhost',
-            'port': 8000
+            'port': 8000,
+            'protocol': 'https'
         },
         'logging': {
             'level': 'warn',
@@ -47,6 +48,9 @@ def main(reset: bool = False):
                                       default=defaults['api']['host'], )
         defaults['api']['port'] = int(ask('Please enter the API port',
                                           default=defaults['api']['port']))
+        defaults['api']['protocol'] = ask('Please enter the API protocol',
+                                          choices=['http', 'https'],
+                                          default=defaults['api']['protocol'])
         defaults['logging']['level'] = ask('Please enter the logging level',
                                            choices=['debug', 'info', 'warning', 'error', 'critical'],
                                            default=defaults['logging']['level'])
