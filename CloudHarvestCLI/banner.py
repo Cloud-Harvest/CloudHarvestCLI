@@ -4,7 +4,6 @@ Font credits:
     FIGFont created with: http://patorjk.com/figfont-editor
 """
 from rich.text import Text
-from rich.table import Table
 
 _characters = {
     'a': ('█████╗  ',
