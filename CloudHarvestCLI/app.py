@@ -2,32 +2,44 @@ from typing import Any, List
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
 
-import configuration
+from CloudHarvestCorePluginManager import PluginRegistry
 from banner import get_banner
-from plugins import PluginRegistry
+from configuration import HarvestConfiguration
 from text import console
 from text.styling import colorize, TextColors
 
-# These imports are required to implement the Harvest command classes. IDEs will show they are not used but this is
-# misleading - all imported classes which inherit the cmd2.CommandSet are automatically implemented.
+"""
+`from commands import *` is required here to implement the Harvest command classes. IDEs will show they are not used 
+but this is misleading - all imported classes which inherit the cmd2.CommandSet are automatically implemented.
+"""
 from commands import *
 
 
 class Harvest(Cmd):
     def __init__(self, **kwargs):
-        self.configuration = configuration.load()
+        from text.printing import print_message
+        print_message('Harvest is starting!', color='INFO')
+
+        # Load the configuration
+        HarvestConfiguration.load()
+
+        # Install and load plugins
+        PluginRegistry.plugins = HarvestConfiguration.plugins or {}
+
+        if PluginRegistry.plugins:
+            print_message('Installing plugins...', color='INFO')
+            PluginRegistry.install(quiet=True)
 
         # _banners display loading banners
-        self._banner = get_banner(banner_configuration=self.configuration['banners'])
-        self.plugin_registry = PluginRegistry(**self.configuration.get('modules') or {}).initialize_repositories()
+        self._banner = get_banner(banner_configuration=HarvestConfiguration.banners or {})
 
         # application version
-        self._version = self.configuration['version']
+        self._version = HarvestConfiguration.version
 
-        shortcuts = DEFAULT_SHORTCUTS | self.configuration.get('shortcuts') or {}
+        shortcuts = DEFAULT_SHORTCUTS | HarvestConfiguration.shortcuts or {}
 
         from os.path import expanduser
-        super().__init__(persistent_history_file=expanduser('~/.harvest/cli/history'),
+        super().__init__(persistent_history_file=expanduser('./app/history'),
                          persistent_history_length=5000000,
                          shortcuts=shortcuts,
                          **kwargs)
@@ -48,7 +60,7 @@ class Harvest(Cmd):
         from text.printing import print_message
         [print_message(text=message[2], color=message[1], as_feedback=True) for message in read_messages()]
 
-        self.pfeedback(colorize(f'v{self._version}', color=TextColors.HEADER))
+        self.pfeedback(get_load_version_line())
 
         # start background processes
         self.last_command_timestamp = None
@@ -109,6 +121,33 @@ class Harvest(Cmd):
         ConcurrentProcesses.add(t)
 
         t.start()
+
+
+def get_load_version_line() -> str:
+    """
+    Get the version line for the application.
+    If the application is running in a Docker container, the hostname is appended to the version.
+    """
+
+    from configuration import HarvestConfiguration
+    from text.styling import colorize, TextColors
+
+    result = colorize(f'v{HarvestConfiguration.version}', color=TextColors.PROMPT)
+
+    if is_dockerized():
+        from socket import gethostname
+        result += (colorize(" | ", color=TextColors.WARN)
+                   + colorize(gethostname(), color=TextColors.INFO))
+
+    return result
+
+
+def is_dockerized() -> bool:
+    """
+    Check if the application is running in a Docker container.
+    """
+    from os import path
+    return path.exists('/.dockerenv')
 
 
 def upload_files(parent: Any, paths: List[str], api_path: str, max_workers: int = None, yes: bool = False, description: str = None):
