@@ -12,7 +12,13 @@ logger = getLogger('harvest')
 class HarvestRequest(Request):
     def __init__(self, host: str = None, path: str = None, method: str = 'GET', json: Any = None):
         from urllib.parse import urljoin
-        url = urljoin(host or HarvestConfiguration.api.get('host'), path)
+        url = ''.join([HarvestConfiguration.api.get('protocol'),
+                       '://',
+                       host or HarvestConfiguration.api.get('host'),
+                       ':',
+                       str(HarvestConfiguration.api.get('port') or 8000),
+                       '/',
+                       path or ''])
 
         if isinstance(json, str):
             str_json = json
