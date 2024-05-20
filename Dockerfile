@@ -7,8 +7,7 @@ ENV TERM xterm-256color
 
 COPY . .
 
-# TODO: add pytest tests/ to the RUN command
 RUN pip install setuptools \
-    && python -m pip install .
+    && pip install -r requirements.txt
 
 ENTRYPOINT python CloudHarvestCLI
