@@ -79,7 +79,11 @@ cd "$install_path" || exit
 # Check if the app/harvest.json file exists or --harvest-config is provided
 if [ ! -f "./app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     # If the file does not exist or --harvest-config is provided, start config.py using docker run
-    docker run -it --rm --entrypoint=/bin/bash -v "./app:/src/app" "$image_name:$image_tag" -c "python3 config.py"
+    docker run -it --rm \
+    --entrypoint=/bin/bash \
+    -v "./app:/src/app" \
+    -v "/usr/local/bin:/src/usr-local-bin/" \
+    "$image_name:$image_tag" -c "python3 config.py"
 
     # Check the exit status of config.py
     if [ $? -ne 0 ]; then

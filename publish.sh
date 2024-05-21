@@ -23,8 +23,7 @@
 
 # Initialize our own variables
 dry_run=0
-image_name="cloud-harvest-cli"
-docker_namespace="fionajuneleathers"
+image_name="fionajuneleathers/cloud-harvest-cli"
 skip_git_check=0
 
 # Check for --dry-run, --skip-git-check and --help flags
@@ -120,16 +119,16 @@ echo "Tests passed."
 # Check the value of dry_run
 if [ $dry_run -eq 0 ]; then
     # Push the image to docker_namespace/image_name
-    docker tag "$name_version_commit" "$docker_namespace/$name_version_commit"
-    docker push "$docker_namespace/$name_version_commit"
+    docker tag "$name_version_commit" "$name_version_commit"
+    docker push "$name_version_commit"
 
-    echo "Pushed $docker_namespace/$name_version_commit"
+    echo "Pushed $name_version_commit"
 
     # Tag the newly uploaded image as latest
-    docker tag "$name_version_commit" "$docker_namespace/$image_name:latest"
-    docker push "$docker_namespace/$image_name:latest"
+    docker tag "$name_version_commit" "$image_name:latest"
+    docker push "$image_name:latest"
 
-    echo "Pushed $docker_namespace/$name_version_commit and tagged as latest"
+    echo "Pushed $name_version_commit and tagged as latest"
 
 else
     echo "Dry run completed successfully. No changes were pushed."

@@ -135,7 +135,8 @@ def main(reset: bool = False):
             harvest_shell = harvest_shell.replace('install_path=$(realpath ".")',
                                                   f'install_path="{cur_dir}"')
 
-            ulb = '/usr/local/bin'
+            ulb = '/src/usr-local-bin' if exists('/src/usr-local-bin') else '/usr/local/bin'
+
             if os.access(ulb, os.W_OK):
                 install_path = ulb
 
