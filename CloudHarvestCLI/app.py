@@ -48,7 +48,8 @@ class Harvest(Cmd):
         self.register_postcmd_hook(self._post_command_hooks)
 
         # the prompt will always have a new line at the beginning for spacing
-        self.prompt = colorize('\n[harvest] ', color=TextColors.PROMPT)
+        from os import environ
+        self.prompt = get_prompt()
 
         console.print()  # provides a space between the first line and the banner
         console.print(self._banner[0])
@@ -138,6 +139,33 @@ def get_load_version_line() -> str:
         from socket import gethostname
         result += (colorize(" | ", color=TextColors.WARN)
                    + colorize(gethostname(), color=TextColors.INFO))
+
+    return result
+
+
+def get_prompt() -> str:
+    # the prompt will always have a new line at the beginning for spacing
+
+    args = [
+        '\n',
+        '['
+    ]
+
+    from os import environ
+    if environ.get("USER"):
+        args.append(environ.get("USER"))
+        args.append('@')
+
+    args.append('harvest')
+
+    if is_dockerized():
+        from socket import gethostname
+        args.append('|')
+        args.append(gethostname())
+
+    args.append('] ')
+
+    result = colorize(''.join(args), color=TextColors.PROMPT)
 
     return result
 
