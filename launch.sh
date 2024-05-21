@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Initialize our own variables
-with_mongo=0
 harvest_config=0
+image_name="cloud-harvest-cli"
+image_tag="latest"
 
 # Check for --with-mongo, --harvest-config, --tag, --image and --help flags
 for arg in "$@"
