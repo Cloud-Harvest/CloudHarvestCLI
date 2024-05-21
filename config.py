@@ -127,7 +127,7 @@ def main(reset: bool = False):
 
         install_binary = ask('Would you like to install the Cloud Harvest CLI binary?', default='y')
         if install_binary.lower() == 'y':
-            with open('harvest.template.sh', 'r') as harvest_stream:
+            with open('launch.sh', 'r') as harvest_stream:
                 harvest_shell = harvest_stream.read()
 
             import os
