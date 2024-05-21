@@ -58,9 +58,9 @@ if [ ! -f "./app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     fi
 fi
 
-echo "Starting the API service"
+echo "Starting the CLI"
 LOCAL_UID=$(id -u) \
 && LOCAL_GID=$(id -g) \
 && IMAGE_NAME=$image_name \
 && IMAGE_TAG=$image_tag \
-&& docker compose up api
+&& ./harvest.template.sh
