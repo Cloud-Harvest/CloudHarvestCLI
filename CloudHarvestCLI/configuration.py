@@ -22,7 +22,6 @@ class HarvestConfiguration:
         Load the configuration from the configuration directory.
         """
         from os.path import exists, join
-        from json import load
 
         # get the user config
         if not exists('./app/harvest.json'):
@@ -33,7 +32,8 @@ class HarvestConfiguration:
             exit(1)
 
         with open('./app/harvest.json', 'r') as stream:
-            config = load(stream)
+            import json
+            config = json.load(stream)
 
         for key, value in config.items():
             setattr(HarvestConfiguration, key, value)
@@ -46,11 +46,11 @@ class HarvestConfiguration:
 
         # get the YAML files in CloudHarvestCLI/config/
         from os import listdir
-
+        from yaml import load, FullLoader
         for file in listdir('./CloudHarvestCLI/config/'):
             if file.endswith('.yaml'):
                 with open(join('./CloudHarvestCLI/config/', file), 'r') as stream:
-                    config = load(stream)
+                    config = load(stream, Loader=FullLoader)
                     setattr(HarvestConfiguration, file.split('.')[0], config)
 
         from text.styling import TextColors
