@@ -144,9 +144,12 @@ def main(reset: bool = False):
                 console.print(f'You do not have write access to {ulb}.\n'
                               f'Either copy the output file or add {install_path} to your $PATH\n', style='yellow')
 
-            with open(os.path.join(install_path, 'harvest'), 'w') as install_stream:
-                install_stream.write(harvest_shell)
+            # write the file locally
+            with open('harvest', 'w') as harvest_stream:
+                harvest_stream.write(harvest_shell)
 
+            from shutil import copy
+            copy('harvest', os.path.join(install_path, 'harvest'))
             os.chmod(os.path.join(install_path, 'harvest'), 0o755)
 
             console.print(f'Binary installed to {os.path.join(install_path, "harvest")}', style='blue')
