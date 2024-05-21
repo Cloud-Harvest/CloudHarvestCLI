@@ -144,10 +144,12 @@ def get_load_version_line() -> str:
 
 
 def get_prompt() -> str:
-    # the prompt will always have a new line at the beginning for spacing
+    """
+    Generates the Harvest prompt.
+    """
 
     args = [
-        '\n',
+        '\n',       # prompt always has a new line at the beginning for spacing
         '['
     ]
 
@@ -156,12 +158,12 @@ def get_prompt() -> str:
         args.append(environ.get("USER"))
         args.append('@')
 
-    args.append('harvest')
-
     if is_dockerized():
         from socket import gethostname
-        args.append('|')
         args.append(gethostname())
+        args.append(':')
+
+    args.append('harvest')
 
     args.append('] ')
 
