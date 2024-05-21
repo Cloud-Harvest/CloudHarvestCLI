@@ -1,0 +1,14 @@
+{
+  "author": "Cloud Harvest, Fiona June Leathers",
+  "classifiers": [
+    "Programming Language :: Python :: 3.12"
+  ],
+  "description": "This is the Command Line Interface for CloudHarvest.",
+  "keywords": [
+    "CloudHarvest"
+  ],
+  "license": "CC Attribution-NonCommercial-ShareAlike 4.0 International",
+  "name": "CloudHarvestCLI",
+  "url": "https://github.com/Cloud-Harvest/CloudHarvestCLI",
+  "version": "0.1.0"
+}

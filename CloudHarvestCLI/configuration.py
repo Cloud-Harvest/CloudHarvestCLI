@@ -22,23 +22,26 @@ class HarvestConfiguration:
         Load the configuration from the configuration directory.
         """
         from os.path import exists, join
-        from yaml import load, FullLoader
+        from json import load
 
         # get the user config
-        if not exists('./app/harvest.yaml'):
-            logger.error('Configuration file `./app/harvest.yaml` not found. '
+        if not exists('./app/harvest.json'):
+            logger.error('Configuration file `./app/harvest.json` not found. '
                          'Please run the configuration tool ./config.py.')
 
             from sys import exit
             exit(1)
 
-        with open('./app/harvest.yaml', 'r') as stream:
-            config = load(stream, Loader=FullLoader)
+        with open('./app/harvest.json', 'r') as stream:
+            config = load(stream)
 
         for key, value in config.items():
             setattr(HarvestConfiguration, key, value)
 
-        from meta import meta
+        from json import load
+        with open('./meta.json', 'r') as meta_file_stream:
+            meta = load(meta_file_stream)
+
         HarvestConfiguration.version = meta['version']
 
         # get the YAML files in CloudHarvestCLI/config/
@@ -47,7 +50,7 @@ class HarvestConfiguration:
         for file in listdir('./CloudHarvestCLI/config/'):
             if file.endswith('.yaml'):
                 with open(join('./CloudHarvestCLI/config/', file), 'r') as stream:
-                    config = load(stream, Loader=FullLoader)
+                    config = load(stream)
                     setattr(HarvestConfiguration, file.split('.')[0], config)
 
         from text.styling import TextColors

@@ -29,18 +29,18 @@ def main(reset: bool = False):
                              '',
                              'This tool will assist you in setting up your Cloud Harvest CLI.',
                              '* You can escape this process at any time with CTRL+C.',
-                             '* You may also edit the file manually once it is created in ./app/harvest.yaml',
-                             '* You can skip this process by copying an existing harvest.yaml to ./app/harvest.yaml',
+                             '* You may also edit the file manually once it is created in ./app/harvest.json',
+                             '* You can skip this process by copying an existing harvest.json to ./app/harvest.json',
                              '']))
 
     from os.path import exists
 
-    if exists('./app/harvest.yaml') and reset is False:
-        console.print('Loading existing configuration at `./app/harvest.yaml`', style='bold yellow')
+    if exists('../app/harvest.json') and reset is False:
+        console.print('Loading existing configuration at `./app/harvest.json`', style='bold yellow')
 
-        with open('./app/harvest.yaml', 'r') as existing_config_file_stream:
-            from yaml import load, FullLoader
-            existing_config = load(existing_config_file_stream, Loader=FullLoader)
+        with open('../app/harvest.json', 'r') as existing_config_file_stream:
+            from json import load
+            existing_config = load(existing_config_file_stream)
             defaults.update(existing_config)
 
     try:
@@ -131,7 +131,7 @@ def main(reset: bool = False):
                 harvest_shell = harvest_stream.read()
 
             import os
-            cur_dir = os.path.dirname(os.path.abspath('.'))
+            cur_dir = os.path.dirname(os.path.abspath(''))
             harvest_shell = harvest_shell.replace('install_path=$(realpath ".")',
                                                   f'install_path="{cur_dir}"')
 
@@ -140,7 +140,7 @@ def main(reset: bool = False):
                 install_path = ulb
 
             else:
-                install_path = os.path.abspath('.')
+                install_path = os.path.abspath('')
                 console.print(f'You do not have write access to {ulb}.\n'
                               f'Either copy the output file or add {install_path} to your $PATH\n', style='yellow')
 
@@ -159,16 +159,16 @@ def main(reset: bool = False):
         exit(1)
 
     else:
-        if not exists('./app'):
+        if not exists('app'):
             from os import mkdir
-            mkdir('./app')
+            mkdir('app')
 
-        with open('./app/harvest.yaml', 'w') as config_file_stream:
-            from yaml import dump
-            dump(defaults, config_file_stream, default_style='"')
+        with open('./app/harvest.json', 'w') as config_file_stream:
+            from json import dump
+            dump(defaults, config_file_stream, indent=4, default=str)
 
         console.print()
-        console.print('Configuration saved to ./app/harvest.yaml',
+        console.print('Configuration saved to ./app/harvest.json',
                       style='blue')
         from rich.text import Text
         console.print(Text('You may now start the Harvest CLI using the following command:', style='green') +
