@@ -30,7 +30,7 @@
 
 # Initialize our own variables
 harvest_config=0
-image_name="cloud-harvest-cli"
+image_name="fionajuneleathers/cloud-harvest-cli"
 image_tag="latest"
 
 # Check for --help, --harvest-config, --image, and --tag flags
