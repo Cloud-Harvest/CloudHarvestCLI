@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # publish.sh
-# This script is used to build, test, and publish a Docker image for the Cloud Harvest CLI.
+# This script is used to build, test, and publish a Docker image for the Cloud Harvest API.
 # It fetches the version number from meta.json and uses it along with the git commit's short name to tag the Docker image.
 # The script also checks that all commits have been pushed to git and that the current branch is main.
 # If the --dry-run or --skip-git-check flags are provided, the script will perform all steps except pushing the Docker image to the Docker registry and checking git status respectively.
@@ -16,7 +16,7 @@
 # --skip-git-check: Skip the checks for the main branch and that all commits have been pushed.
 #
 # Environment Variables:
-# image_name: The name of the Docker image. Default is "cloud-harvest-api".
+# image_name: The name of the Docker image. Default is "cloud-harvest-cli".
 # docker_namespace: The Docker namespace where the Docker image will be pushed. Default is "fionajuneleathers".
 #
 # Note: This script requires Docker, git, and grep to be installed and properly configured on the system where it will be run.
@@ -27,7 +27,7 @@ image_name="cloud-harvest-cli"
 docker_namespace="fionajuneleathers"
 skip_git_check=0
 
-# Check for --dry-run and --skip-git-check flags
+# Check for --dry-run, --skip-git-check and --help flags
 for arg in "$@"
 do
     case $arg in
@@ -38,6 +38,15 @@ do
         --skip-git-check)
         skip_git_check=1
         shift # Remove --skip-git-check from processing
+        ;;
+        --help)
+        echo "Usage: ./publish.sh [--dry-run] [--skip-git-check] [--help]"
+        echo ""
+        echo "Options:"
+        echo "--dry-run: Perform all steps except pushing the Docker image to the Docker registry."
+        echo "--skip-git-check: Skip the checks for the main branch and that all commits have been pushed."
+        echo "--help: Show this help message."
+        exit 0
         ;;
         *)
         shift # Remove generic argument from processing
@@ -76,7 +85,6 @@ if [ $skip_git_check -eq 0 ]; then
     fi
 
   echo "Working on the main branch and all commits have been pushed to git."
-
 fi
 
 # Get the git commit's short-name
