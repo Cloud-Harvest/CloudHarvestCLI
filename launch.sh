@@ -73,7 +73,7 @@ do
     esac
 done
 
-install_path=$(realpath ".")
+install_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 cd "$install_path" || exit
 
@@ -91,10 +91,24 @@ fi
 if [ ! -f "$install_path/app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     # If the file does not exist or --harvest-config is provided, start config.py using docker run
     docker run -it --rm \
-    --entrypoint=/bin/bash \
-    -v "$install_path/app:/src/app" \
+    -e UID="$(id -u)" \
+    -e GID="$(id -g) "\
+    -e USER="$USER" \
+    -e "TERM=xterm-256color" \
+    -v "$install_path/app/:/src/app/" \
     -v "/usr/local/bin:/src/usr-local-bin/" \
-    "$image_name:$image_tag" -c "python3 config.py"
+    --entrypoint=/bin/bash \
+    "$image_name:$image_tag" \
+    -c "
+      if [ ! -f /src/app/venv/bin/activate ]; then
+        echo 'Creating virtual environment.'
+        python3 -m venv /src/app/venv &&
+        source /src/app/venv/bin/activate &&
+        pip install -q -r /src/requirements.txt
+      fi &&
+      source /src/app/venv/bin/activate &&
+      python /src/config.py $*
+    "
 
     # Check the exit status of config.py
     if [ $? -ne 0 ]; then
@@ -110,19 +124,32 @@ if [ ! -f "$install_path/app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     fi
 fi
 
+# Check if the symlink exists and if it's not in the PATH
+if [ ! -L "$install_path/harvest" ] && ! which harvest > /dev/null; then
+    ln -s ./launch.sh $install_path/harvest
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to create symlink to launch.sh"
+        exit 1
+    else
+        echo "Created 'harvest' symlink at $install_path/harvest. Please add/move this to your PATH."
+    fi
+fi
+
+
 echo "Launching Cloud Harvest CLI image $image_name:$image_tag"
 docker run -it --rm \
   -e UID="$(id -u)" \
   -e GID="$(id -g) "\
-  -e USER="$USER:$GID" \
+  -e USER="$USER" \
   -e "TERM=xterm-256color" \
+  -v "$install_path/app/:/src/app/" \
   -v "$HOME:/root/host" \
   -v "$HOME/.ssh:/root/.ssh" \
-  -v "$install_path/app/:/src/app/" \
-  --workdir /src \
-  --user "$(id -u)" \
-  --privileged \
   --entrypoint=/bin/bash \
+  --privileged \
+  --user "$(id -u):$(id -g)" \
+  --workdir /src \
   "$image_name:$image_tag" \
   -c "
     if [ ! -f /src/app/venv/bin/activate ]; then
