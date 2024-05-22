@@ -3,36 +3,14 @@
 # launch.sh
 #
 # This script is used to run a Docker container for the Cloud Harvest CLI.
-# It provides several command line options to customize the execution of the Docker container.
-#
-# Usage:
-# ./launch.sh [--harvest-config] [--image IMAGE_NAME] [--tag IMAGE_TAG] [--rebuild] [--help]
-#
-# Options:
-# --harvest-config: Triggers the execution of `config.py` script. If the `app/harvest.json` file does not exist or this option is provided, `config.py` is started.
-# --image IMAGE_NAME: Allows you to specify the Docker image name. Replace `IMAGE_NAME` with the name of your Docker image.
-# --tag IMAGE_TAG: Allows you to specify the Docker image tag. Replace `IMAGE_TAG` with the tag of your Docker image.
-# --rebuild: Deletes the entire contents of the `./app` directory.
-# --help: Displays this help message and exits.
-#
-# Examples:
-# To run the script with the default settings:
-# ./launch.sh
-#
-# To run the script with a specific Docker image name and tag:
-# ./launch.sh --image my_image --tag my_tag
-#
-# To delete the entire contents of the `./app` directory before running the script:
-# ./launch.sh --rebuild
-#
-# To display the help message:
-# ./launch.sh --help
+# Please observe the --help section for more information on how to use this script.
 
 # Initialize our own variables
 harvest_config=0
 image_name="fionajuneleathers/cloud-harvest-cli"
 image_tag="latest"
 rebuild=0
+version=0
 
 # Check for --help, --harvest-config, --image, and --tag flags
 for arg in "$@"
@@ -56,19 +34,21 @@ do
         image_tag="$1"  # Assign the next argument as the image tag
         shift # Remove the image tag from processing
         ;;
+        --version)
+        version=1
+        shift # Remove --version from processing
+        ;;
         --help)
-        echo "Usage: ./launch.sh [--harvest-config] [--image IMAGE_NAME] [--tag IMAGE_TAG] [--rebuild] [--help]"
+        echo "Usage: ./launch.sh [--harvest-config] [--image IMAGE_NAME] [--tag IMAGE_TAG] [--rebuild] [--version] [--help]"
         echo ""
         echo "Options:"
         echo "--harvest-config: Triggers the execution of `config.py` script. If the `app/harvest.json` file does not exist or this option is provided, `config.py` is started."
         echo "--image IMAGE_NAME: Allows you to specify the Docker image name. Replace `IMAGE_NAME` with the name of your Docker image."
         echo "--tag IMAGE_TAG: Allows you to specify the Docker image tag. Replace `IMAGE_TAG` with the tag of your Docker image."
         echo "--rebuild: Deletes the entire contents of the `./app` directory."
+        echo "--version: Prints the version, commit hash, and branch name from the Docker container's /src/meta.json file."
         echo "--help: Displays this help message and exits."
         exit 0
-        ;;
-        *)
-        shift # Remove generic argument from processing
         ;;
     esac
 done
@@ -76,6 +56,19 @@ done
 install_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 cd "$install_path" || exit
+
+# If --version was provided, print the version from /src/meta.json
+if [ $version -eq 1 ]; then
+    version_info=$(docker run --rm \
+    --entrypoint=/bin/bash \
+    "$image_name:$image_tag" \
+    -c "version_number=\$(grep '\"version\"' /src/meta.json | cut -d '\"' -f 4 | tr -d '\n'); \
+        commit_hash=\$(cd /src && git rev-parse --short HEAD); \
+        branch_name=\$(cd /src && git rev-parse --abbrev-ref HEAD); \
+        echo \"\$version_number-\$commit_hash(\$branch_name)\"")
+    echo "CloudHarvestCLI v$version_info"
+    exit 0
+fi
 
 if [ $rebuild -eq 1 ]; then
     echo "Rebuilding the app directory."
