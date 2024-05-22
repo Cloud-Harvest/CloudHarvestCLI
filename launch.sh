@@ -53,6 +53,52 @@ do
     esac
 done
 
+launch_app() {
+  # Function: launch_app
+  # Description: This function is used to launch a Docker container for the Cloud Harvest CLI.
+  # Parameters:
+  #   - file_to_launch: The name of the Python file to be launched within the Docker container.
+  #
+  # The function performs the following steps:
+  #   1. It echoes a message indicating the Docker image and tag being launched.
+  #   2. It runs a Docker container with the specified image and tag, setting several environment variables and volume mounts.
+  #   3. It checks if a virtual environment exists in the specified path. If not, it creates one and installs the required Python packages.
+  #   4. It activates the virtual environment.
+  #   5. It runs the specified Python file within the Docker container.
+  #
+  # Usage:
+  #   launch_app "file_to_launch.py"
+  #
+  # Example:
+  #   launch_app "CloudHarvestCLI/__main__.py"
+
+  file_to_launch=$1
+  echo "Launching Cloud Harvest CLI image $image_name:$image_tag"
+  docker run -it --rm \
+    -e UID="$(id -u)" \
+    -e GID="$(id -g) "\
+    -e USER="$USER" \
+    -e "TERM=xterm-256color" \
+    -v "$install_path/app/:/src/app/" \
+    -v "$HOME:/root/host" \
+    -v "$HOME/.ssh:/root/.ssh" \
+    --entrypoint=/bin/bash \
+    --privileged \
+    --user "$(id -u):$(id -g)" \
+    --workdir /src \
+    "$image_name:$image_tag" \
+    -c "
+      if [ ! -f /src/app/venv/bin/activate ]; then
+        echo 'Performing one-time virtual environment creation in $install_path/app/venv.'
+        python3 -m venv /src/app/venv &&
+        source /src/app/venv/bin/activate &&
+        pip install -q -r /src/requirements.txt > /dev/null 2>&1
+      fi &&
+      source /src/app/venv/bin/activate &&
+      python /src/$file_to_launch ${*:2}
+      "
+}
+
 install_path="$(dirname "$(readlink -f "$0")")"
 
 cd "$install_path" || exit
@@ -83,25 +129,7 @@ fi
 # Check if the app/harvest.json file exists or --harvest-config is provided
 if [ ! -f "$install_path/app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     # If the file does not exist or --harvest-config is provided, start config.py using docker run
-    docker run -it --rm \
-    -e UID="$(id -u)" \
-    -e GID="$(id -g) "\
-    -e USER="$USER" \
-    -e "TERM=xterm-256color" \
-    -v "$install_path/app/:/src/app/" \
-    -v "/usr/local/bin:/src/usr-local-bin/" \
-    --entrypoint=/bin/bash \
-    "$image_name:$image_tag" \
-    -c "
-      if [ ! -f /src/app/venv/bin/activate ]; then
-        echo 'Creating virtual environment.'
-        python3 -m venv /src/app/venv &&
-        source /src/app/venv/bin/activate &&
-        pip install -q -r /src/requirements.txt
-      fi &&
-      source /src/app/venv/bin/activate &&
-      python /src/config.py $*
-    "
+    launch_app "/src/config.py"
 
     # Check the exit status of config.py
     if [ $? -ne 0 ]; then
@@ -129,29 +157,6 @@ if [ ! -L "$install_path/harvest" ] && ! which harvest > /dev/null; then
     fi
 fi
 
-
-echo "Launching Cloud Harvest CLI image $image_name:$image_tag"
-docker run -it --rm \
-  -e UID="$(id -u)" \
-  -e GID="$(id -g) "\
-  -e USER="$USER" \
-  -e "TERM=xterm-256color" \
-  -v "$install_path/app/:/src/app/" \
-  -v "$HOME:/root/host" \
-  -v "$HOME/.ssh:/root/.ssh" \
-  --entrypoint=/bin/bash \
-  --privileged \
-  --user "$(id -u):$(id -g)" \
-  --workdir /src \
-  "$image_name:$image_tag" \
-  -c "
-    if [ ! -f /src/app/venv/bin/activate ]; then
-      echo 'Creating virtual environment.'
-      python3 -m venv /src/app/venv &&
-      source /src/app/venv/bin/activate &&
-      pip install -q -r /src/requirements.txt
-    fi &&
-    source /src/app/venv/bin/activate &&
-    python /src/CloudHarvestCLI/__main__.py $* &&
-    echo 'Goodbye!'
-    "
+# Launch CloudHarvestCLI
+launch_app "CloudHarvestCLI/__main__.py"
+echo "Goodbye!"
