@@ -2,41 +2,46 @@
 
 # launch.sh
 #
-# This script template is the basis of the file we install as part of config.py
-# which is used to run a Docker container for the Cloud Harvest CLI. When installed with config.py,
-# this script is output as `harvest` in the root directory of the project.
-#
+# This script is used to run a Docker container for the Cloud Harvest CLI.
 # It provides several command line options to customize the execution of the Docker container.
 #
 # Usage:
-# (./launch.sh | harvest) [--harvest-config] [--image IMAGE_NAME] [--tag IMAGE_TAG] [--help]
+# ./launch.sh [--harvest-config] [--image IMAGE_NAME] [--tag IMAGE_TAG] [--rebuild] [--help]
 #
 # Options:
-# --harvest-config: This option triggers the execution of `config.py` script. If the `app/harvest.yaml` file does not exist or this option is provided, `config.py` is started.
-# --image IMAGE_NAME: This option allows you to specify the Docker image name. Replace `IMAGE_NAME` with the name of your Docker image.
-# --tag IMAGE_TAG: This option allows you to specify the Docker image tag. Replace `IMAGE_TAG` with the tag of your Docker image.
-# --help: This option displays the help message and exits.
+# --harvest-config: Triggers the execution of `config.py` script. If the `app/harvest.json` file does not exist or this option is provided, `config.py` is started.
+# --image IMAGE_NAME: Allows you to specify the Docker image name. Replace `IMAGE_NAME` with the name of your Docker image.
+# --tag IMAGE_TAG: Allows you to specify the Docker image tag. Replace `IMAGE_TAG` with the tag of your Docker image.
+# --rebuild: Deletes the entire contents of the `./app` directory.
+# --help: Displays this help message and exits.
 #
 # Examples:
 # To run the script with the default settings:
-# ./harvest.template.sh
+# ./launch.sh
 #
 # To run the script with a specific Docker image name and tag:
-# ./harvest.template.sh --image my_image --tag my_tag
+# ./launch.sh --image my_image --tag my_tag
+#
+# To delete the entire contents of the `./app` directory before running the script:
+# ./launch.sh --rebuild
 #
 # To display the help message:
-# ./harvest.template.sh --help
-
+# ./launch.sh --help
 
 # Initialize our own variables
 harvest_config=0
 image_name="fionajuneleathers/cloud-harvest-cli"
 image_tag="latest"
+rebuild=0
 
 # Check for --help, --harvest-config, --image, and --tag flags
 for arg in "$@"
 do
     case $arg in
+        --rebuild)
+        rebuild=1
+        shift # Remove --rebuild from processing
+        ;;
         --harvest-config)
         harvest_config=1
         shift # Remove --harvest-config from processing
@@ -52,13 +57,14 @@ do
         shift # Remove the image tag from processing
         ;;
         --help)
-        echo "Usage: (./harvest.template.sh | harvest) [--harvest-config] [--image] [--tag] [--help]"
+        echo "Usage: ./launch.sh [--harvest-config] [--image IMAGE_NAME] [--tag IMAGE_TAG] [--rebuild] [--help]"
         echo ""
         echo "Options:"
-        echo "--harvest-config: Start config.py."
-        echo "--image: Specify the Docker image name."
-        echo "--tag: Specify the Docker image tag."
-        echo "--help: Show this help message."
+        echo "--harvest-config: Triggers the execution of `config.py` script. If the `app/harvest.json` file does not exist or this option is provided, `config.py` is started."
+        echo "--image IMAGE_NAME: Allows you to specify the Docker image name. Replace `IMAGE_NAME` with the name of your Docker image."
+        echo "--tag IMAGE_TAG: Allows you to specify the Docker image tag. Replace `IMAGE_TAG` with the tag of your Docker image."
+        echo "--rebuild: Deletes the entire contents of the `./app` directory."
+        echo "--help: Displays this help message and exits."
         exit 0
         ;;
         *)
@@ -69,19 +75,24 @@ done
 
 install_path=$(realpath ".")
 
-
 cd "$install_path" || exit
 
-install_path=$(realpath ".")
+if [ $rebuild -eq 1 ]; then
+    echo "Rebuilding the app directory."
+    rm -rf "$install_path/app/*"
+fi
 
-cd "$install_path" || exit
+if [ ! -d "$install_path/app" ]; then
+    echo "Creating app directory."
+    mkdir -p "$install_path/app"
+fi
 
 # Check if the app/harvest.json file exists or --harvest-config is provided
-if [ ! -f "./app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
+if [ ! -f "$install_path/app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     # If the file does not exist or --harvest-config is provided, start config.py using docker run
     docker run -it --rm \
     --entrypoint=/bin/bash \
-    -v "./app:/src/app" \
+    -v "$install_path/app:/src/app" \
     -v "/usr/local/bin:/src/usr-local-bin/" \
     "$image_name:$image_tag" -c "python3 config.py"
 
@@ -99,14 +110,28 @@ if [ ! -f "./app/harvest.json" ] || [ $harvest_config -eq 1 ]; then
     fi
 fi
 
+echo "Launching Cloud Harvest CLI image $image_name:$image_tag"
 docker run -it --rm \
   -e UID="$(id -u)" \
   -e GID="$(id -g) "\
+  -e USER="$USER:$GID" \
   -e "TERM=xterm-256color" \
   -v "$HOME:/root/host" \
   -v "$HOME/.ssh:/root/.ssh" \
-  -v "./app/:/src/app/" \
+  -v "$install_path/app/:/src/app/" \
   --workdir /src \
-  --user "$(id -u):$(id -g)" \
+  --user "$(id -u)" \
   --privileged \
-  "$image_name:$image_tag"
+  --entrypoint=/bin/bash \
+  "$image_name:$image_tag" \
+  -c "
+    if [ ! -f /src/app/venv/bin/activate ]; then
+      echo 'Creating virtual environment.'
+      python3 -m venv /src/app/venv &&
+      source /src/app/venv/bin/activate &&
+      pip install -q -r /src/requirements.txt
+    fi &&
+    source /src/app/venv/bin/activate &&
+    python /src/CloudHarvestCLI/__main__.py $* &&
+    echo 'Goodbye!'
+    "
