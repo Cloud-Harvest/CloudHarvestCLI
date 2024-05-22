@@ -53,7 +53,7 @@ do
     esac
 done
 
-install_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+install_path="$(dirname "$(readlink -f "$0")")"
 
 cd "$install_path" || exit
 
@@ -119,7 +119,7 @@ fi
 
 # Check if the symlink exists and if it's not in the PATH
 if [ ! -L "$install_path/harvest" ] && ! which harvest > /dev/null; then
-    ln -s ./launch.sh $install_path/harvest
+    ln -s "$install_path/launch.sh" harvest
 
     if [ $? -ne 0 ]; then
         echo "Failed to create symlink to launch.sh"
