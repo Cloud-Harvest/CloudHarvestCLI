@@ -35,10 +35,10 @@ def main(reset: bool = False):
 
     from os.path import exists
 
-    if exists('../app/harvest.json') and reset is False:
+    if exists('./app/harvest.json') and reset is False:
         console.print('Loading existing configuration at `./app/harvest.json`', style='bold yellow')
 
-        with open('../app/harvest.json', 'r') as existing_config_file_stream:
+        with open('./app/harvest.json', 'r') as existing_config_file_stream:
             from json import load
             existing_config = load(existing_config_file_stream)
             defaults.update(existing_config)
@@ -124,39 +124,6 @@ def main(reset: bool = False):
                 plugin_branch = ask('Please enter the plugin branch', default='main')
 
                 defaults['plugins'][plugin_url] = plugin_branch
-
-        install_binary = ask('Would you like to install the Cloud Harvest CLI binary?', default='y')
-        if install_binary.lower() == 'y':
-            with open('launch.sh', 'r') as harvest_stream:
-                harvest_shell = harvest_stream.read()
-
-            import os
-            cur_dir = os.path.dirname(os.path.abspath(''))
-            harvest_shell = harvest_shell.replace('install_path=$(realpath ".")',
-                                                  f'install_path="{cur_dir}"')
-
-            ulb = '/src/usr-local-bin' if exists('/src/usr-local-bin') else '/usr/local/bin'
-
-            if os.access(ulb, os.W_OK):
-                install_path = ulb
-
-            else:
-                install_path = os.path.abspath('')
-                console.print(f'You do not have write access to {ulb}.\n'
-                              f'Either copy the output file or add {install_path} to your $PATH\n', style='yellow')
-
-            # write the file locally
-            with open('harvest', 'w') as harvest_stream:
-                harvest_stream.write(harvest_shell)
-
-            from shutil import copy
-            copy('harvest', os.path.join(install_path, 'harvest'))
-            os.chmod(os.path.join(install_path, 'harvest'), 0o755)
-
-            console.print(f'Binary installed to {os.path.join(install_path, "harvest")}', style='blue')
-
-        else:
-            console.print('Skipping binary installation.', style='blue')
 
     except KeyboardInterrupt:
         console.print('\nExiting...', style='bold red')
