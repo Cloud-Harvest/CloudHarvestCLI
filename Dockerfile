@@ -10,4 +10,4 @@ COPY . .
 RUN pip install setuptools \
     && pip install -r requirements.txt
 
-ENTRYPOINT python CloudHarvestCLI
+ENTRYPOINT /bin/bash
