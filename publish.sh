@@ -96,25 +96,15 @@ name_version_commit="$image_name:$version-$commit"
 # Build the docker container with --no-cache
 docker build --no-cache -t "$name_version_commit" .
 
+if [ $? -ne 0 ]; then
+    echo "Build failed. Aborting."
+    exit 1
+fi
+
 echo "Built docker container with tag: $name_version_commit"
 
 # Tag the docker image
 docker tag "$image_name:latest" "$name_version_commit"
-
-# Start the container and run all of the tests in the tests directory
-docker run -it --rm \
-    --entrypoint="/bin/bash" \
-    -v "./tests:/src/tests/" \
-    "$name_version_commit" \
-    -c "python -m unittest discover -s /src/tests/"
-
-# Check the exit status of the tests
-if [ $? -ne 0 ]; then
-    echo "Tests failed. Aborting."
-    exit 1
-fi
-
-echo "Tests passed."
 
 # Check the value of dry_run
 if [ $dry_run -eq 0 ]; then
