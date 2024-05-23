@@ -62,9 +62,7 @@ launch_app() {
   # The function performs the following steps:
   #   1. It echoes a message indicating the Docker image and tag being launched.
   #   2. It runs a Docker container with the specified image and tag, setting several environment variables and volume mounts.
-  #   3. It checks if a virtual environment exists in the specified path. If not, it creates one and installs the required Python packages.
-  #   4. It activates the virtual environment.
-  #   5. It runs the specified Python file within the Docker container.
+  #   3. It runs the specified Python file within the Docker container.
   #
   # Usage:
   #   launch_app "file_to_launch.py"
@@ -88,13 +86,7 @@ launch_app() {
     --workdir /src \
     "$image_name:$image_tag" \
     -c "
-      if [ ! -f /src/app/venv/bin/activate ]; then
-        echo 'Performing one-time virtual environment creation in $install_path/app/venv.'
-        python3 -m venv /src/app/venv &&
-        source /src/app/venv/bin/activate &&
-        pip install -q -r /src/requirements.txt > /dev/null 2>&1
-      fi &&
-      source /src/app/venv/bin/activate &&
+      source /venv/bin/activate &&
       python /src/$file_to_launch ${*:2}
       "
 }
