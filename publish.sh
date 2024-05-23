@@ -94,7 +94,7 @@ echo "Git commit's short name: $commit"
 name_version_commit="$image_name:$version-$commit"
 
 # Build the docker container with --no-cache
-docker build --no-cache -t "$name_version_commit" .
+docker build --no-cache --progress plain -t "$name_version_commit" .
 
 if [ $? -ne 0 ]; then
     echo "Build failed. Aborting."
@@ -102,9 +102,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Built docker container with tag: $name_version_commit"
-
-# Tag the docker image
-docker tag "$image_name:latest" "$name_version_commit"
 
 # Check the value of dry_run
 if [ $dry_run -eq 0 ]; then
