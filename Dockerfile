@@ -7,7 +7,14 @@ ENV TERM xterm-256color
 
 COPY . .
 
-#RUN pip install setuptools \
-#    && pip install -r requirements.txt
+RUN /bin/bash -c " \
+        python -m venv /venv \
+        && source /venv/bin/activate \
+        && pip install --upgrade pip \
+        && pip install setuptools \
+        && pip install -r requirements.txt \
+        && python -m unittest discover --verbose -s /src/tests/ \
+        && chmod -R 777 /venv \
+    "
 
 ENTRYPOINT /bin/bash
