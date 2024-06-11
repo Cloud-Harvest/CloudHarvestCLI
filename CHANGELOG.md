@@ -1,3 +1,7 @@
+# 0.2.2
+- Added missing `less` requirement to the Dockerfile
+- Fixed an issue with `report --format csv`
+
 # 0.2.1
 - Added a `__register__.py` to capture definitions and instances.
 - Cleaned up imports to use `__register__.py`
