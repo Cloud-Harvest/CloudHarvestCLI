@@ -1,4 +1,5 @@
 from cmd2 import with_default_category, CommandSet, with_argparser
+from typing import List
 from argparse import Namespace
 from .arguments import report_parser
 from .exceptions import HarvestReportException
@@ -13,7 +14,7 @@ class ReportCommand(CommandSet):
 
         if args.report_name == 'list':
             output = self._list_reports()
-            self._print_report_output(output=output, args=args)
+            self._print_report_output(output=output, args=args, list_separator=', ')
             return
 
         try:
@@ -21,7 +22,7 @@ class ReportCommand(CommandSet):
                 from api import HarvestRequest
                 output = HarvestRequest(path='reports/run', json=args).query()
 
-                if not isinstance(output, dict):
+                if not isinstance(output, list):
                     return
 
                 if args.refresh > 0:
@@ -36,10 +37,6 @@ class ReportCommand(CommandSet):
                                   as_feedback=True)
 
                     self._print_report_output(output=output, args=args)
-
-                    if len(output['data']) == 0:
-                        print_message('No data found. Stopping refresh.', color='WARN', as_feedback=True)
-                        break
 
                     from time import sleep
                     sleep(args.refresh)
@@ -79,35 +76,38 @@ class ReportCommand(CommandSet):
                                           log_level='warning')
 
     @staticmethod
-    def _print_report_output(output: dict, args: Namespace):
+    def _print_report_output(output: List[dict], args: Namespace, **kwargs):
         from text.printing import print_message, print_data
 
-        if not isinstance(output, dict):
+        if not isinstance(output, list):
             return
 
-        error = output.get('error') or {}
-        data = output.get('data') or {}
-        meta = output.get('meta') or {}
-
-        if error:
-            print_message(text=output['error'], color='ERROR', as_feedback=True)
-
-        if data:
-            print_data(data=output['data'],
-                       keys=args.header_order or meta.get('headers'),
-                       output_format='pretty-json' if args.describe else (args.format or 'table'),
-                       flatten=args.flatten,
-                       unflatten=args.unflatten,
-                       page=args.page,
-                       with_record_count=False)
-
-        if meta:
-            if isinstance(meta, list):
-                print_message(text=' '.join(meta), color='WARN', as_feedback=True)
-
-            else:
-                print_message(text=f'{len(data)} '
-                                   + f'records in {meta["duration"]} seconds'
-                                     if meta.get('duration') else '',
-                              color='INFO',
-                              as_feedback=True)
+        for o in output:
+            error = o.get('error') or {}
+            data = o.get('data') or {}
+            meta = o.get('meta') or {}
+    
+            if error:
+                print_message(text=o['error'], color='ERROR', as_feedback=True)
+    
+            if data:
+                print_data(data=o['data'],
+                           keys=args.header_order or meta.get('headers'),
+                           title=meta.get('title'),
+                           output_format='pretty-json' if args.describe else (args.format or 'table'),
+                           flatten=args.flatten,
+                           unflatten=args.unflatten,
+                           page=args.page,
+                           with_record_count=False,
+                           **kwargs)
+    
+            if meta:
+                if isinstance(meta, list):
+                    print_message(text=' '.join(meta), color='WARN', as_feedback=True)
+    
+                else:
+                    print_message(text=f'{len(data)} '
+                                       + f'records in {meta["duration"]} seconds'
+                                         if meta.get('duration') else '',
+                                  color='INFO',
+                                  as_feedback=True)

@@ -21,6 +21,8 @@ report_parser.add_argument('--count', action='store_true', help='Displays a coun
 report_parser.add_argument('--describe', action='store_true',
                            help='Show the report headers, description, and logic.')
 report_parser.add_argument('--limit', type=int, help='Maximum number of records to return.')
+report_parser.add_argument('--performance', action='store_true',
+                           help='Returns performance statistics for the report.')
 report_parser.add_argument('--sort', nargs='*', type=str,
                            help='\n'.join(['Override the sort order for the report.',
                                            'Each entry can be a key or a key with a direction (default \'asc\').',
