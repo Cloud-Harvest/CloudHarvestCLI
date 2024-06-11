@@ -2,33 +2,24 @@ from typing import Any, List
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
 
-from CloudHarvestCorePluginManager import PluginRegistry
+from CloudHarvestCorePluginManager.registry import Registry
 from banner import get_banner
 from configuration import HarvestConfiguration
 from text import console
 from text.styling import colorize, TextColors
 
-"""
-`from commands import *` is required here to implement the Harvest command classes. IDEs will show they are not used 
-but this is misleading - all imported classes which inherit the cmd2.CommandSet are automatically implemented.
-"""
-from commands import *
+# Activate any objects which are registered with the PluginManager Registry or cmd2.Cmd on definition. This is necessary
+# to populate the commands available to a user.
+from __register__ import *
 
 
 class Harvest(Cmd):
     def __init__(self, **kwargs):
-        from text.printing import print_message
-        print_message('Harvest is starting!', color='INFO')
-
         # Load the configuration
         HarvestConfiguration.load()
 
-        # Install and load plugins
-        PluginRegistry.plugins = HarvestConfiguration.plugins or {}
-
-        if PluginRegistry.plugins:
-            print_message('Installing plugins...', color='INFO')
-            PluginRegistry.install(quiet=True)
+        # Load installed plugins
+        Registry.register_objects()
 
         # _banners display loading banners
         self._banner = get_banner(banner_configuration=HarvestConfiguration.banners or {})
