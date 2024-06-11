@@ -1,5 +1,11 @@
 FROM python:3.12-bookworm as python
 
+# Install requirements for the Docker image
+RUN apt-get update  \
+    && apt-get install -y less \
+    && apt-get autoremove -y \
+    && apt-get clean -y
+
 WORKDIR /src
 
 ENV PIP_ROOT_USER_ACTION=ignore
