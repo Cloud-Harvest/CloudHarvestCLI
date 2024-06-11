@@ -46,7 +46,7 @@ class HarvestRequest(Request):
     def __exit__(self, exc_type, exc_val, exc_tb):
         return None
 
-    def query(self) -> dict or tuple:
+    def query(self) -> dict or list or tuple:
         self.status = ProcessStatusCodes.RUNNING
 
         prepared_statement = self.prepare()
@@ -63,12 +63,9 @@ class HarvestRequest(Request):
             response = session.send(prepared_statement)
 
         # TODO: handle urllib3 connection errors
-        except ConnectionError as ce:
-            self.status = ProcessStatusCodes.ERROR
-
+        except Exception as e:
             from exceptions import BaseHarvestException
-            BaseHarvestException(*ce.args, log_level='error')
-            return 400, 'Could not make connection to api.'
+            raise BaseHarvestException(e.args)
 
         else:
             logger.debug(f'{prepared_statement}[{response.status_code}')
