@@ -42,7 +42,16 @@ def to_csv(data: (list or dict), keys: list = None) -> str:
     from io import StringIO
 
     _keys = keys or _identify_keys(data)
-    _data = _flatten(data)
+
+    # We remove keys which are not defined in _keys and add missing keys as unexpected or missing keys raise errors
+    # in the DictWriter.writerows() method.
+    _data = [
+        {
+            k: record.get(k)
+            for k in _keys
+        }
+        for record in data
+    ]
 
     _stream = StringIO()
     dict_writer = DictWriter(_stream, fieldnames=_keys)
