@@ -85,11 +85,17 @@ def to_json(data, keys: list = None, flatten: str = None, unflatten: str = None)
     return result
 
 
-def to_table(data: (list or dict), flatten_data: str = False, keys: list = None, sort_keys: Literal['ASC', 'DESC'] = None) -> Table or str:
+def to_table(data: (list or dict),
+             flatten_data: str = False,
+             keys: list = None,
+             sort_keys: Literal['ASC', 'DESC'] = None,
+             list_separator: str = '\n',
+             title: str = None) -> Table or str:
+
     from rich.table import Table
     from rich.box import SIMPLE
 
-    table = Table(box=SIMPLE)
+    table = Table(box=SIMPLE, title=title)
 
     _keys = keys or _identify_keys(data=data)
 
@@ -100,7 +106,10 @@ def to_table(data: (list or dict), flatten_data: str = False, keys: list = None,
             _keys.sort(reverse=True)
 
     # add columns to table
-    [table.add_column(c, overflow='fold') for c in _keys]
+    [
+        table.add_column(c, overflow='fold')
+        for c in _keys
+    ]
 
     if flatten_data:
         _data = _flatten(data=data, separator=flatten_data)
@@ -108,7 +117,22 @@ def to_table(data: (list or dict), flatten_data: str = False, keys: list = None,
         _data = data
 
     # add data to table
-    [table.add_row(*[str(r.get(k)) for k in _keys]) for r in _data]
+    for row in _data:
+        r = []
+        for k in _keys:
+            v = row.get(k)
+
+            if isinstance(v, dict):
+                from json import dumps
+                r.append(dumps(v))
+
+            elif isinstance(v, list):
+                r.append(list_separator.join([str(s) for s in v]))
+
+            else:
+                r.append(str(v))
+
+        table.add_row(*r)
 
     return table
 

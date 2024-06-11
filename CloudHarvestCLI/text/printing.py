@@ -8,14 +8,16 @@ feedback_console = Console(stderr=True)
 
 
 def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: str = None, unflatten: str = None,
-               output_format: str = 'table', page: bool = False, as_feedback: bool = False,
-               record_index_keyname: str = None, sort_by_keys: list = None, with_record_count: bool = False):
+               list_separator:str = '\n', output_format: str = 'table', page: bool = False, as_feedback: bool = False,
+               record_index_keyname: str = None, sort_by_keys: list = None, title: str = None,
+               with_record_count: bool = False):
     """
     Displays data in one of many formats.
     :param data: printable data
     :param keys: the dictionary keys which shall be displayed (others will be hidden).
     :param flatten: flatten a dictionary based on the provided character
     :param unflatten: unflatten a dictionary based on the provided character
+    :param list_separator: the separator character to use when displaying lists
     :param output_format: the desired output format
     :param page: when true, output will be paged like `less` or `more`
     :param as_feedback: When True, output will use the feedback_console which writes information to stderr.
@@ -62,7 +64,7 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
             output = dumps(to_json(data=data, keys=_keys, flatten=flatten, unflatten=unflatten), default=str)
 
         case 'table':
-            output = to_table(data=data, keys=_keys, flatten_data=flatten, sort_keys=sort_by_keys)
+            output = to_table(data=data, keys=_keys, flatten_data=flatten, list_separator=list_separator, sort_keys=sort_by_keys, title=title)
 
         case _:
             print_message(f'Invalid output format provided: `{output_format}`.', 'ERROR', as_feedback=True)

@@ -8,37 +8,42 @@
 # Initialize our own variables
 image="fionajuneleathers/cloud-harvest-cli"
 image_tag="latest"
+no_network=0
 unused_args=()
 
-# Check for --help, --config, --image, and --tag flags
-for arg in "$@"
-do
-    case $arg in
-        --image)
-        shift # Remove --image from processing
-        image="$1"  # Assign the next argument as the image name
-        shift # Remove the image name from processing
-        ;;
-        --tag)
-        shift # Remove --tag from processing
-        image_tag="$1"  # Assign the next argument as the image tag
-        shift # Remove the image tag from processing
-        ;;
-        --help)
-        echo "Cloud Harvest CLI Launcher"
-        echo "Usage: ./launch.sh [--image image] [--tag image_tag] [--help]"
-        echo ""
-        echo "Options:"
-        echo "--image image: Allows you to specify the Docker image name."
-        echo "--tag image_tag: Allows you to specify the Docker image tag."
-        echo "--help: Displays this help message and exits."
-#        exit 0
-        ;;
-      *)
-      unused_args+=("$1")
-      shift # Remove the unused argument from processing
+# Process the arguments
+while (( "$#" )); do
+  case "$1" in
+    --image)
+      image="$2"
+      shift 2
       ;;
-    esac
+    --no-network)
+      no_network=1
+      shift
+      ;;
+    --tag)
+      image_tag="$2"
+      shift 2
+      ;;
+    --help)
+      echo "Cloud Harvest CLI Launcher"
+      echo "Usage: ./launch.sh [--image image] [--tag image_tag] [--help]"
+      echo ""
+      echo "Docker Options:"
+      echo "--image image: Allows you to specify the Docker image name."
+      echo "--no-network: Disables the use of the 'harvest-network' Docker network."
+      echo "--tag image_tag: Allows you to specify the Docker image tag."
+      echo "--help: Displays this help message and exits."
+      # DO NOT EXIT HERE: --help continues in docker/docker-entrypoint.sh
+      # and will exit there.
+      ;;
+    *)
+      echo "Unused argument: $1"
+      unused_args+=("$1")
+      shift
+      ;;
+  esac
 done
 
 install_path="$(dirname "$(readlink -f "$0")")"
@@ -57,6 +62,19 @@ if [ ! -L "$install_path/harvest" ] && ! which harvest > /dev/null; then
     fi
 fi
 
+# Only include this option if the network exists and the user has not specified --no-network
+network_option=""
+if [ $no_network -eq 0 ]; then
+  harvest_network_id="$(docker network ls | grep 'harvest-network' | awk '{print $1; exit}')"
+
+  if [ -n "$harvest_network_id" ]; then
+    echo "Using 'harvest-network' Docker network: $harvest_network_id"
+    network_option="--network $harvest_network_id"
+
+  fi
+
+fi
+
 docker run -it --rm \
   -e UID="$(id -u)" \
   -e GID="$(id -g) "\
@@ -67,6 +85,7 @@ docker run -it --rm \
   -v "$HOME:/root/host" \
   -v "$HOME/.ssh:/root/.ssh" \
   --privileged \
+  $network_option \
   --user "$(id -u):$(id -g)" \
   --workdir /src \
   "$image:$image_tag" ${unused_args[*]}

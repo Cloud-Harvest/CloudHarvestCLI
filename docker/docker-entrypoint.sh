@@ -7,6 +7,7 @@
 
 # Initialize our own variables
 config=0
+help_requested=0
 rebuild=0
 version=0
 unused_args=()
@@ -29,12 +30,7 @@ do
         shift # Remove --version from processing
         ;;
         --help)
-        echo
-        echo "Cloud Harvest CLI"
-        echo "Usage: harvest|./launcher.sh [--image] [--tag] [--config] [--rebuild] [--version] [--help]"
-        echo
-        echo "--help: Displays this help message and exits."
-        echo
+        echo ""
         echo "Image Options:"
         echo "--image image: Allows you to specify the Docker image name."
         echo "--tag tag: Allows you to specify the Docker image tag."
@@ -43,8 +39,7 @@ do
         echo "--config: Run the configuration script to create the harvest.json file."
         echo "--rebuild: Deletes the entire contents of the './app' directory. Implies --config."
         echo "--version: Prints the version, commit hash, and branch name then exits."
-        echo
-        exit 0
+        help_requested=1
         ;;
       *)
       unused_args+=("$1")
@@ -53,6 +48,14 @@ do
     esac
 done
 
+# Exit if --help was provided
+if [ $help_requested -eq 1 ]; then
+    exit 0
+fi
+
+# Being launching the container
+
+# Display the image name
 echo "Image $HARVEST_IMAGE"
 
 # If --version was provided, print the version from /src/meta.json
@@ -64,8 +67,9 @@ if [ $version -eq 1 ]; then
     exit 0
 fi
 
+# Check if the --rebuild flag was provided; wipe the app directory if it was
 if [ $rebuild -eq 1 ]; then
-    rm -rf /src/appsource /venv/bin/activate && python /src/CloudHarvestCLI "$@"
+    rm -rf /src/appsource
     mkdir -p /src/app
 fi
 
@@ -87,12 +91,18 @@ if [ ! -f "/src/app/harvest.json" ] || [ $config -eq 1 ]; then
     fi
 
     # If --config was provided, exit with a status code of 0
-    if [ $config -eq 1 ]; then
-        echo "--config was specified. Exiting."
+    if [ $config -eq 1 ] || [ $rebuild -eq 1 ]; then
+        echo "You may now restart Harvest"
         exit 0
     fi
 fi
 
-source /venv/bin/activate && python /src/CloudHarvestCLI ${unused_args[*]}
+echo "Harvest is starting!" \
+&& source /venv/bin/activate \
+&& touch -a /src/app/plugins.txt \
+&& echo "Installing plugins..." \
+&& pip install -q -r /src/app/plugins.txt > /dev/null 2>&1 \
+&& echo "Here we go!" \
+&& python /src/CloudHarvestCLI ${unused_args[*]}
 
 echo "Goodbye!"
