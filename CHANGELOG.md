@@ -1,3 +1,6 @@
+# 0.2.4
+- Cleaned up how API errors are written to the terminal
+
 # 0.2.3
 - Update to conform with CloudHarvestCoreTasks 0.3.0
 

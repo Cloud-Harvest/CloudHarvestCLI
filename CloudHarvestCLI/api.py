@@ -3,6 +3,7 @@ from argparse import Namespace
 from typing import Any
 from urllib.request import getproxies
 from requests import Request, Session
+from requests.exceptions import ConnectionError
 from logging import getLogger
 from processes import ProcessStatusCodes
 
@@ -62,10 +63,22 @@ class HarvestRequest(Request):
         try:
             response = session.send(prepared_statement)
 
-        # TODO: handle urllib3 connection errors
+        except ConnectionError as e:
+            from messages import add_message
+            connection_error_class = str(type(e.args[0].reason)).replace("<class 'urllib3.exceptions.", '').replace("'>", '')
+            add_message(__name__, 'ERROR', 'Could not connect to the server:', connection_error_class)
+
+            logger.debug(f'{connection_error_class}: {prepared_statement}: \n' + str(e.args))
+
+            return e
+
         except Exception as e:
-            from exceptions import BaseHarvestException
-            raise BaseHarvestException(e.args)
+            from messages import add_message
+            add_message(__name__, 'ERROR', 'Could not connect to the server:', e.args[0])
+
+            logger.debug(f'{e.args[0]}: {prepared_statement}: \n' + e.args[1])
+
+            return e
 
         else:
             logger.debug(f'{prepared_statement}[{response.status_code}')

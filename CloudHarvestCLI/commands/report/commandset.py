@@ -2,8 +2,6 @@ from cmd2 import with_default_category, CommandSet, with_argparser
 from typing import List
 from argparse import Namespace
 from .arguments import report_parser
-from .exceptions import HarvestReportException
-
 
 @with_default_category('Harvest')
 class ReportCommand(CommandSet):
