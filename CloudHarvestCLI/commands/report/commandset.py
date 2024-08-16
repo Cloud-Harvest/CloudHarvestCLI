@@ -105,7 +105,7 @@ class ReportCommand(CommandSet):
     
                 else:
                     print_message(text=f'{len(data)} '
-                                       + f'records in {meta["duration"]} seconds'
+                                       + f'records in {meta["duration"]:.2f} seconds'
                                          if meta.get('duration') else '',
                                   color='INFO',
                                   as_feedback=True)
