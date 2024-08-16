@@ -119,6 +119,9 @@ bright-pastels:
   WARN: '#FFB347'          # Pastel Orange
   ERROR: '#FF6961'         # Pastel Red
 
+# Flags of the World
+
+
 # Color Vision Deficiency (CVD) Themes
 
 # Protanopia (red-green CVD): This type of CVD makes it hard to see reds, oranges, and yellows.

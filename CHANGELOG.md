@@ -1,3 +1,6 @@
+# 0.2.3
+- Update to conform with CloudHarvestCoreTasks 0.3.0
+
 # 0.2.2
 - Added missing `less` requirement to the Dockerfile
 - Fixed an issue with `report --format csv`
