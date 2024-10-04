@@ -1,3 +1,6 @@
+# 0.2.5
+- Updated to conform with CloudHarvestCorePluginManager 0.2.4
+
 # 0.2.4
 - Cleaned up how API errors are written to the terminal
 - The `report` command will now display result times rounded to 2 decimal places
