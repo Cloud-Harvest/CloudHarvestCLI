@@ -1,5 +1,6 @@
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
+- Updated to Python 3.13
 
 # 0.2.4
 - Cleaned up how API errors are written to the terminal
