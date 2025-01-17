@@ -17,7 +17,6 @@ class ReportCommand(CommandSet):
 
         try:
             while True:
-                from api import HarvestRequest
                 output = HarvestRequest(path='reports/run', json=args).query()
 
                 if not isinstance(output, list):

@@ -18,6 +18,12 @@ class Harvest(Cmd):
         # Load the configuration
         HarvestConfiguration.load()
 
+        from api import Api
+        self.api = Api(host=HarvestConfiguration.api.get('host'),
+                       port=HarvestConfiguration.api.get('port'),
+                       pem=HarvestConfiguration.api.get('pem'),
+                       verify=HarvestConfiguration.api.get('verify'))
+
         # Load installed plugins
         register_objects()
 
