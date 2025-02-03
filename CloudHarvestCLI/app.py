@@ -2,7 +2,7 @@ from typing import Any, List
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
 
-from CloudHarvestCorePluginManager.functions import register_objects
+from CloudHarvestCorePluginManager import register_all
 from banner import get_banner
 from configuration import HarvestConfiguration
 from text import console
@@ -25,7 +25,7 @@ class Harvest(Cmd):
                        verify=HarvestConfiguration.api.get('verify'))
 
         # Load installed plugins
-        register_objects()
+        register_all()
 
         # _banners display loading banners
         self._banner = get_banner(banner_configuration=HarvestConfiguration.banners or {})
