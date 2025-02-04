@@ -25,6 +25,8 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
     :param record_index_keyname: Include a column with the record index
     :param sort_by_keys: A list of keys used to sort the data by
     :param with_record_count: Include a line with the total number of records as defined by data
+    :param title: A title to display above the data
+
     :return: None (prints information to feedback_ or output_console)
     """
 

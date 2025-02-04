@@ -66,9 +66,9 @@ class RemoteBaseCompleter(BaseCompleter):
             query_api = True
 
         if query_api:
-            from api import HarvestRequest
+            from api import request
             self._last_checked = datetime.now()
-            self.result = HarvestRequest(path=self._path, json=self._api_kwargs).query()
+            self.result = request('get', self._path, data=self._api_kwargs)
             self.result = self._run(*args, **kwargs)
 
         return self._select_return_value(*args)

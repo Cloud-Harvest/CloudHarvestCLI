@@ -1,5 +1,5 @@
 from cmd2 import with_default_category, CommandSet, with_argparser, as_subcommand_to
-from .arguments import parser, map_parser, upload_parser
+from .arguments import parser, map_parser
 
 
 @with_default_category('Harvest')
@@ -20,8 +20,8 @@ class CacheCommand(CommandSet):
 
     @as_subcommand_to('cache', 'map', map_parser, help='Display a JSON map of a resource type.')
     def map(self, args):
-        from api import HarvestRequest
-        with HarvestRequest(path='/cache/map', json=args) as request:
+        from api import request
+        with request('get', '/cache/map', data=args) as request:
             result = request.query()
 
         if isinstance(result, dict):
@@ -38,8 +38,3 @@ class CacheCommand(CommandSet):
                 print_message(f"\nReturned {meta.get('collection')} in {meta.get('duration')} seconds.",
                               color='INFO',
                               as_feedback=True)
-
-    @as_subcommand_to('cache', 'upload', upload_parser, help='Upload documents to the database.')
-    def upload(self, args):
-        from app import upload_files
-        upload_files(parent=self, paths=args.paths, api_path='/cache/upload', max_workers=args.max_workers, yes=args.yes)

@@ -16,8 +16,9 @@ class ReportCommand(CommandSet):
             return
 
         try:
+            from api import request
             while True:
-                output = HarvestRequest(path='reports/run', json=args).query()
+                output = request(request_type='get', endpoint='reports/run', data=args)
 
                 if not isinstance(output, list):
                     return
@@ -48,15 +49,16 @@ class ReportCommand(CommandSet):
 
     @staticmethod
     def _list_reports() -> dict or Exception:
-        from api import HarvestRequest
+        from api import request
 
-        report_list = HarvestRequest(path='reports/list').query()
+        report_list = request('get', 'reports/list')
 
         if report_list:
             return report_list
 
         else:
-            return HarvestReportException('No reports found.', log_level='warning')
+            from exceptions import HarvestClientException
+            return HarvestClientException('No reports found.', log_level='warning')
 
     @staticmethod
     def _load_file(filename: str):
@@ -69,7 +71,8 @@ class ReportCommand(CommandSet):
             return converter(filename=filename)
 
         else:
-            return HarvestReportException(f'Harvest does not support files with the `{extension}` extension.',
+            from exceptions import HarvestClientException
+            return HarvestClientException(f'Harvest does not support files with the `{extension}` extension.',
                                           log_level='warning')
 
     @staticmethod

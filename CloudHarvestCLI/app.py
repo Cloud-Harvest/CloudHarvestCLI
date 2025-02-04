@@ -1,4 +1,3 @@
-from typing import Any, List
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
 
@@ -19,10 +18,10 @@ class Harvest(Cmd):
         HarvestConfiguration.load()
 
         from api import Api
-        self.api = Api(host=HarvestConfiguration.api.get('host'),
-                       port=HarvestConfiguration.api.get('port'),
-                       pem=HarvestConfiguration.api.get('pem'),
-                       verify=HarvestConfiguration.api.get('verify'))
+        self.api = Api.config(host=HarvestConfiguration.api.get('host'),
+                              port=HarvestConfiguration.api.get('port'),
+                              pem=HarvestConfiguration.api.get('pem'),
+                              verify=HarvestConfiguration.api.get('verify'))
 
         # Load installed plugins
         register_all()
@@ -45,7 +44,6 @@ class Harvest(Cmd):
         self.register_postcmd_hook(self._post_command_hooks)
 
         # the prompt will always have a new line at the beginning for spacing
-        from os import environ
         self.prompt = get_prompt()
 
         console.print()  # provides a space between the first line and the banner
@@ -120,7 +118,6 @@ class Harvest(Cmd):
 
         t.start()
 
-
 def get_load_version_line() -> str:
     """
     Get the version line for the application.
@@ -175,72 +172,3 @@ def is_dockerized() -> bool:
     """
     from os import path
     return path.exists('/.dockerenv')
-
-
-def upload_files(parent: Any, paths: List[str], api_path: str, max_workers: int = None, yes: bool = False, description: str = None):
-    """
-    Upload files to the cache.
-    Args:
-        parent: Parent process calling the upload.
-        paths: Globs of files to upload.
-        api_path: API path to upload the files to.
-        max_workers: Maximum number of threads to use.
-        yes: Automatically confirm the upload.
-        description: Description of the upload process.
-
-    Returns:
-        None
-    """
-
-    from glob import glob
-    from messages import add_message
-
-    def read_file(p: str) -> List[dict] or None:
-        from json import load
-        try:
-            with open(p, 'r') as stream:
-                return load(stream)
-
-        except Exception as ex:
-            return None
-
-    from processes import ThreadPool
-    from os.path import abspath, expanduser, isfile
-
-    files = [
-        abspath(file)
-        for path in paths
-        for file in glob(abspath(expanduser(path)))
-        if isfile(file) and file.endswith('.json')
-    ]
-
-    from text.printing import print_message
-    if files:
-        from text.inputs import input_boolean
-        confirm = input_boolean(f'Are you sure you want to upload {len(files)} files?', yes_argument=yes)
-
-        if not confirm:
-            print_message('Upload cancelled.', color='WARN')
-            return
-
-        pool = ThreadPool(name='Upload',
-                          description=description or f'Uploading {len(files)} files to the cache',
-                          max_workers=max_workers,
-                          alert_on_complete=True)
-
-        for file in files:
-            j = read_file(file)
-            if isinstance(j, (dict, list)):
-                from api import HarvestRequest
-                with HarvestRequest(path=api_path, method='POST', json=j) as hr:
-                    pool.add(parent=hr, function=hr.query)
-
-            else:
-                add_message(parent, 'WARN', 'Invalid JSON format: ', file)
-
-        pool.attach_progressbar()
-
-    else:
-        print_message('No files found to upload.', color='WARN')
-
-    return

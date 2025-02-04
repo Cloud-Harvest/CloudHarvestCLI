@@ -7,5 +7,5 @@ class ReportNameCompleter(RemoteBaseCompleter):
         try:
             return [r['Name'] for r in self.result[0].get('data', [])]
 
-        except Exception as ex:
+        except Exception:
             return []
