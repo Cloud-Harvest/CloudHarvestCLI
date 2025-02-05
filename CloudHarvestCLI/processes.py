@@ -119,8 +119,8 @@ class ThreadPool(ThreadPoolExecutor):
                 pb.attach()
 
         except KeyboardInterrupt:
-            from text.printing import print_message
-            print_message(f'Sending process {self.name} to background.', color='INFO', as_feedback=True)
+            from messages import add_message
+            add_message(self, 'INFO', True, f'Sending process {self.name} to background.')
             if self.alert_on_complete:
                 self.start_monitor_thread()
 
@@ -161,8 +161,8 @@ class ThreadPool(ThreadPoolExecutor):
         return len(self.futures)
 
     def on_complete(self):
-        from text.printing import print_message
-        print_message(f'{self.name} job has completed.', color='INFO', as_feedback=True)
+        from messages import add_message
+        add_message(self, 'INFO', True, f'{self.name} job has completed.')
 
     def start_monitor_thread(self):
         from threading import Thread
@@ -261,8 +261,8 @@ class HarvestProgressBar:
                     sleep(.25)
 
         except KeyboardInterrupt:
-            from text.printing import print_message
-            print_message(f'Sending thread `{self.pool.name}` to background.', color='INFO', as_feedback=True)
+            from messages import add_message
+            add_message(self, 'INFO', True, f'Sending thread `{self.pool.name}` to background.')
 
 
 if __name__ == '__main__':
