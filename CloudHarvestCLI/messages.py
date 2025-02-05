@@ -1,13 +1,26 @@
 # TODO: remote messages from the server
 from typing import Any, Generator, Tuple
-
+from text.styling import VALID_TEXT_COLOR_NAMES
 
 class Messages:
     queue = []
 
 
-def add_message(parent: Any, style: str, *args):
-    new_message = (parent, style, ' '.join([str(a) for a in args]))
+def add_message(parent: Any, style: VALID_TEXT_COLOR_NAMES, as_feedback: bool, *args):
+    """
+    Adds a message to the message queue.
+
+    Arguments
+    parent (Any): The parent object of the message.
+    style (VALID_TEXT_COLOR_NAMES): The style of the message.
+    as_feedback (bool): Whether the message should be displayed as feedback.
+    args: The message arguments.
+
+    Returns
+    (Messages) The Messages object.
+    """
+
+    new_message = (parent, style, as_feedback, ' '.join([str(a) for a in args]))
 
     # prevent spamming of the same message
     if new_message not in Messages.queue:
@@ -16,7 +29,7 @@ def add_message(parent: Any, style: str, *args):
     return Messages
 
 
-def read_messages() -> Generator[Tuple[Any, str, str], None, None]:
+def read_messages() -> Generator[Tuple[Any, VALID_TEXT_COLOR_NAMES, bool, str], None, None]:
     """
     Reads messages from the queue, removing them in the process.
     :return: Generator yielding tuples of (parent, style, message)
@@ -26,19 +39,14 @@ def read_messages() -> Generator[Tuple[Any, str, str], None, None]:
         yield Messages.queue.pop(0)
 
 
-if __name__ == '__main__':
-    default_color_names = ['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
-    [
-        add_message(__name__, color, f'test message {color}')
-        for color in default_color_names
-    ]
+def print_all_messages():
+    """
+    Prints all messages in the queue.
+    :return: None
+    """
 
-    expected_queue = [(__name__, color, f'test message {color}') for color in default_color_names]
+    from text.printing import print_message
+    for message in read_messages():
+        source, color, as_feedback, text = message
 
-    assert Messages.queue == expected_queue
-
-    read_result = read_messages()
-    assert read_result == expected_queue and Messages.queue == []
-
-    from text.printing import print_text
-    [print_text(text=message[2], color=message[1]) for message in read_result]
+        print_message(text=text, color=color, as_feedback=as_feedback)
