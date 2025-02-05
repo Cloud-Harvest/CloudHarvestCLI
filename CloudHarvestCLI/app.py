@@ -18,10 +18,14 @@ class Harvest(Cmd):
         HarvestConfiguration.load()
 
         from api import Api
-        self.api = Api.config(host=HarvestConfiguration.api.get('host'),
-                              port=HarvestConfiguration.api.get('port'),
-                              pem=HarvestConfiguration.api.get('pem'),
-                              verify=HarvestConfiguration.api.get('verify'))
+        Api.config(host=HarvestConfiguration.api.get('host'),
+                   port=HarvestConfiguration.api.get('port'),
+                   pem=HarvestConfiguration.api.get('pem'),
+                   verify=HarvestConfiguration.api.get('verify'))
+
+        if not Api.verify:
+            from messages import add_message
+            add_message(self, 'WARN', True, 'API SSL verification is disabled. This is a security risk.')
 
         # Load installed plugins
         register_all()
@@ -51,12 +55,11 @@ class Harvest(Cmd):
         if self._banner[1]:
             console.print(self._banner[1])
 
-        # print any messages generated during load
-        from messages import read_messages
-        from text.printing import print_message
-        [print_message(text=message[2], color=message[1], as_feedback=True) for message in read_messages()]
-
         self.pfeedback(get_load_version_line())
+
+        # print any messages generated during load
+        from messages import print_all_messages
+        print_all_messages()
 
         # start background processes
         self.last_command_timestamp = None
@@ -74,12 +77,8 @@ class Harvest(Cmd):
 
     def _post_command_hooks(self, data: PostcommandData) -> PostcommandData:
         try:
-            from messages import read_messages
-            from text.printing import print_message
-            for message in read_messages():
-                source, color, text = message
-
-                print_message(text=text, color=color, as_feedback=True)
+            from messages import print_all_messages
+            print_all_messages()
 
         finally:
             from datetime import datetime
@@ -90,18 +89,13 @@ class Harvest(Cmd):
     def _start_notify_unread_messages_thread(self):
         def _thread():
             from datetime import datetime
-            from messages import Messages, read_messages
-            from text.printing import print_message
+            from messages import Messages, print_all_messages
             from time import sleep
             while True:
-                messages = len(Messages.queue)
 
                 if self.last_command_timestamp:
-                    if messages and self.last_command_timestamp > (datetime.now().timestamp() + 300):
-                        for message in read_messages():
-                            print_message(text=f'{message[0]}: {message[2]}',
-                                          color=message[1],
-                                          as_feedback=True)
+                    if Messages.queue and self.last_command_timestamp > (datetime.now().timestamp() + 300):
+                        print_all_messages()
 
                 sleep(1)
 
