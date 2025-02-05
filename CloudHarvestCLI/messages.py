@@ -1,5 +1,5 @@
 # TODO: remote messages from the server
-from typing import Any, List
+from typing import Any, Generator, Tuple
 
 
 class Messages:
@@ -16,21 +16,14 @@ def add_message(parent: Any, style: str, *args):
     return Messages
 
 
-def read_messages() -> List[tuple]:
+def read_messages() -> Generator[Tuple[Any, str, str], None, None]:
     """
-    :return: (parent, style, message)
+    Reads messages from the queue, removing them in the process.
+    :return: Generator yielding tuples of (parent, style, message)
     """
 
-    # get the last message position
-    last_message = len(Messages.queue)
-
-    # copy the messages to be read out of the queue
-    messages = Messages.queue[0: last_message]
-
-    # remove the copied messages from the queue
-    del Messages.queue[0: last_message]
-
-    return messages
+    while Messages.queue:
+        yield Messages.queue.pop(0)
 
 
 if __name__ == '__main__':
@@ -47,5 +40,5 @@ if __name__ == '__main__':
     read_result = read_messages()
     assert read_result == expected_queue and Messages.queue == []
 
-    from text.printing import print_message
-    [print_message(text=message[2], color=message[1]) for message in read_result]
+    from text.printing import print_text
+    [print_text(text=message[2], color=message[1]) for message in read_result]
