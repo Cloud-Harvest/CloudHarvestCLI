@@ -12,7 +12,7 @@ class ServicesCommand(CommandSet):
 
     @as_subcommand_to('services', 'attach', services_attach_parser, help='Attach a progress bar to a running job.')
     def attach(self, args):
-        from text.printing import print_message
+        from messages import print_message
 
         for process in ConcurrentProcesses.objects:
             if process.name == args.name and hasattr(process, 'attach_progressbar'):
@@ -25,7 +25,7 @@ class ServicesCommand(CommandSet):
 
     @as_subcommand_to('services', 'kill', services_kill_parser, help='Stop jobs.')
     def kill(self, args):
-        from text.printing import print_message
+        from messages import print_message
 
         for process in ConcurrentProcesses.objects:
             if process.name in args.names and hasattr(process, 'kill'):

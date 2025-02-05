@@ -8,7 +8,7 @@ class ReportCommand(CommandSet):
 
     @with_argparser(report_parser)
     def do_report(self, args):
-        from text.printing import print_message
+        from messages import print_message
 
         if args.report_name == 'list':
             output = self._list_reports()
@@ -51,7 +51,7 @@ class ReportCommand(CommandSet):
     def _list_reports() -> dict or Exception:
         from api import request
 
-        report_list = request('get', 'reports/list')
+        report_list = request('get', 'tasks/list_available_tasks/reports').get('response')
 
         if report_list:
             return report_list
@@ -77,7 +77,8 @@ class ReportCommand(CommandSet):
 
     @staticmethod
     def _print_report_output(output: List[dict], args: Namespace, **kwargs):
-        from text.printing import print_message, print_data
+        from text.printing import print_data
+        from messages import print_message
 
         if not isinstance(output, list):
             return
