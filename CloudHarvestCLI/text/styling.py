@@ -1,7 +1,7 @@
 from typing import Literal
 from rich.text import Text, Style
 
-DEFAULT_TEST_COLOR_NAMES = Literal['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
+VALID_TEXT_COLOR_NAMES = Literal['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
 
 
 class TextColors:

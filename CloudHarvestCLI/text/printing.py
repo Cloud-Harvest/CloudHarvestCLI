@@ -1,7 +1,8 @@
 from rich.console import Console
 from typing import List
+
+from text.styling import VALID_TEXT_COLOR_NAMES
 from .formatting import to_csv, to_json, to_table
-from .styling import DEFAULT_TEST_COLOR_NAMES
 
 output_console = Console()
 feedback_console = Console(stderr=True)
@@ -86,7 +87,7 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
         print_message(f'records: {len(data)}', color='INFO', as_feedback=True)
 
 
-def print_message(text: str, color: DEFAULT_TEST_COLOR_NAMES, as_feedback: bool = False):
+def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = False):
     """
     Prints a rich formatted string.
     :param text: Text to print
@@ -97,7 +98,7 @@ def print_message(text: str, color: DEFAULT_TEST_COLOR_NAMES, as_feedback: bool 
     """
 
     from rich.style import Style
-    from .styling import TextColors
+    from text.styling import TextColors
 
     if as_feedback:
         console = feedback_console
