@@ -45,8 +45,30 @@ def print_all_messages():
     :return: None
     """
 
-    from text.printing import print_message
     for message in read_messages():
         source, color, as_feedback, text = message
 
         print_message(text=text, color=color, as_feedback=as_feedback)
+
+
+def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = False):
+    """
+    Prints a rich formatted string.
+    :param text: Text to print
+    :param color: Color code to use
+    :param as_feedback: When True, output will use the feedback_console which writes information to stderr.
+    This distinction is important when deciding if information should be capture by terminal routing operators such as >
+    :return: None (prints information to feedback_ or output_console)
+    """
+
+    from rich.style import Style
+    from text.styling import TextColors
+    from text.printing import feedback_console, output_console
+
+    if as_feedback:
+        console = feedback_console
+
+    else:
+        console = output_console
+
+    console.print(text, style=Style(color=getattr(TextColors, color.upper())))
