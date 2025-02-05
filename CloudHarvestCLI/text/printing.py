@@ -1,7 +1,6 @@
 from rich.console import Console
 from typing import List
 
-from text.styling import VALID_TEXT_COLOR_NAMES
 from .formatting import to_csv, to_json, to_table
 
 output_console = Console()
@@ -30,6 +29,8 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
 
     :return: None (prints information to feedback_ or output_console)
     """
+
+    from messages import add_message
 
     if as_feedback:
         console = feedback_console
@@ -70,7 +71,7 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
             output = to_table(data=data, keys=_keys, flatten_data=flatten, list_separator=list_separator, sort_keys=sort_by_keys, title=title)
 
         case _:
-            print_message(f'Invalid output format provided: `{output_format}`.', 'ERROR', as_feedback=True)
+            add_message(None,'ERROR',True, f'Invalid output format provided: `{output_format}`.')
             return
 
     if page:
@@ -84,26 +85,4 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
         console.print_json(output, indent=2, highlight=True) if 'json' in output_format else console.print(output)
 
     if with_record_count and isinstance(data, list):
-        print_message(f'records: {len(data)}', color='INFO', as_feedback=True)
-
-
-def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = False):
-    """
-    Prints a rich formatted string.
-    :param text: Text to print
-    :param color: Color code to use
-    :param as_feedback: When True, output will use the feedback_console which writes information to stderr.
-    This distinction is important when deciding if information should be capture by terminal routing operators such as >
-    :return: None (prints information to feedback_ or output_console)
-    """
-
-    from rich.style import Style
-    from text.styling import TextColors
-
-    if as_feedback:
-        console = feedback_console
-
-    else:
-        console = output_console
-
-    console.print(text, style=Style(color=getattr(TextColors, color.upper())))
+        add_message(None,'INFO', True, f'records: {len(data)}')
