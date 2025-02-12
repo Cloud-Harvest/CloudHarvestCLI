@@ -1,6 +1,8 @@
 from cmd2 import with_default_category, CommandSet, with_argparser
 from typing import List
 from argparse import Namespace
+
+from messages import add_message
 from .arguments import report_parser
 
 @with_default_category('Harvest')
@@ -12,15 +14,46 @@ class ReportCommand(CommandSet):
 
         if args.report_name == 'list':
             output = self._list_reports()
-            self._print_report_output(output=output, args=args, list_separator=', ')
+
+            self._print_report_output(report_data=output, args=args, list_separator=', ')
             return
 
         try:
             from api import request
             while True:
-                output = request(request_type='get', endpoint='reports/run', data=args)
+                endpoint = f'tasks/queue/1/reports/{args.report_name}'
+                args_as_dict = {k: v for k, v in vars(args).items() if not k.startswith('cmd2')}
+                output = request(request_type='post', endpoint=endpoint, data=args_as_dict)
 
-                if not isinstance(output, list):
+                if output.get('reason') != 'OK':
+                    add_message(self, 'ERROR', True, 'Could not generate the report.', output.get('reason'))
+                    return
+
+                request_id = output.get('result', {}).get('id')
+
+                # Check the API for the task results
+                from datetime import datetime
+                timeout = 15
+                start_time = datetime.now()
+                while True:
+                    output = request(request_type='get', endpoint=f'/tasks/get_task_results/{request_id}')
+                    reason = output.get('reason')
+
+                    match reason:
+                        case 'OK':
+                            break
+
+                        case 'NOT FOUND':
+                            from time import sleep
+                            sleep(1)
+
+                    if (datetime.now() - start_time).total_seconds() > timeout:
+                        add_message(self, 'WARN', True, f'Task {request_id} took too long to complete.')
+                        return
+
+                output = output.get('result') or {}
+
+                if not isinstance(output.get('data'), list):
                     return
 
                 if args.refresh > 0:
@@ -34,13 +67,13 @@ class ReportCommand(CommandSet):
                                   color='INFO',
                                   as_feedback=True)
 
-                    self._print_report_output(output=output, args=args)
+                    self._print_report_output(report_data=output, args=args)
 
                     from time import sleep
                     sleep(args.refresh)
 
                 else:
-                    self._print_report_output(output=output, args=args)
+                    self._print_report_output(report_data=output, args=args)
                     break
 
         except KeyboardInterrupt:
@@ -48,17 +81,12 @@ class ReportCommand(CommandSet):
             return
 
     @staticmethod
-    def _list_reports() -> dict or Exception:
+    def _list_reports() -> list:
         from api import request
 
-        report_list = request('get', 'tasks/list_available_tasks/reports').get('response')
+        report_list = request('get', 'tasks/list_available_tasks/reports').get('result') or []
 
-        if report_list:
-            return report_list
-
-        else:
-            from exceptions import HarvestClientException
-            return HarvestClientException('No reports found.', log_level='warning')
+        return report_list or []
 
     @staticmethod
     def _load_file(filename: str):
@@ -76,23 +104,27 @@ class ReportCommand(CommandSet):
                                           log_level='warning')
 
     @staticmethod
-    def _print_report_output(output: List[dict], args: Namespace, **kwargs):
+    def _print_report_output(report_data: List[dict] or dict, args: Namespace, **kwargs):
         from text.printing import print_data
         from messages import print_message
 
-        if not isinstance(output, list):
-            return
+        if isinstance(report_data, list):
+            # Recursively print each report in the list
+            [
+                ReportCommand._print_report_output(report_data=report, args=args, **kwargs)
+                for report in report_data
+            ]
 
-        for o in output:
-            error = o.get('error') or {}
-            data = o.get('data') or {}
-            meta = o.get('meta') or {}
+        elif isinstance(report_data, dict):
+            error = report_data.get('error') or {}
+            data = report_data.get('data') or {}
+            meta = report_data.get('meta') or {}
     
             if error:
-                print_message(text=o['error'], color='ERROR', as_feedback=True)
+                print_message(text=report_data['error'], color='ERROR', as_feedback=True)
     
             if data:
-                print_data(data=o['data'],
+                print_data(data=report_data['data'],
                            keys=args.header_order or meta.get('headers'),
                            title=meta.get('title'),
                            output_format='pretty-json' if args.describe else (args.format or 'table'),

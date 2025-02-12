@@ -1,7 +1,9 @@
-from typing import Literal
+from typing import Any, Literal
 from logging import getLogger
 
 from requests import JSONDecodeError
+
+from messages import add_message
 
 logger = getLogger('harvest')
 
@@ -36,7 +38,7 @@ class Api:
         Api.verify = verify
 
     @staticmethod
-    def safe_decode(response):
+    def safe_decode(response) -> Any:
         """
         Safely decodes a response from the API.
 
@@ -57,7 +59,7 @@ class Api:
             return result
 
 
-def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str, data: dict = None, **requests_kwargs) -> dict:
+def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str, data: dict = None, **requests_kwargs) -> Any:
     """
     Makes an API request to the CloudHarvest API.
 
@@ -70,11 +72,7 @@ def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str
     data: (dict) The data to send with the request.
 
     Returns
-    {
-        'id': (str) The request ID.
-        'status_code': (int) The status code of the response.
-        'response': (dict) The response from the API.
-    }
+    (Any) The response from the API.
     """
 
     from uuid import uuid4
@@ -83,8 +81,13 @@ def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str
     response = None
 
     try:
+        # Disable SSL warnings which are raised when using self-signed certificates
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
         from requests.api import request
         logger.debug(f'request:{request_id}: {Api.host}:{Api.port}/{endpoint}')
+
         response = request(method=request_type,
                            url=f'https://{Api.host}:{Api.port}/{endpoint}',
                            cert=Api.pem,
@@ -96,22 +99,13 @@ def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str
                            **requests_kwargs)
 
     except Exception as e:
-        logger.error(f'request:{request_id}:An unexpected error occurred: {e}')
+        add_message(None,'ERROR', True, f'An unexpected error occurred: {e}')
+        logger.debug(f'request:{request_id}:An unexpected error occurred: {e}')
 
-    finally:
-        result = {
-            'id': request_id,
-            'response': Api.safe_decode(response),
-            'url': f'https://{Api.host}:{Api.port}/{endpoint}'
-        }
+    else:
+        if response.status_code != 200:
+            add_message(None,'ERROR', True, f'An unexpected error occurred: {response.text}')
+            logger.debug(f'request:{request_id}:An unexpected error occurred: {response}')
 
-        # Additional fields to include in the response
-        response_fields = (
-            ('status_code', 500),
-            ('reason', 'Internal Server Error')
-        )
-
-        for code, default in response_fields:
-            result[code] = getattr(response, code, default)
-
-        return result
+        else:
+            return Api.safe_decode(response)

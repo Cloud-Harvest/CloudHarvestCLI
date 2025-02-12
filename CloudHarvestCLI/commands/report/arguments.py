@@ -4,7 +4,7 @@ from commands.arguments.parts import *
 from .completers import *
 
 
-report_name_completer = ReportNameCompleter(path='/reports/list')
+report_name_completer = ReportNameCompleter(path='/tasks/list_available_tasks/reports')
 report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
                                    parents=[
                                        key_manipulation_parser,
