@@ -119,7 +119,8 @@ class ReportCommand(CommandSet):
             error = report_data.get('error') or {}
             data = report_data.get('data') or {}
             meta = report_data.get('meta') or {}
-    
+            metrics = report_data.get('metrics') or {}
+
             if error:
                 print_message(text=report_data['error'], color='ERROR', as_feedback=True)
     
@@ -139,8 +140,6 @@ class ReportCommand(CommandSet):
                     print_message(text=' '.join(meta), color='WARN', as_feedback=True)
     
                 else:
-                    print_message(text=f'{len(data)} '
-                                       + f'records in {meta["duration"]:.2f} seconds'
-                                         if meta.get('duration') else '',
+                    print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
                                   color='INFO',
                                   as_feedback=True)
