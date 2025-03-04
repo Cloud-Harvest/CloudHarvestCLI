@@ -33,7 +33,6 @@ class ReportCommand(CommandSet):
 
                 # Check the API for the task results
                 from datetime import datetime
-                timeout = 15
                 start_time = datetime.now()
                 while True:
                     output = request(request_type='get', endpoint=f'/tasks/get_task_results/{request_id}')
@@ -47,7 +46,7 @@ class ReportCommand(CommandSet):
                             from time import sleep
                             sleep(1)
 
-                    if (datetime.now() - start_time).total_seconds() > timeout:
+                    if (datetime.now() - start_time).total_seconds() > args.timeout:
                         add_message(self, 'WARN', True, f'Task {request_id} took too long to complete.')
                         return
 
