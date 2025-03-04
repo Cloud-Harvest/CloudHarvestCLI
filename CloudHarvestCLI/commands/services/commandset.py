@@ -1,6 +1,6 @@
 from cmd2 import with_default_category, CommandSet, with_argparser, as_subcommand_to
 from processes import ConcurrentProcesses
-from .arguments import parser, services_attach_parser, services_kill_parser, services_list_parser
+from CloudHarvestCLI.commands.services.arguments import parser, services_attach_parser, services_kill_parser, services_list_parser
 
 
 @with_default_category('Harvest')

@@ -15,4 +15,4 @@ that reason, is it not necessary to wrap cmd2.CommandSets with the `register_def
 """
 
 # import commands
-from commands import *
+from CloudHarvestCLI.commands import *

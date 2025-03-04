@@ -1,6 +1,6 @@
 from logging import getLogger
 from typing import List
-from commands.arguments.completers import RemoteBaseCompleter
+from CloudHarvestCLI.commands.arguments.completers import RemoteBaseCompleter
 
 logger = getLogger('harvest')
 

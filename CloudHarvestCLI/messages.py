@@ -1,6 +1,6 @@
 # TODO: remote messages from the server
 from typing import Any, Generator, Tuple
-from text.styling import VALID_TEXT_COLOR_NAMES
+from CloudHarvestCLI.text.styling import VALID_TEXT_COLOR_NAMES
 
 class Messages:
     queue = []

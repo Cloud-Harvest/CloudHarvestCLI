@@ -2,8 +2,8 @@ from cmd2 import with_default_category, CommandSet, with_argparser
 from typing import List
 from argparse import Namespace
 
-from messages import add_message
-from .arguments import report_parser
+from CloudHarvestCLI.messages import add_message
+from CloudHarvestCLI.commands.report.arguments import report_parser
 
 @with_default_category('Harvest')
 class ReportCommand(CommandSet):
@@ -139,7 +139,7 @@ class ReportCommand(CommandSet):
                 if isinstance(meta, list):
                     print_message(text=' '.join(meta), color='WARN', as_feedback=True)
     
-                else:
+            if metrics and metrics[-1].get('Duration'):
                     print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
                                   color='INFO',
                                   as_feedback=True)

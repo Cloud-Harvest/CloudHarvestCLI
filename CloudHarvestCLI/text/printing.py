@@ -1,7 +1,7 @@
 from rich.console import Console
 from typing import List
 
-from .formatting import to_csv, to_json, to_table
+from CloudHarvestCLI.text.formatting import to_csv, to_json, to_table
 
 output_console = Console()
 feedback_console = Console(stderr=True)

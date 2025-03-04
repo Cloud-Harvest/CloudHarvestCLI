@@ -1,5 +1,5 @@
 from typing import List
-from commands.arguments.completers import BaseCompleter
+from CloudHarvestCLI.commands.arguments.completers import BaseCompleter
 
 
 class BannerCompleter(BaseCompleter):

@@ -1,6 +1,6 @@
 from rich.prompt import Confirm, Prompt
 from rich.text import Text
-from .styling import TextColors
+from CloudHarvestCLI.text.styling import TextColors
 from typing import List
 
 

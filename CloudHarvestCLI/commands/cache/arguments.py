@@ -1,11 +1,11 @@
 from cmd2 import Cmd2ArgumentParser
 from cmd2 import Cmd
 
-from commands.arguments.parts import pstar_parser_optional, thread_parser, yes_parser
+from CloudHarvestCLI.commands.arguments.parts import pstar_parser_optional, thread_parser, yes_parser
 from rich_argparse import RawTextRichHelpFormatter
 
 # completers
-from .completers import PlatformRemoteCompleter, ServiceRemoteCompleter, TypeRemoteCompleter
+from CloudHarvestCLI.commands.cache.completers import PlatformRemoteCompleter, ServiceRemoteCompleter, TypeRemoteCompleter
 platform_remote_completer = PlatformRemoteCompleter(path='/cache/get/data_collections')
 service_remote_completer = ServiceRemoteCompleter(path='/cache/get/data_collections')
 type_remote_completer = TypeRemoteCompleter(path='/cache/get/data_collections')

@@ -1,7 +1,7 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
-from commands.arguments.parts import *
-from .completers import *
+from CloudHarvestCLI.commands.arguments.parts import *
+from CloudHarvestCLI.commands.report.completers import *
 
 
 report_name_completer = ReportNameCompleter(path='/tasks/list_available_tasks/reports')

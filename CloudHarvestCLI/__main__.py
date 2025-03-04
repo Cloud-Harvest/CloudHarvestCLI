@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from app import Harvest
+from CloudHarvestCLI.app import Harvest
 
 
 if __name__ == '__main__':

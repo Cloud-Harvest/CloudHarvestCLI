@@ -1,7 +1,7 @@
 from cmd2 import with_default_category, CommandSet, with_argparser
 from rich.text import Text
 
-from .arguments import banner_parser
+from CloudHarvestCLI.commands.banner.arguments import banner_parser
 
 
 @with_default_category('Harvest')

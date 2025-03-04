@@ -1,1 +1,1 @@
-from .commandset import BannerCommand
+from CloudHarvestCLI.commands.banner.commandset import BannerCommand

@@ -3,7 +3,7 @@ from logging import getLogger
 
 from requests import JSONDecodeError
 
-from messages import add_message
+from CloudHarvestCLI.messages import add_message
 
 logger = getLogger('harvest')
 

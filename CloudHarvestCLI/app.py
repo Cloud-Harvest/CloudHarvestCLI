@@ -2,14 +2,14 @@ from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
 
 from CloudHarvestCorePluginManager import register_all
-from banner import get_banner
-from configuration import HarvestConfiguration
-from text import console
-from text.styling import colorize, TextColors
+from CloudHarvestCLI.banner import get_banner
+from CloudHarvestCLI.configuration import HarvestConfiguration
+from CloudHarvestCLI.text import console
+from CloudHarvestCLI.text.styling import colorize, TextColors
 
 # Activate any objects which are registered with the PluginManager Registry or cmd2.Cmd on definition. This is necessary
 # to populate the commands available to a user.
-from __register__ import *
+from CloudHarvestCLI.__register__ import *
 
 
 class Harvest(Cmd):
