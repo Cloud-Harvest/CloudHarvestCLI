@@ -30,6 +30,6 @@ report_parser.add_argument('--sort', nargs='*', type=str,
                                            'When not provided, the report will use the default sort order based on'
                                            ' the visible fields.']))
 report_parser.add_argument('--timeout', type=int, default=15,
-                           help='The maximum number of seconds to wait for the report to complete. If the timeout is'
-                                ' exceeded, the user will be returned to the prompt. The report itself may still'
-                                ' complete on the remote agent. Check the `harvest.jobs` report for a list of jobs.')
+                           help='\n'.join(['The maximum number of seconds to wait for the report to complete. If the timeout is',
+                                ' exceeded, the user will be returned to the prompt. The report itself may still',
+                                ' complete on the remote agent. Check the `harvest.jobs` report for a list of jobs.']))
