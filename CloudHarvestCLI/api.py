@@ -1,102 +1,111 @@
-from configuration import HarvestConfiguration
-from argparse import Namespace
-from typing import Any
-from urllib.request import getproxies
-from requests import Request, Session
-from requests.exceptions import ConnectionError
+from typing import Any, Literal
 from logging import getLogger
-from processes import ProcessStatusCodes
+
+from requests import JSONDecodeError
+
+from CloudHarvestCLI.messages import add_message
 
 logger = getLogger('harvest')
 
 
-class HarvestRequest(Request):
-    def __init__(self, host: str = None, path: str = None, method: str = 'GET', json: Any = None):
-        from urllib.parse import urljoin
-        url = ''.join([HarvestConfiguration.api.get('protocol'),
-                       '://',
-                       host or HarvestConfiguration.api.get('host'),
-                       ':',
-                       str(HarvestConfiguration.api.get('port') or 8000),
-                       '/',
-                       path or ''])
+class Api:
+    """
+    Represents an Api object that can be used to make requests to the CloudHarvest API.
+    """
 
-        if isinstance(json, str):
-            str_json = json
+    host = None
+    port = None
+    token = None
+    pem = None
+    verify = None
 
-        elif isinstance(json, Namespace):
-            from json import dumps
-            str_json = dumps({
-                k: v for k, v in vars(json).items()
-                if not k.startswith('cmd2')
-            }, default=str)
+    @staticmethod
+    def config(host: str, port: int, token: str = None, pem: str = None, verify: (bool, str) = False):
+        """
+        Configures the Api object.
 
-        else:
-            from json import dumps
-            str_json = dumps(json, default=str)
+        Arguments
+        host: (str) The host of the API.
+        port: (int) The port of the API.
+        token: (str, optional) The token to authenticate with the API.
+        pem: (str, optional) The certificate to use for SSL.
+        verify: (bool, str, optional) Whether to verify the SSL certificate.
+        """
+        Api.host = host
+        Api.port = port
+        Api.token = token
+        Api.pem = pem
+        Api.verify = verify
 
-        super().__init__(url=url,
-                         method=method.upper(),
-                         json=str_json)
+    @staticmethod
+    def safe_decode(response) -> Any:
+        """
+        Safely decodes a response from the API.
 
-        self.status = ProcessStatusCodes.INITIALIZED
+        Arguments
+        response: (dict) The response to decode.
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        return None
-
-    def query(self) -> dict or list or tuple:
-        self.status = ProcessStatusCodes.RUNNING
-
-        prepared_statement = self.prepare()
-
-        session = Session()
-
-        # include proxy configuration (if any)
-        session.proxies = getproxies()
-
-        # TODO: authentication methods (like getting a token)
-        # session.auth = get_auth('')
-
+        Returns
+        (dict) The decoded response.
+        """
+        result = None
         try:
-            response = session.send(prepared_statement)
+            result = response.json()
 
-        except ConnectionError as e:
-            from messages import add_message
-            connection_error_class = str(type(e.args[0].reason)).replace("<class 'urllib3.exceptions.", '').replace("'>", '')
-            add_message(__name__, 'ERROR', 'Could not connect to the server:', connection_error_class)
-
-            logger.debug(f'{connection_error_class}: {prepared_statement}: \n' + str(e.args))
-
-            return e
-
-        except Exception as e:
-            from messages import add_message
-            add_message(__name__, 'ERROR', 'Could not connect to the server:', e.args[0])
-
-            logger.debug(f'{e.args[0]}: {prepared_statement}: \n' + e.args[1])
-
-            return e
-
-        else:
-            logger.debug(f'{prepared_statement}[{response.status_code}')
-
-            if 200 <= response.status_code <= 299:
-                return response.json()
-
-            else:
-                from messages import add_message
-                add_message(__name__, 'WARN', response.status_code, response.reason)
-
-                return response.status_code, response.reason
+        except JSONDecodeError as e:
+            result = f'Failed to decode response JSON: {e}'
 
         finally:
-            self.status = ProcessStatusCodes.COMPLETE
+            return result
 
 
-def get_auth(method: str) -> tuple:
-    result = ()
+def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str, data: dict = None, **requests_kwargs) -> Any:
+    """
+    Makes an API request to the CloudHarvest API.
 
-    return result
+    Arguments
+    host: (str) The host of the API.
+    port: (int) The port of the API.
+    token: (str) The token to authenticate with the API.
+    request_type: (str) The type of request to make (GET, POST, PUT, DELETE).
+    endpoint: (str) The endpoint to make the request to.
+    data: (dict) The data to send with the request.
+
+    Returns
+    (Any) The response from the API.
+    """
+
+    from uuid import uuid4
+    request_id = str(uuid4())
+
+    response = None
+
+    try:
+        # Disable SSL warnings which are raised when using self-signed certificates
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+        from requests.api import request
+        logger.debug(f'request:{request_id}: {Api.host}:{Api.port}/{endpoint}')
+
+        response = request(method=request_type,
+                           url=f'https://{Api.host}:{Api.port}/{endpoint}',
+                           cert=Api.pem,
+                           headers={
+                               'Authorization': f'Bearer {Api.token}'
+                           },
+                           json=data,
+                           verify=Api.verify,
+                           **requests_kwargs)
+
+    except Exception as e:
+        add_message(None,'ERROR', True, f'An unexpected error occurred: {e}')
+        logger.debug(f'request:{request_id}:An unexpected error occurred: {e}')
+
+    else:
+        if response.status_code != 200:
+            add_message(None,'ERROR', True, f'An unexpected error occurred: {response.text}')
+            logger.debug(f'request:{request_id}:An unexpected error occurred: {response}')
+
+        else:
+            return Api.safe_decode(response)

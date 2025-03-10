@@ -1,13 +1,26 @@
 # TODO: remote messages from the server
-from typing import Any, List
-
+from typing import Any, Generator, Tuple
+from CloudHarvestCLI.text.styling import VALID_TEXT_COLOR_NAMES
 
 class Messages:
     queue = []
 
 
-def add_message(parent: Any, style: str, *args):
-    new_message = (parent, style, ' '.join([str(a) for a in args]))
+def add_message(parent: Any, style: VALID_TEXT_COLOR_NAMES, as_feedback: bool, *args):
+    """
+    Adds a message to the message queue.
+
+    Arguments
+    parent (Any): The parent object of the message.
+    style (VALID_TEXT_COLOR_NAMES): The style of the message.
+    as_feedback (bool): Whether the message should be displayed as feedback.
+    args: The message arguments.
+
+    Returns
+    (Messages) The Messages object.
+    """
+
+    new_message = (parent, style, as_feedback, ' '.join([str(a) for a in args]))
 
     # prevent spamming of the same message
     if new_message not in Messages.queue:
@@ -16,36 +29,46 @@ def add_message(parent: Any, style: str, *args):
     return Messages
 
 
-def read_messages() -> List[tuple]:
+def read_messages() -> Generator[Tuple[Any, VALID_TEXT_COLOR_NAMES, bool, str], None, None]:
     """
-    :return: (parent, style, message)
+    Reads messages from the queue, removing them in the process.
+    :return: Generator yielding tuples of (parent, style, message)
     """
 
-    # get the last message position
-    last_message = len(Messages.queue)
-
-    # copy the messages to be read out of the queue
-    messages = Messages.queue[0: last_message]
-
-    # remove the copied messages from the queue
-    del Messages.queue[0: last_message]
-
-    return messages
+    while Messages.queue:
+        yield Messages.queue.pop(0)
 
 
-if __name__ == '__main__':
-    default_color_names = ['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
-    [
-        add_message(__name__, color, f'test message {color}')
-        for color in default_color_names
-    ]
+def print_all_messages():
+    """
+    Prints all messages in the queue.
+    :return: None
+    """
 
-    expected_queue = [(__name__, color, f'test message {color}') for color in default_color_names]
+    for message in read_messages():
+        source, color, as_feedback, text = message
 
-    assert Messages.queue == expected_queue
+        print_message(text=text, color=color, as_feedback=as_feedback)
 
-    read_result = read_messages()
-    assert read_result == expected_queue and Messages.queue == []
 
-    from text.printing import print_message
-    [print_message(text=message[2], color=message[1]) for message in read_result]
+def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = False):
+    """
+    Prints a rich formatted string.
+    :param text: Text to print
+    :param color: Color code to use
+    :param as_feedback: When True, output will use the feedback_console which writes information to stderr.
+    This distinction is important when deciding if information should be capture by terminal routing operators such as >
+    :return: None (prints information to feedback_ or output_console)
+    """
+
+    from rich.style import Style
+    from CloudHarvestCLI.text.styling import TextColors
+    from CloudHarvestCLI.text.printing import feedback_console, output_console
+
+    if as_feedback:
+        console = feedback_console
+
+    else:
+        console = output_console
+
+    console.print(text, style=Style(color=getattr(TextColors, color.upper())))

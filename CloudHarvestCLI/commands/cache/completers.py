@@ -1,5 +1,5 @@
 from typing import List
-from commands.arguments.completers import RemoteBaseCompleter
+from CloudHarvestCLI.commands.arguments.completers import RemoteBaseCompleter
 
 
 class PlatformRemoteCompleter(RemoteBaseCompleter):
@@ -10,7 +10,7 @@ class PlatformRemoteCompleter(RemoteBaseCompleter):
 
             return result
 
-        except Exception as ex:
+        except Exception:
             return []
 
 
@@ -28,7 +28,7 @@ class ServiceRemoteCompleter(RemoteBaseCompleter):
 
             return result
 
-        except Exception as ex:
+        except Exception:
             return []
 
 
@@ -47,5 +47,5 @@ class TypeRemoteCompleter(RemoteBaseCompleter):
 
             return result
 
-        except Exception as ex:
+        except Exception:
             return []

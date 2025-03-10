@@ -1,7 +1,7 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
 
-from .completers import BannerCompleter
+from CloudHarvestCLI.commands.banner.completers import BannerCompleter
 
 
 banner_completer = BannerCompleter()

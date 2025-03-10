@@ -1,10 +1,10 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
-from commands.arguments.parts import *
-from .completers import *
+from CloudHarvestCLI.commands.arguments.parts import *
+from CloudHarvestCLI.commands.report.completers import *
 
 
-report_name_completer = ReportNameCompleter(path='/reports/list')
+report_name_completer = ReportNameCompleter(path='/tasks/list_available_tasks/reports')
 report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
                                    parents=[
                                        key_manipulation_parser,
@@ -29,3 +29,7 @@ report_parser.add_argument('--sort', nargs='*', type=str,
                                            'Example: `--sort key1 key2:asc key3:desc`',
                                            'When not provided, the report will use the default sort order based on'
                                            ' the visible fields.']))
+report_parser.add_argument('--timeout', type=int, default=15,
+                           help='\n'.join(['The maximum number of seconds to wait for the report to complete. If the timeout is',
+                                ' exceeded, the user will be returned to the prompt. The report itself may still',
+                                ' complete on the remote agent. Check the `harvest.jobs` report for a list of jobs.']))

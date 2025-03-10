@@ -1,16 +1,15 @@
-from typing import Any, List
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
 
-from CloudHarvestCorePluginManager.functions import register_objects
-from banner import get_banner
-from configuration import HarvestConfiguration
-from text import console
-from text.styling import colorize, TextColors
+from CloudHarvestCorePluginManager import register_all
+from CloudHarvestCLI.banner import get_banner
+from CloudHarvestCLI.configuration import HarvestConfiguration
+from CloudHarvestCLI.text import console
+from CloudHarvestCLI.text.styling import colorize, TextColors
 
 # Activate any objects which are registered with the PluginManager Registry or cmd2.Cmd on definition. This is necessary
 # to populate the commands available to a user.
-from __register__ import *
+from CloudHarvestCLI.__register__ import *
 
 
 class Harvest(Cmd):
@@ -18,8 +17,18 @@ class Harvest(Cmd):
         # Load the configuration
         HarvestConfiguration.load()
 
+        from CloudHarvestCLI.api import Api
+        Api.config(host=HarvestConfiguration.api.get('host'),
+                   port=HarvestConfiguration.api.get('port'),
+                   pem=HarvestConfiguration.api.get('pem'),
+                   verify=HarvestConfiguration.api.get('verify'))
+
+        if not Api.verify:
+            from CloudHarvestCLI.messages import add_message
+            add_message(self, 'WARN', True, 'API SSL verification is disabled. This is a security risk.')
+
         # Load installed plugins
-        register_objects()
+        register_all()
 
         # _banners display loading banners
         self._banner = get_banner(banner_configuration=HarvestConfiguration.banners or {})
@@ -39,7 +48,6 @@ class Harvest(Cmd):
         self.register_postcmd_hook(self._post_command_hooks)
 
         # the prompt will always have a new line at the beginning for spacing
-        from os import environ
         self.prompt = get_prompt()
 
         console.print()  # provides a space between the first line and the banner
@@ -47,12 +55,11 @@ class Harvest(Cmd):
         if self._banner[1]:
             console.print(self._banner[1])
 
-        # print any messages generated during load
-        from messages import read_messages
-        from text.printing import print_message
-        [print_message(text=message[2], color=message[1], as_feedback=True) for message in read_messages()]
-
         self.pfeedback(get_load_version_line())
+
+        # print any messages generated during load
+        from CloudHarvestCLI.messages import print_all_messages
+        print_all_messages()
 
         # start background processes
         self.last_command_timestamp = None
@@ -70,12 +77,8 @@ class Harvest(Cmd):
 
     def _post_command_hooks(self, data: PostcommandData) -> PostcommandData:
         try:
-            from messages import read_messages
-            from text.printing import print_message
-            for message in read_messages():
-                source, color, text = message
-
-                print_message(text=text, color=color, as_feedback=True)
+            from CloudHarvestCLI.messages import print_all_messages
+            print_all_messages()
 
         finally:
             from datetime import datetime
@@ -86,22 +89,17 @@ class Harvest(Cmd):
     def _start_notify_unread_messages_thread(self):
         def _thread():
             from datetime import datetime
-            from messages import Messages, read_messages
-            from text.printing import print_message
+            from CloudHarvestCLI.messages import Messages, print_all_messages
             from time import sleep
             while True:
-                messages = len(Messages.queue)
 
                 if self.last_command_timestamp:
-                    if messages and self.last_command_timestamp > (datetime.now().timestamp() + 300):
-                        for message in read_messages():
-                            print_message(text=f'{message[0]}: {message[2]}',
-                                          color=message[1],
-                                          as_feedback=True)
+                    if Messages.queue and self.last_command_timestamp > (datetime.now().timestamp() + 300):
+                        print_all_messages()
 
                 sleep(1)
 
-        from processes import HarvestThread
+        from CloudHarvestCLI.processes import HarvestThread
         t = HarvestThread(**{
             'name': 'message_monitor',
             'description': 'Delivers messages to users after commands are executed or when the system is idle.',
@@ -109,11 +107,10 @@ class Harvest(Cmd):
             'daemon': True
         })
 
-        from processes import ConcurrentProcesses
+        from CloudHarvestCLI.processes import ConcurrentProcesses
         ConcurrentProcesses.add(t)
 
         t.start()
-
 
 def get_load_version_line() -> str:
     """
@@ -121,8 +118,8 @@ def get_load_version_line() -> str:
     If the application is running in a Docker container, the hostname is appended to the version.
     """
 
-    from configuration import HarvestConfiguration
-    from text.styling import colorize, TextColors
+    from CloudHarvestCLI.configuration import HarvestConfiguration
+    from CloudHarvestCLI.text.styling import colorize, TextColors
 
     result = colorize(f'v{HarvestConfiguration.version}', color=TextColors.PROMPT)
 
@@ -169,72 +166,3 @@ def is_dockerized() -> bool:
     """
     from os import path
     return path.exists('/.dockerenv')
-
-
-def upload_files(parent: Any, paths: List[str], api_path: str, max_workers: int = None, yes: bool = False, description: str = None):
-    """
-    Upload files to the cache.
-    Args:
-        parent: Parent process calling the upload.
-        paths: Globs of files to upload.
-        api_path: API path to upload the files to.
-        max_workers: Maximum number of threads to use.
-        yes: Automatically confirm the upload.
-        description: Description of the upload process.
-
-    Returns:
-        None
-    """
-
-    from glob import glob
-    from messages import add_message
-
-    def read_file(p: str) -> List[dict] or None:
-        from json import load
-        try:
-            with open(p, 'r') as stream:
-                return load(stream)
-
-        except Exception as ex:
-            return None
-
-    from processes import ThreadPool
-    from os.path import abspath, expanduser, isfile
-
-    files = [
-        abspath(file)
-        for path in paths
-        for file in glob(abspath(expanduser(path)))
-        if isfile(file) and file.endswith('.json')
-    ]
-
-    from text.printing import print_message
-    if files:
-        from text.inputs import input_boolean
-        confirm = input_boolean(f'Are you sure you want to upload {len(files)} files?', yes_argument=yes)
-
-        if not confirm:
-            print_message('Upload cancelled.', color='WARN')
-            return
-
-        pool = ThreadPool(name='Upload',
-                          description=description or f'Uploading {len(files)} files to the cache',
-                          max_workers=max_workers,
-                          alert_on_complete=True)
-
-        for file in files:
-            j = read_file(file)
-            if isinstance(j, (dict, list)):
-                from api import HarvestRequest
-                with HarvestRequest(path=api_path, method='POST', json=j) as hr:
-                    pool.add(parent=hr, function=hr.query)
-
-            else:
-                add_message(parent, 'WARN', 'Invalid JSON format: ', file)
-
-        pool.attach_progressbar()
-
-    else:
-        print_message('No files found to upload.', color='WARN')
-
-    return

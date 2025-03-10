@@ -1,26 +1,77 @@
 from cmd2 import with_default_category, CommandSet, with_argparser
 from typing import List
 from argparse import Namespace
-from .arguments import report_parser
+
+from CloudHarvestCLI.messages import add_message
+from CloudHarvestCLI.commands.report.arguments import report_parser
 
 @with_default_category('Harvest')
 class ReportCommand(CommandSet):
 
     @with_argparser(report_parser)
     def do_report(self, args):
-        from text.printing import print_message
+        from CloudHarvestCLI.messages import print_message
 
         if args.report_name == 'list':
             output = self._list_reports()
-            self._print_report_output(output=output, args=args, list_separator=', ')
+
+            self._print_report_output(report_response=output, args=args, list_separator=', ')
             return
 
         try:
+            from CloudHarvestCLI.api import request
             while True:
-                from api import HarvestRequest
-                output = HarvestRequest(path='reports/run', json=args).query()
+                endpoint = f'tasks/queue/1/reports/{args.report_name}'
 
-                if not isinstance(output, list):
+                # Arguments which will be sent to the TaskChain via the Api
+                passable_args = {}
+
+                # Not filters: describe, flatten, unflatten, page, and timeout
+                # Filters: add_keys, count, exclude_keys, header_order, limit, matches, sort
+                # Constructs the user-defined filters which will be passed to the TaskChain
+                filters = {
+                    'add_keys': args.add_keys,
+                    'count': args.count,
+                    'exclude_keys': args.exclude_keys,
+                    'headers': args.header_order,
+                    'limit': args.limit,
+                    'matches': args.matches,
+                    'sort': args.sort,
+                }
+
+                # Add the filters to the passable arguments
+                passable_args['filters'] = filters
+
+                output = request(request_type='post', endpoint=endpoint, data=passable_args)
+
+                if output.get('reason') != 'OK':
+                    add_message(self, 'ERROR', True, 'Could not generate the report.', output.get('reason'))
+                    return
+
+                request_id = output.get('result', {}).get('id')
+
+                # Check the API for the task results
+                from datetime import datetime
+                start_time = datetime.now()
+                while True:
+                    output = request(request_type='get', endpoint=f'/tasks/get_task_results/{request_id}')
+                    reason = output.get('reason')
+
+                    match reason:
+                        case 'OK':
+                            break
+
+                        case 'NOT FOUND':
+                            from time import sleep
+                            sleep(1)
+
+                    if (datetime.now() - start_time).total_seconds() > args.timeout:
+                        add_message(self, 'WARN', True, f'Task {request_id} took too long to complete.')
+                        return
+
+                output = output.get('result') or {}
+
+                if not isinstance(output.get('data'), list):
                     return
 
                 if args.refresh > 0:
@@ -34,13 +85,13 @@ class ReportCommand(CommandSet):
                                   color='INFO',
                                   as_feedback=True)
 
-                    self._print_report_output(output=output, args=args)
+                    self._print_report_output(report_response=output, args=args)
 
                     from time import sleep
                     sleep(args.refresh)
 
                 else:
-                    self._print_report_output(output=output, args=args)
+                    self._print_report_output(report_response=output, args=args)
                     break
 
         except KeyboardInterrupt:
@@ -48,20 +99,16 @@ class ReportCommand(CommandSet):
             return
 
     @staticmethod
-    def _list_reports() -> dict or Exception:
-        from api import HarvestRequest
+    def _list_reports() -> list:
+        from CloudHarvestCLI.api import request
 
-        report_list = HarvestRequest(path='reports/list').query()
+        report_list = request('get', 'tasks/list_available_tasks/reports').get('result') or []
 
-        if report_list:
-            return report_list
-
-        else:
-            return HarvestReportException('No reports found.', log_level='warning')
+        return report_list or []
 
     @staticmethod
     def _load_file(filename: str):
-        from text.formatting import get_formatter
+        from CloudHarvestCLI.text.formatting import get_formatter
 
         extension = filename.split('.')[-1]
         converter = get_formatter(method='from', extension=extension)
@@ -70,27 +117,31 @@ class ReportCommand(CommandSet):
             return converter(filename=filename)
 
         else:
-            return HarvestReportException(f'Harvest does not support files with the `{extension}` extension.',
+            from CloudHarvestCLI.exceptions import HarvestClientException
+            return HarvestClientException(f'Harvest does not support files with the `{extension}` extension.',
                                           log_level='warning')
 
     @staticmethod
-    def _print_report_output(output: List[dict], args: Namespace, **kwargs):
-        from text.printing import print_message, print_data
+    def _print_report_output(report_response: List[dict] or dict, args: Namespace, **kwargs):
+        from CloudHarvestCLI.text.printing import print_data
+        from CloudHarvestCLI.messages import print_message
 
-        if not isinstance(output, list):
-            return
+        if isinstance(report_response, list):
+            # Recursively print each report in the list
+            [
+                ReportCommand._print_report_output(report_response=report, args=args, **kwargs)
+                for report in report_response
+            ]
 
-        for o in output:
-            error = o.get('error') or {}
-            data = o.get('data') or {}
-            meta = o.get('meta') or {}
-    
-            if error:
-                print_message(text=o['error'], color='ERROR', as_feedback=True)
-    
+        elif isinstance(report_response, dict):
+            errors = report_response.get('errors') or []
+            data = report_response.get('data') or {}
+            meta = report_response.get('meta') or {}
+            metrics = report_response.get('metrics') or {}
+
             if data:
-                print_data(data=o['data'],
-                           keys=args.header_order or meta.get('headers'),
+                print_data(data=report_response['data'],
+                           keys=meta.get('headers'),
                            title=meta.get('title'),
                            output_format='pretty-json' if args.describe else (args.format or 'table'),
                            flatten=args.flatten,
@@ -98,14 +149,13 @@ class ReportCommand(CommandSet):
                            page=args.page,
                            with_record_count=False,
                            **kwargs)
-    
-            if meta:
-                if isinstance(meta, list):
-                    print_message(text=' '.join(meta), color='WARN', as_feedback=True)
-    
-                else:
-                    print_message(text=f'{len(data)} '
-                                       + f'records in {meta["duration"]:.2f} seconds'
-                                         if meta.get('duration') else '',
+
+            if errors:
+                for error in errors:
+                    for key, value in error.items():
+                        print_message(text=f'{key}: {value}', color='ERROR', as_feedback=True)
+
+            if metrics and metrics[-1].get('Duration'):
+                    print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
                                   color='INFO',
                                   as_feedback=True)

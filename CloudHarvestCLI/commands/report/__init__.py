@@ -1,1 +1,1 @@
-from .commandset import ReportCommand
+from CloudHarvestCLI.commands.report.commandset import ReportCommand

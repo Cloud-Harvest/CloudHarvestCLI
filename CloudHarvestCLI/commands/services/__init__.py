@@ -1,1 +1,1 @@
-from .commandset import ServicesCommand
+from CloudHarvestCLI.commands.services.commandset import ServicesCommand

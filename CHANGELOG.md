@@ -1,3 +1,11 @@
+# 0.3.0
+- `report` command
+  - Enabled filtering, sorting, and other command arguments on 
+  - Improved the way remote task errors are displayed
+  - Added timeout for long-running tasks
+  - Fixed some API metadata interpretations
+- Various import optimizations
+
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
 - Updated to Python 3.13

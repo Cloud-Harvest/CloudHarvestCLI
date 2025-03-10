@@ -1,1 +1,1 @@
-from .commandset import CacheCommand
+from CloudHarvestCLI.commands.cache.commandset import CacheCommand

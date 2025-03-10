@@ -1,6 +1,6 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
-from .completers import *
+from CloudHarvestCLI.commands.services.completers import *
 
 services_completer = ServicesCompleter()
 

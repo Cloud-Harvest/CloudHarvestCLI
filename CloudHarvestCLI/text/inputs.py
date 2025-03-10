@@ -1,6 +1,6 @@
 from rich.prompt import Confirm, Prompt
 from rich.text import Text
-from .styling import TextColors
+from CloudHarvestCLI.text.styling import TextColors
 from typing import List
 
 
@@ -16,7 +16,7 @@ def input_pick_choices(prompt: str, data: List[dict], keys: list) -> str:
     Returns:
     str: The user's selection.
     """
-    from .printing import print_data
+    from CloudHarvestCLI.text.printing import print_data
     print_data(data=data, keys=keys, output_format='table', record_index_keyname='i')
 
     return Prompt().ask(prompt=Text(prompt, style=TextColors.PROMPT), choices=keys)

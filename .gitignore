@@ -128,7 +128,6 @@ dmypy.json
 .pyre/
 
 # Harvest-specific
-CloudHarvestCLI/modules
-poetry.lock
 app
-/harvest
+.idea
+
