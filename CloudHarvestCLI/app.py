@@ -17,14 +17,14 @@ class Harvest(Cmd):
         # Load the configuration
         HarvestConfiguration.load()
 
-        from api import Api
+        from CloudHarvestCLI.api import Api
         Api.config(host=HarvestConfiguration.api.get('host'),
                    port=HarvestConfiguration.api.get('port'),
                    pem=HarvestConfiguration.api.get('pem'),
                    verify=HarvestConfiguration.api.get('verify'))
 
         if not Api.verify:
-            from messages import add_message
+            from CloudHarvestCLI.messages import add_message
             add_message(self, 'WARN', True, 'API SSL verification is disabled. This is a security risk.')
 
         # Load installed plugins
@@ -58,7 +58,7 @@ class Harvest(Cmd):
         self.pfeedback(get_load_version_line())
 
         # print any messages generated during load
-        from messages import print_all_messages
+        from CloudHarvestCLI.messages import print_all_messages
         print_all_messages()
 
         # start background processes
@@ -77,7 +77,7 @@ class Harvest(Cmd):
 
     def _post_command_hooks(self, data: PostcommandData) -> PostcommandData:
         try:
-            from messages import print_all_messages
+            from CloudHarvestCLI.messages import print_all_messages
             print_all_messages()
 
         finally:
@@ -89,7 +89,7 @@ class Harvest(Cmd):
     def _start_notify_unread_messages_thread(self):
         def _thread():
             from datetime import datetime
-            from messages import Messages, print_all_messages
+            from CloudHarvestCLI.messages import Messages, print_all_messages
             from time import sleep
             while True:
 
@@ -99,7 +99,7 @@ class Harvest(Cmd):
 
                 sleep(1)
 
-        from processes import HarvestThread
+        from CloudHarvestCLI.processes import HarvestThread
         t = HarvestThread(**{
             'name': 'message_monitor',
             'description': 'Delivers messages to users after commands are executed or when the system is idle.',
@@ -107,7 +107,7 @@ class Harvest(Cmd):
             'daemon': True
         })
 
-        from processes import ConcurrentProcesses
+        from CloudHarvestCLI.processes import ConcurrentProcesses
         ConcurrentProcesses.add(t)
 
         t.start()
@@ -118,8 +118,8 @@ def get_load_version_line() -> str:
     If the application is running in a Docker container, the hostname is appended to the version.
     """
 
-    from configuration import HarvestConfiguration
-    from text.styling import colorize, TextColors
+    from CloudHarvestCLI.configuration import HarvestConfiguration
+    from CloudHarvestCLI.text.styling import colorize, TextColors
 
     result = colorize(f'v{HarvestConfiguration.version}', color=TextColors.PROMPT)
 

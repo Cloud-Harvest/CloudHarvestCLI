@@ -53,7 +53,7 @@ class HarvestConfiguration:
                     config = load(stream, Loader=FullLoader)
                     setattr(HarvestConfiguration, file.split('.')[0], config)
 
-        from text.styling import TextColors
+        from CloudHarvestCLI.text.styling import TextColors
         TextColors.set_colors(**HarvestConfiguration.themes.get(HarvestConfiguration.theme))
 
         return HarvestConfiguration

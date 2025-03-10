@@ -4,5 +4,5 @@ from CloudHarvestCLI.commands.arguments.completers import BaseCompleter
 
 class BannerCompleter(BaseCompleter):
     def _run(self, *args, **kwargs) -> List[str]:
-        from configuration import HarvestConfiguration
+        from CloudHarvestCLI.configuration import HarvestConfiguration
         return list(HarvestConfiguration.banners.keys())

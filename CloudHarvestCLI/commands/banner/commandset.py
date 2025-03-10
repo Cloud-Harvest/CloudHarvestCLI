@@ -8,10 +8,10 @@ from CloudHarvestCLI.commands.banner.arguments import banner_parser
 class BannerCommand(CommandSet):
     @with_argparser(banner_parser)
     def do_banner(self, args):
-        from configuration import HarvestConfiguration
+        from CloudHarvestCLI.configuration import HarvestConfiguration
         _banners = HarvestConfiguration.banners
 
-        from banner import get_banner
+        from CloudHarvestCLI.banner import get_banner
 
         if args.names:
             names = args.names
@@ -27,7 +27,7 @@ class BannerCommand(CommandSet):
         }
 
         for name, banner in results.items():
-            from text import console
+            from CloudHarvestCLI.text import console
             console.print(f'\n {name}----------')
             console.print(banner[0])
             if banner[2]:

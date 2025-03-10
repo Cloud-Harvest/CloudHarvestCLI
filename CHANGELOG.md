@@ -1,3 +1,7 @@
+# 0.3.0
+- Enabled filtering on the `report` command
+- Various import optimizations
+
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
 - Updated to Python 3.13

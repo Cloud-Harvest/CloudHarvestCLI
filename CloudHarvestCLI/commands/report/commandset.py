@@ -10,7 +10,7 @@ class ReportCommand(CommandSet):
 
     @with_argparser(report_parser)
     def do_report(self, args):
-        from messages import print_message
+        from CloudHarvestCLI.messages import print_message
 
         if args.report_name == 'list':
             output = self._list_reports()
@@ -19,7 +19,7 @@ class ReportCommand(CommandSet):
             return
 
         try:
-            from api import request
+            from CloudHarvestCLI.api import request
             while True:
                 endpoint = f'tasks/queue/1/reports/{args.report_name}'
 
@@ -100,7 +100,7 @@ class ReportCommand(CommandSet):
 
     @staticmethod
     def _list_reports() -> list:
-        from api import request
+        from CloudHarvestCLI.api import request
 
         report_list = request('get', 'tasks/list_available_tasks/reports').get('result') or []
 
@@ -108,7 +108,7 @@ class ReportCommand(CommandSet):
 
     @staticmethod
     def _load_file(filename: str):
-        from text.formatting import get_formatter
+        from CloudHarvestCLI.text.formatting import get_formatter
 
         extension = filename.split('.')[-1]
         converter = get_formatter(method='from', extension=extension)
@@ -117,14 +117,14 @@ class ReportCommand(CommandSet):
             return converter(filename=filename)
 
         else:
-            from exceptions import HarvestClientException
+            from CloudHarvestCLI.exceptions import HarvestClientException
             return HarvestClientException(f'Harvest does not support files with the `{extension}` extension.',
                                           log_level='warning')
 
     @staticmethod
     def _print_report_output(report_response: List[dict] or dict, args: Namespace, **kwargs):
-        from text.printing import print_data
-        from messages import print_message
+        from CloudHarvestCLI.text.printing import print_data
+        from CloudHarvestCLI.messages import print_message
 
         if isinstance(report_response, list):
             # Recursively print each report in the list

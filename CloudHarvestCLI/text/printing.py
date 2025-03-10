@@ -30,7 +30,7 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
     :return: None (prints information to feedback_ or output_console)
     """
 
-    from messages import add_message
+    from CloudHarvestCLI.messages import add_message
 
     if as_feedback:
         console = feedback_console

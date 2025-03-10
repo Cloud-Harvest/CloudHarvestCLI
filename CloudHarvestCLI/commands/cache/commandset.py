@@ -7,7 +7,7 @@ class CacheCommand(CommandSet):
 
     @with_argparser(parser)
     def do_cache(self, args):
-        from commands.base import get_subtask
+        from CloudHarvestCLI.commands.base import get_subtask
         get_subtask(parent=self, parser=parser, args=args)
 
     @as_subcommand_to('cache', 'attach', map_parser, help='Attaches a progress bar to a data collection job.')
@@ -20,12 +20,12 @@ class CacheCommand(CommandSet):
 
     @as_subcommand_to('cache', 'map', map_parser, help='Display a JSON map of a resource type.')
     def map(self, args):
-        from api import request
+        from CloudHarvestCLI.api import request
         with request('get', '/cache/map', data=args) as request:
             result = request.query()
 
         if isinstance(result, dict):
-            from text.printing import print_data
+            from CloudHarvestCLI.text.printing import print_data
             data = result.get('result')
             meta = result.get('meta')
 
@@ -34,7 +34,7 @@ class CacheCommand(CommandSet):
                        output_format='pretty-json')
 
             if meta:
-                from text.printing import print_message
+                from CloudHarvestCLI.text.printing import print_message
                 print_message(f"\nReturned {meta.get('collection')} in {meta.get('duration')} seconds.",
                               color='INFO',
                               as_feedback=True)

@@ -62,8 +62,8 @@ def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = 
     """
 
     from rich.style import Style
-    from text.styling import TextColors
-    from text.printing import feedback_console, output_console
+    from CloudHarvestCLI.text.styling import TextColors
+    from CloudHarvestCLI.text.printing import feedback_console, output_console
 
     if as_feedback:
         console = feedback_console

@@ -66,7 +66,7 @@ class RemoteBaseCompleter(BaseCompleter):
             query_api = True
 
         if query_api:
-            from api import request
+            from CloudHarvestCLI.api import request
             self._last_checked = datetime.now()
             self.result = request('get', self._path, data=self._api_kwargs)
             self.result = self._run(*args, **kwargs)

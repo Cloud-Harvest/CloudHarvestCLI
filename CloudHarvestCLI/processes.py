@@ -119,7 +119,7 @@ class ThreadPool(ThreadPoolExecutor):
                 pb.attach()
 
         except KeyboardInterrupt:
-            from messages import add_message
+            from CloudHarvestCLI.messages import add_message
             add_message(self, 'INFO', True, f'Sending process {self.name} to background.')
             if self.alert_on_complete:
                 self.start_monitor_thread()
@@ -161,7 +161,7 @@ class ThreadPool(ThreadPoolExecutor):
         return len(self.futures)
 
     def on_complete(self):
-        from messages import add_message
+        from CloudHarvestCLI.messages import add_message
         add_message(self, 'INFO', True, f'{self.name} job has completed.')
 
     def start_monitor_thread(self):
@@ -261,7 +261,7 @@ class HarvestProgressBar:
                     sleep(.25)
 
         except KeyboardInterrupt:
-            from messages import add_message
+            from CloudHarvestCLI.messages import add_message
             add_message(self, 'INFO', True, f'Sending thread `{self.pool.name}` to background.')
 
 
