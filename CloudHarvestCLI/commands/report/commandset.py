@@ -15,15 +15,34 @@ class ReportCommand(CommandSet):
         if args.report_name == 'list':
             output = self._list_reports()
 
-            self._print_report_output(report_data=output, args=args, list_separator=', ')
+            self._print_report_output(report_response=output, args=args, list_separator=', ')
             return
 
         try:
             from api import request
             while True:
                 endpoint = f'tasks/queue/1/reports/{args.report_name}'
-                args_as_dict = {k: v for k, v in vars(args).items() if not k.startswith('cmd2')}
-                output = request(request_type='post', endpoint=endpoint, data=args_as_dict)
+
+                # Arguments which will be sent to the TaskChain via the Api
+                passable_args = {}
+
+                # Not filters: describe, flatten, unflatten, page, and timeout
+                # Filters: add_keys, count, exclude_keys, header_order, limit, matches, sort
+                # Constructs the user-defined filters which will be passed to the TaskChain
+                filters = {
+                    'add_keys': args.add_keys,
+                    'count': args.count,
+                    'exclude_keys': args.exclude_keys,
+                    'headers': args.header_order,
+                    'limit': args.limit,
+                    'matches': args.matches,
+                    'sort': args.sort,
+                }
+
+                # Add the filters to the passable arguments
+                passable_args['filters'] = filters
+
+                output = request(request_type='post', endpoint=endpoint, data=passable_args)
 
                 if output.get('reason') != 'OK':
                     add_message(self, 'ERROR', True, 'Could not generate the report.', output.get('reason'))
@@ -66,13 +85,13 @@ class ReportCommand(CommandSet):
                                   color='INFO',
                                   as_feedback=True)
 
-                    self._print_report_output(report_data=output, args=args)
+                    self._print_report_output(report_response=output, args=args)
 
                     from time import sleep
                     sleep(args.refresh)
 
                 else:
-                    self._print_report_output(report_data=output, args=args)
+                    self._print_report_output(report_response=output, args=args)
                     break
 
         except KeyboardInterrupt:
@@ -103,29 +122,26 @@ class ReportCommand(CommandSet):
                                           log_level='warning')
 
     @staticmethod
-    def _print_report_output(report_data: List[dict] or dict, args: Namespace, **kwargs):
+    def _print_report_output(report_response: List[dict] or dict, args: Namespace, **kwargs):
         from text.printing import print_data
         from messages import print_message
 
-        if isinstance(report_data, list):
+        if isinstance(report_response, list):
             # Recursively print each report in the list
             [
-                ReportCommand._print_report_output(report_data=report, args=args, **kwargs)
-                for report in report_data
+                ReportCommand._print_report_output(report_response=report, args=args, **kwargs)
+                for report in report_response
             ]
 
-        elif isinstance(report_data, dict):
-            error = report_data.get('error') or {}
-            data = report_data.get('data') or {}
-            meta = report_data.get('meta') or {}
-            metrics = report_data.get('metrics') or {}
+        elif isinstance(report_response, dict):
+            errors = report_response.get('errors') or []
+            data = report_response.get('data') or {}
+            meta = report_response.get('meta') or {}
+            metrics = report_response.get('metrics') or {}
 
-            if error:
-                print_message(text=report_data['error'], color='ERROR', as_feedback=True)
-    
             if data:
-                print_data(data=report_data['data'],
-                           keys=args.header_order or meta.get('headers'),
+                print_data(data=report_response['data'],
+                           keys=meta.get('headers'),
                            title=meta.get('title'),
                            output_format='pretty-json' if args.describe else (args.format or 'table'),
                            flatten=args.flatten,
@@ -133,11 +149,12 @@ class ReportCommand(CommandSet):
                            page=args.page,
                            with_record_count=False,
                            **kwargs)
-    
-            if meta:
-                if isinstance(meta, list):
-                    print_message(text=' '.join(meta), color='WARN', as_feedback=True)
-    
+
+            if errors:
+                for error in errors:
+                    for key, value in error.items():
+                        print_message(text=f'{key}: {value}', color='ERROR', as_feedback=True)
+
             if metrics and metrics[-1].get('Duration'):
                     print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
                                   color='INFO',
