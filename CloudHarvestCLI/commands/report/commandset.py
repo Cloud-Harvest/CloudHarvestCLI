@@ -44,6 +44,10 @@ class ReportCommand(CommandSet):
 
                 output = request(request_type='post', endpoint=endpoint, data=passable_args)
 
+                if not output:
+                    add_message(self, 'ERROR', True, 'No response from the server.')
+                    return
+
                 if output.get('reason') != 'OK':
                     add_message(self, 'ERROR', True, 'Could not generate the report.', output.get('reason'))
                     return
