@@ -9,6 +9,7 @@
 - Removed `config.py`
 - Implemented logging configuration
 - Raw commands are now recorded in the log
+- Added the `theme` command to change the color theme
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4

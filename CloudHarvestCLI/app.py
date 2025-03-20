@@ -14,9 +14,15 @@ from CloudHarvestCLI.__register__ import *
 
 logger = getLogger('harvest')
 
+# Make the application instance available to the entire application
+HARVEST_CLI = None
+
 
 class Harvest(Cmd):
     def __init__(self, **kwargs):
+        global HARVEST_CLI
+        HARVEST_CLI = self
+
         # Load the configuration
         HarvestConfiguration.load()
 
