@@ -1,5 +1,6 @@
 from cmd2 import Cmd, DEFAULT_SHORTCUTS
 from cmd2.plugin import PrecommandData, PostcommandData
+from logging import getLogger
 
 from CloudHarvestCorePluginManager import register_all
 from CloudHarvestCLI.banner import get_banner
@@ -10,6 +11,8 @@ from CloudHarvestCLI.text.styling import colorize, TextColors
 # Activate any objects which are registered with the PluginManager Registry or cmd2.Cmd on definition. This is necessary
 # to populate the commands available to a user.
 from CloudHarvestCLI.__register__ import *
+
+logger = getLogger('harvest')
 
 
 class Harvest(Cmd):
@@ -72,6 +75,8 @@ class Harvest(Cmd):
         return None
 
     def _pre_command_hook(self, data: PrecommandData) -> PrecommandData:
+        logger.debug(f'command: {data.statement.raw}')
+
         self.last_command_timestamp = None
         return data
 

@@ -8,6 +8,7 @@
 - Moved `harvest.json` to `harvest.yaml`
 - Removed `config.py`
 - Implemented logging configuration
+- Raw commands are now recorded in the log
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
