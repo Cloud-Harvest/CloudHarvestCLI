@@ -1,4 +1,4 @@
-from logging import getLogger
+from logging import getLogger, Logger
 logger = getLogger('harvest')
 
 
@@ -10,6 +10,7 @@ class HarvestConfiguration:
     """
     api = {}
     banners = {}
+    logging = {}
     plugins = []
     shortcuts = {}
     theme: str = 'default'
@@ -54,4 +55,71 @@ class HarvestConfiguration:
         from CloudHarvestCLI.text.styling import TextColors
         TextColors.set_colors(**HarvestConfiguration.themes.get(HarvestConfiguration.theme))
 
+        HarvestConfiguration.configure_logger(
+            log_destination=HarvestConfiguration.logging.get('location') or './app/logs/',
+            log_level=HarvestConfiguration.logging.get('level') or 'DEBUG',
+            quiet=HarvestConfiguration.logging.get('quiet') or False
+        )
+
         return HarvestConfiguration
+
+    @staticmethod
+    def configure_logger(log_destination: str = './app/logs/', log_level: str = 'info', quiet: bool = False, **kwargs) -> Logger:
+        """
+        This method configures logging for the api.
+
+        Arguments
+        log_destination (str, optional): The destination directory for the log file. Defaults to './app/logs/'.
+        log_level (str, optional): The logging level. Defaults to 'info'.
+        quiet (bool, optional): Whether to suppress console output. Defaults to False.
+        """
+        level = log_level
+
+        from logging import getLogger, Formatter, StreamHandler, DEBUG
+        from logging.handlers import RotatingFileHandler
+
+        # startup
+        new_logger = getLogger(name='harvest')
+
+        # If the logger exists, remove all of its existing handlers
+        if new_logger.hasHandlers():
+            [
+                new_logger.removeHandler(handler)
+                for handler in new_logger.handlers
+            ]
+
+        from importlib import import_module
+        lm = import_module('logging')
+        log_level_attribute = getattr(lm, level.upper())
+
+        # formatting
+        log_format = Formatter(fmt='[%(asctime)s][%(levelname)s][%(filename)s] %(message)s')
+
+        # file handler
+        from pathlib import Path
+        from os.path import abspath, expanduser
+        _location = abspath(expanduser(log_destination))
+
+        # make the destination log directory if it does not already exist
+        Path(_location).mkdir(parents=True, exist_ok=True)
+
+        # configure the file handler
+        from os.path import join
+        fh = RotatingFileHandler(join(_location, 'cli.log'), maxBytes=10000000, backupCount=5)
+        fh.setFormatter(fmt=log_format)
+        fh.setLevel(DEBUG)
+
+        new_logger.addHandler(fh)
+
+        if not quiet:
+            # stream handler
+            sh = StreamHandler()
+            sh.setFormatter(fmt=log_format)
+            sh.setLevel(log_level_attribute)
+            new_logger.addHandler(sh)
+
+        new_logger.setLevel(log_level_attribute)
+
+        new_logger.debug(f'Logging enabled successfully. Log location: {log_destination}')
+
+        return new_logger

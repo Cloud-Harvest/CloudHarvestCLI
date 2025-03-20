@@ -14,16 +14,19 @@ api:
   # Certificate key file. Must be False or the path to the key file.
   verify: False
 
-  # Manages log files and logging levels.
-  logging:
-    # Location where logs should be stored
-    location: ./app/logs/
+########################################################################################################################
+# Logging Configuration
+########################################################################################################################
+# Manages log files and logging levels.
+logging:
+  # Location where logs should be stored
+  location: ./app/logs/
 
-    # Logging level for the agent. Values are DEBUG, INFO, WARNING, ERROR, CRITICAL
-    level: DEBUG
+  # Logging level for the agent. Values are DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: DEBUG
 
-    # Suppress console output from the logging engine.
-    # quiet: true
+  # Suppress console output from the logging engine.
+  quiet: true
 
 ########################################################################################################################
 # CLI Configuration
