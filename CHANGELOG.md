@@ -5,6 +5,8 @@
   - Added timeout for long-running tasks
   - Fixed some API metadata interpretations
 - Various import optimizations
+- Moved `harvest.json` to `harvest.yaml`
+- Removed `config.py`
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4

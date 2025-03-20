@@ -106,9 +106,11 @@ class ReportCommand(CommandSet):
     def _list_reports() -> list:
         from CloudHarvestCLI.api import request
 
-        report_list = request('get', 'tasks/list_available_tasks/reports').get('result') or []
+        try:
+            return request('get', 'tasks/list_available_tasks/reports').get('result') or []
 
-        return report_list or []
+        except Exception:
+            return []
 
     @staticmethod
     def _load_file(filename: str):

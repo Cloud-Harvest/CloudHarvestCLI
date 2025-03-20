@@ -10,7 +10,7 @@ class HarvestConfiguration:
     """
     api = {}
     banners = {}
-    plugins = {}
+    plugins = []
     shortcuts = {}
     theme: str = 'default'
     themes = {}
@@ -24,16 +24,14 @@ class HarvestConfiguration:
         from os.path import exists, join
 
         # get the user config
-        if not exists('./app/harvest.json'):
-            logger.error('Configuration file `./app/harvest.json` not found. '
-                         'Please run the configuration tool ./config.py.')
+        if not exists('./app/harvest.yaml'):
+            from shutil import copyfile
+            logger.info('No configuration file found. Using default configuration file.')
+            copyfile('./harvest.yaml', './app/harvest.yaml')
 
-            from sys import exit
-            exit(1)
-
-        with open('./app/harvest.json', 'r') as stream:
-            import json
-            config = json.load(stream)
+        with open('./app/harvest.yaml', 'r') as stream:
+            from yaml import load, FullLoader
+            config = load(stream, Loader=FullLoader)
 
         for key, value in config.items():
             setattr(HarvestConfiguration, key, value)

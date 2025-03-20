@@ -8,12 +8,11 @@ api:
   # Port for the Api
   port: 8000
 
-  # SSL configuration for the api
-  ssl:
-    # Certificate file
-    pem: ./app/harvest-self-signed.pem
-    # Certificate key file. Must be False or the path to the key file.
-    verify: False
+  # Certificate file
+  pem: ./app/harvest-self-signed.pem
+
+  # Certificate key file. Must be False or the path to the key file.
+  verify: False
 
   # Manages log files and logging levels.
   logging:
@@ -29,8 +28,7 @@ api:
 ########################################################################################################################
 # CLI Configuration
 ########################################################################################################################
-cli:
-  theme: "default"
+theme: "default"
 
 ########################################################################################################################
 # Plugin Configuration
