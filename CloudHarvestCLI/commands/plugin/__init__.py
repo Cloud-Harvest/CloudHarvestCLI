@@ -1,0 +1,1 @@
+from CloudHarvestCLI.commands.plugin.commandset import PluginCommand
