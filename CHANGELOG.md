@@ -13,7 +13,7 @@
 - Added `HarvestConfiguration.update_config()` to update the local configuration and file
 - Fixed an issue with `input_pick_choices()` where it did not populate the correct list of choices
 - The `print_data()` function no longer appends the `record_index_keyname` when it is already present in the `keys` parameter
-- 
+- Added the `plugin` command
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
