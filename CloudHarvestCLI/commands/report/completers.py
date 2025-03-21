@@ -7,7 +7,13 @@ logger = getLogger('harvest')
 class ReportNameCompleter(RemoteBaseCompleter):
     def _run(self, *args, **kwargs) -> List[str]:
         try:
-            return [r['Name'] for r in self.result['result']['data']]
+            results = [
+                str(template).replace('template_reports/', '')
+                for template in self.result['result']
+                if str(template).startswith('template_reports/')
+            ]
+
+            return results
 
         except Exception as ex:
             logger.debug(ex)

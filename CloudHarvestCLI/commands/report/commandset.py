@@ -12,12 +12,6 @@ class ReportCommand(CommandSet):
     def do_report(self, args):
         from CloudHarvestCLI.messages import print_message
 
-        if args.report_name == 'list':
-            output = self._list_reports()
-
-            self._print_report_output(report_response=output, args=args, list_separator=', ')
-            return
-
         try:
             from CloudHarvestCLI.api import request
             while True:
@@ -101,16 +95,6 @@ class ReportCommand(CommandSet):
         except KeyboardInterrupt:
             print_message('Keyboard interrupt acknowledged.', color='INFO', as_feedback=True)
             return
-
-    @staticmethod
-    def _list_reports() -> list:
-        from CloudHarvestCLI.api import request
-
-        try:
-            return request('get', 'tasks/list_available_tasks/reports').get('result') or []
-
-        except Exception:
-            return []
 
     @staticmethod
     def _load_file(filename: str):
