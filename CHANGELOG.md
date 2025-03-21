@@ -15,6 +15,7 @@
 - The `print_data()` function no longer appends the `record_index_keyname` when it is already present in the `keys` parameter
 - Added the `plugin` command
 - Cleaned up some old code
+- Updated to CloudHarvestCorePluginManager 0.5.0
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
