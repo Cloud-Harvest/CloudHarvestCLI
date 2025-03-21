@@ -123,3 +123,23 @@ class HarvestConfiguration:
         new_logger.debug(f'Logging enabled successfully. Log location: {log_destination}')
 
         return new_logger
+
+    @staticmethod
+    def update_config(key: str, value: any):
+        """
+        Updates the local configuration and the configuration file with the provided key and value.
+        """
+
+        # update the local configuration
+        setattr(HarvestConfiguration, key, value)
+
+        # update the configuration file
+        from yaml import load, dump, FullLoader
+        with open('./app/harvest.yaml', 'r') as stream:
+            current_config = load(stream, Loader=FullLoader)
+
+        with open('./app/harvest.yaml', 'w') as stream:
+            current_config[key] = getattr(HarvestConfiguration, key)
+            dump(current_config, stream)
+
+        logger.debug(f'Updated configuration: {key} with value: {str(value)}')

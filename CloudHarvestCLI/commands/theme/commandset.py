@@ -42,14 +42,7 @@ class ThemeCommand(CommandSet):
                 from CloudHarvestCLI.text.styling import TextColors
                 TextColors.set_colors(**HarvestConfiguration.themes.get(HarvestConfiguration.theme))
 
-                # update the configuration file
-                from yaml import load, dump, FullLoader
-                with open('./app/harvest.yaml', 'r') as stream:
-                    current_config = load(stream, Loader=FullLoader)
-
-                with open('./app/harvest.yaml', 'w') as stream:
-                    current_config['theme'] = HarvestConfiguration.theme
-                    dump(current_config, stream)
+                HarvestConfiguration.update_config(key='theme', value=new_theme)
 
                 from CloudHarvestCLI.app import HARVEST_CLI, get_prompt
                 HARVEST_CLI.prompt = get_prompt()
