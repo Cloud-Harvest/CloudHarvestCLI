@@ -35,6 +35,11 @@ class ReportCommand(CommandSet):
 
                 # Add the filters to the passable arguments
                 passable_args['filters'] = filters
+                passable_args['variables'] = {
+                    var.split('=')[0]: var.split('=')[1] for var in
+                    args.variables or []
+                    if '=' in var
+                }
 
                 output = request(request_type='post', endpoint=endpoint, data=passable_args)
 

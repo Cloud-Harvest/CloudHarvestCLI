@@ -10,7 +10,8 @@ report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
                                        key_manipulation_parser,
                                        matching_parser,
                                        format_parser,
-                                       refresh_parser
+                                       refresh_parser,
+                                       variables_parser
                                    ],
                                    description='Run a report on the Harvest cache.')
 
