@@ -127,19 +127,15 @@ def to_table(data: (list or dict),
         for k in keys or data.keys:
             v = row.walk(k)
 
-            if isinstance(v, dict):
+            if v is None:
+                r.append('')
+
+            elif isinstance(v, dict):
                 from json import dumps
                 r.append(dumps(v))
 
             elif isinstance(v, list):
                 r.append(list_separator.join([str(s) for s in v]))
-
-            elif isinstance(v, str) and v.isnumeric():
-                if '.' in v:
-                    r.append(float(v))
-
-                else:
-                    r.append(int(v))
 
             else:
                 r.append(str(v))
