@@ -29,7 +29,7 @@ class HarvestCommand(CommandSet):
             request_type = 'get'
 
         else:
-            endpoint = 'pstar/queue_pstar/0'    # user requires are always priority 0
+            endpoint = 'pstar/queue_pstar/2'    # data collection tasks should be queued at the lowest priority
             request_type = 'post'
 
         request_response = request(request_type=request_type, endpoint=endpoint, data=request_arguments)
