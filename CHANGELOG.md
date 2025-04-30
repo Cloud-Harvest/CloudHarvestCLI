@@ -16,6 +16,7 @@
 - Added the `plugin` command
 - Cleaned up some old code
 - Updated to CloudHarvestCoreTasks 0.6.3
+- added the `harvest` command
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4
