@@ -78,6 +78,7 @@ echo "Harvest is starting!" \
 && echo "Installing plugins..." \
 && pip install -q -r /src/app/plugins.txt > /dev/null 2>&1 \
 && echo "Here we go!" \
+&& export PYTHONPATH=/src \
 && python /src/CloudHarvestCLI ${unused_args[*]}
 
 echo "Goodbye!"
