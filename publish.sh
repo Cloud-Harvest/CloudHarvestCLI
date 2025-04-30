@@ -17,11 +17,16 @@ do
         dry_run=1
         shift # Remove --dry-run from processing
         ;;
+        --progress)
+        progress="$2"
+        shift 2 # Remove --progress and its value from processing
+        ;;
         --help)
         echo "Usage: ./publish.sh [--dry-run] [--skip-git-check] [--help]"
         echo ""
         echo "Options:"
         echo "--dry-run: Perform all steps except pushing the Docker image to the Docker registry."
+        echo "--progress: Change the output format of the build process. Default is plain."
         echo "--skip-git-check: Skip the checks for the main branch and that all commits have been pushed."
         echo "--help: Show this help message."
         exit 0
@@ -31,6 +36,11 @@ do
         ;;
     esac
 done
+
+# Set default for --progress if it was not provided
+if [ -z "$progress" ]; then
+    progress="plain"
+fi
 
 # List of required binaries
 required_binaries=("docker" "git" "grep")
@@ -74,7 +84,7 @@ echo "Git commit's short name: $commit"
 name_version_commit="$image_name:$version-$commit"
 
 # Build the docker container with --no-cache
-docker build --no-cache --progress plain -t "$name_version_commit" .
+docker build --no-cache --progress $progress -t "$name_version_commit" .
 
 if [ $? -ne 0 ]; then
     echo "Build failed. Aborting."
