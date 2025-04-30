@@ -83,6 +83,12 @@ thread_parser_group.add_argument('--max-workers', type=int, default=0,
                                  help='Sets the number of simultaneous tasks for this command.'
                                       ' When not provided, uses a value equal to thw number of cores, minus one.')
 
+# Variables
+variables_parser = ArgumentParser(add_help=False)
+variables_argument_group = variables_parser.add_argument_group('Variables')
+variables_argument_group.add_argument('-v', '--variables', action='append',
+                                      help='Set variables for the command. Variables follow a `key=value` format.')
+
 # Yes
 yes_parser = ArgumentParser(add_help=False)
 yes_parser.add_argument('-y', '--yes', action='store_true', help='Automatically answer yes to all prompts.')

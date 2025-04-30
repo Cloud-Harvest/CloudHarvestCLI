@@ -4,18 +4,19 @@ from CloudHarvestCLI.commands.arguments.parts import *
 from CloudHarvestCLI.commands.report.completers import *
 
 
-report_name_completer = ReportNameCompleter(path='/tasks/list_available_tasks/reports')
+report_name_completer = ReportNameCompleter(path='/tasks/list_available_templates')
 report_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter,
                                    parents=[
                                        key_manipulation_parser,
                                        matching_parser,
                                        format_parser,
-                                       refresh_parser
+                                       refresh_parser,
+                                       variables_parser
                                    ],
                                    description='Run a report on the Harvest cache.')
 
 report_parser.add_argument('report_name', default='list', completer=report_name_completer.run,
-                           nargs='?', help='The name of the report to run. Use `list` to see available reports.')
+                           nargs='?', help='The name of the report to run. Double-tap TAB to see a list of available reports.')
 report_parser.add_argument('--count', action='store_true', help='Displays a count of records instead of'
                                                                 ' the records themselves.')
 report_parser.add_argument('--describe', action='store_true',

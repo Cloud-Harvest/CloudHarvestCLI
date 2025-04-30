@@ -5,6 +5,18 @@
   - Added timeout for long-running tasks
   - Fixed some API metadata interpretations
 - Various import optimizations
+- Moved `harvest.json` to `harvest.yaml`
+- Removed `config.py`
+- Implemented logging configuration
+- Raw commands are now recorded in the log
+- Added the `theme` command to change the color theme
+- Added `HarvestConfiguration.update_config()` to update the local configuration and file
+- Fixed an issue with `input_pick_choices()` where it did not populate the correct list of choices
+- The `print_data()` function no longer appends the `record_index_keyname` when it is already present in the `keys` parameter
+- Added the `plugin` command
+- Cleaned up some old code
+- Updated to CloudHarvestCoreTasks 0.6.3
+- added the `harvest` command
 
 # 0.2.5
 - Updated to conform with CloudHarvestCorePluginManager 0.2.4

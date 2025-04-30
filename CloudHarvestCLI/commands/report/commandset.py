@@ -12,12 +12,6 @@ class ReportCommand(CommandSet):
     def do_report(self, args):
         from CloudHarvestCLI.messages import print_message
 
-        if args.report_name == 'list':
-            output = self._list_reports()
-
-            self._print_report_output(report_response=output, args=args, list_separator=', ')
-            return
-
         try:
             from CloudHarvestCLI.api import request
             while True:
@@ -41,8 +35,17 @@ class ReportCommand(CommandSet):
 
                 # Add the filters to the passable arguments
                 passable_args['filters'] = filters
+                passable_args['variables'] = {
+                    var.split('=')[0]: var.split('=')[1] for var in
+                    args.variables or []
+                    if '=' in var
+                }
 
                 output = request(request_type='post', endpoint=endpoint, data=passable_args)
+
+                if not output:
+                    add_message(self, 'ERROR', True, 'No response from the server.')
+                    return
 
                 if output.get('reason') != 'OK':
                     add_message(self, 'ERROR', True, 'Could not generate the report.', output.get('reason'))
@@ -97,14 +100,6 @@ class ReportCommand(CommandSet):
         except KeyboardInterrupt:
             print_message('Keyboard interrupt acknowledged.', color='INFO', as_feedback=True)
             return
-
-    @staticmethod
-    def _list_reports() -> list:
-        from CloudHarvestCLI.api import request
-
-        report_list = request('get', 'tasks/list_available_tasks/reports').get('result') or []
-
-        return report_list or []
 
     @staticmethod
     def _load_file(filename: str):

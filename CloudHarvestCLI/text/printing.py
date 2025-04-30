@@ -53,7 +53,9 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
 
     if record_index_keyname and isinstance(data, list):
         data = [{**{record_index_keyname: index}, **record} for index, record in enumerate(data)]
-        _keys += [record_index_keyname]
+
+        if record_index_keyname not in _keys:
+            _keys += [record_index_keyname]
 
     if sort_by_keys:
         from natsort import natsorted

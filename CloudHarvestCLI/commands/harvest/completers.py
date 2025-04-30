@@ -4,7 +4,7 @@ from CloudHarvestCLI.commands.arguments.completers import RemoteBaseCompleter
 
 logger = getLogger('harvest')
 
-class ReportNameCompleter(RemoteBaseCompleter):
+class HarvestNameCompleter(RemoteBaseCompleter):
     def _run(self, *args, **kwargs) -> List[str]:
         try:
             results = [

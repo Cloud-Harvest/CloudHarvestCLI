@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, List
 from rich.table import Table
 from io import StringIO
 
@@ -97,7 +97,7 @@ def to_json(data, keys: list = None, flatten: str = None, unflatten: str = None)
 def to_table(data: (list or dict),
              flatten_data: str = False,
              keys: list = None,
-             sort_keys: Literal['ASC', 'DESC'] = None,
+             sort_keys: List[str] = None,
              list_separator: str = '\n',
              title: str = None) -> Table or str:
 
@@ -106,32 +106,31 @@ def to_table(data: (list or dict),
 
     table = Table(box=SIMPLE, title=title)
 
-    _keys = keys or _identify_keys(data=data)
+    from CloudHarvestCoreTasks.dataset import DataSet
+    data = DataSet(data if isinstance(data, list) else [data])
 
-    match sort_keys:
-        case 'ASC':
-            _keys.sort()
-        case 'DESC':
-            _keys.sort(reverse=True)
-
-    # add columns to table
+    # add headers to the table
     [
-        table.add_column(c, overflow='fold')
-        for c in _keys
+        table.add_column(key)
+        for key in keys or data.keys
     ]
 
     if flatten_data:
-        _data = _flatten(data=data, separator=flatten_data)
-    else:
-        _data = data
+        data.flatten()
+
+    if sort_keys:
+        data.sort_records(keys=sort_keys)
 
     # add data to table
-    for row in _data:
+    for row in data:
         r = []
-        for k in _keys:
-            v = row.get(k)
+        for k in keys or data.keys:
+            v = row.walk(k)
 
-            if isinstance(v, dict):
+            if v is None:
+                r.append('')
+
+            elif isinstance(v, dict):
                 from json import dumps
                 r.append(dumps(v))
 
