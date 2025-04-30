@@ -9,7 +9,7 @@ RUN apt-get update  \
 WORKDIR /src
 
 ENV PIP_ROOT_USER_ACTION=ignore
-ENV TERM xterm-256color
+ENV TERM=xterm-256color
 
 COPY . .
 
