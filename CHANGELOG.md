@@ -2,6 +2,8 @@
 
 ## 0.3.1
 - Fixed an issue where `docker-entrypoint` would not successfully start the container
+- CloudHarvestPluginManager will now install the plugins at startup (removed plugin install script)
+- Part of the [Redis Task Standardization Effort](https://github.com/Cloud-Harvest/CloudHarvestAgent/issues/8)
 
 ## 0.3.0
 - `report` command
