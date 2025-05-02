@@ -6,6 +6,7 @@ from requests import JSONDecodeError
 from CloudHarvestCLI.messages import add_message
 
 logger = getLogger('harvest')
+HTTP_REQUEST_TYPES = Literal['get', 'post', 'put', 'delete']
 
 
 class Api:
@@ -59,7 +60,7 @@ class Api:
             return result
 
 
-def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str, data: dict = None, **requests_kwargs) -> Any:
+def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, **requests_kwargs) -> Any:
     """
     Makes an API request to the CloudHarvest API.
 
