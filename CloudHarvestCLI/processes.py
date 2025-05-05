@@ -1,3 +1,6 @@
+from rich.progress import TextColumn
+from rich.style import Style
+
 from CloudHarvestCLI.api import HTTP_REQUEST_TYPES, request
 from CloudHarvestCoreTasks.dataset import WalkableDict
 
@@ -334,16 +337,6 @@ class HarvestRemoteJobAwaiter:
         # Terminate
         self.terminate = False
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.worker_thread and self.worker_thread.is_alive():
-            self.terminate = True
-            self.worker_thread.join(timeout=10)
-
-        return None
-
     @property
     def name(self):
         """
@@ -351,7 +344,7 @@ class HarvestRemoteJobAwaiter:
         """
 
         if isinstance(self.data, WalkableDict):
-            return self.data.get(self.name_key)
+            return self.data.get(self.name_key) or 'awaiting name'
 
         else:
             return 'unknown'
@@ -363,7 +356,7 @@ class HarvestRemoteJobAwaiter:
         """
 
         if isinstance(self.data, WalkableDict):
-            return self.data.get(self.status_key)
+            return self.data.get(self.status_key) or 'unknown'
 
         else:
             return 'unknown'
@@ -422,12 +415,25 @@ class HarvestRemoteJobAwaiter:
             return 0.0
 
     def attach(self):
-        from rich.progress import Progress, BarColumn, TimeElapsedColumn, TimeRemainingColumn, SpinnerColumn
+        from rich.progress import (
+            Progress,
+            BarColumn,
+            TimeElapsedColumn,
+            TimeRemainingColumn,
+            SpinnerColumn,
+            TextColumn
+        )
+
+        from CloudHarvestCLI.text.styling import TextColors
+
+        status_color = TextColors.ERROR if self.status == 'error' else TextColors.HEADER
+        complete_color = TextColors.ERROR if self.status == 'error' else TextColors.PROMPT
 
         config = (
             SpinnerColumn(),
-            "[progress.description]{task.description}",
-            BarColumn(),
+            TextColumn("[progress.description]{task.description}", style=TextColors.INFO),
+            TextColumn("{task.fields[status]}", style=Style(color=status_color)),
+            BarColumn(style=Style(color=TextColors.PROMPT), complete_style=Style(color=complete_color)),
             "[progress.percentage]{task.percentage:3.0f}%",
             TimeElapsedColumn(),
             "/",
@@ -439,11 +445,11 @@ class HarvestRemoteJobAwaiter:
 
         from time import sleep
         with Progress(*config) as progress:
-            task_id = progress.add_task(description=self.name, total=self.total, completed=self.position, visible=True)
+            task_id = progress.add_task(description=self.name, total=self.total, completed=self.position, visible=True, status=self.status)
 
             while True:
                 try:
-                    progress.update(task_id=task_id, description=self.name, total=self.total, completed=self.position)
+                    progress.update(task_id=task_id, description=self.name, total=self.total, completed=self.position, status=self.status)
 
                     if self.percent >= 100:
                         break
