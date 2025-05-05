@@ -53,25 +53,12 @@ class ReportCommand(CommandSet):
 
                 request_id = output.get('result', {}).get('id')
 
-                # Check the API for the task results
-                from datetime import datetime
-                start_time = datetime.now()
-                while True:
-                    output = request(request_type='get', endpoint=f'/tasks/get_task_results/{request_id}')
-                    reason = output.get('reason')
+                from CloudHarvestCLI.processes import HarvestRemoteJobAwaiter
+                with HarvestRemoteJobAwaiter(endpoint=f'tasks/get_task_status/{request_id}', with_progress_bar=True) as awaiter:
+                    awaiter.run()
 
-                    match reason:
-                        case 'OK':
-                            break
-
-                        case 'NOT FOUND':
-                            from time import sleep
-                            sleep(1)
-
-                    if (datetime.now() - start_time).total_seconds() > args.timeout:
-                        add_message(self, 'WARN', True, f'Task {request_id} took too long to complete.')
-                        return
-
+                # Get the report results
+                output = request(request_type='get', endpoint=f'tasks/get_task_result/{request_id}')
                 output = output.get('result') or {}
 
                 if not isinstance(output.get('data'), list):
