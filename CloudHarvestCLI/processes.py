@@ -402,14 +402,14 @@ class HarvestRemoteJobAwaiter:
             self.desired_status
         )
 
-        # Make sure we don't try to divide by zero
-        if self.total > 0:
-            return (self.position / self.total) * 100
-
         # We consider any job in the desired, complete, or an exit state to be 100% complete even if its total would not
         # be 100%.
-        elif self.status in exit_loop_status_codes:
+        if self.status in exit_loop_status_codes:
             return 100.0
+
+        # Make sure we don't try to divide by zero
+        elif self.total > 0:
+            return (self.position / self.total) * 100
 
         else:
             return 0.0
@@ -427,13 +427,12 @@ class HarvestRemoteJobAwaiter:
         from CloudHarvestCLI.text.styling import TextColors
 
         status_color = TextColors.ERROR if self.status == 'error' else TextColors.HEADER
-        complete_color = TextColors.ERROR if self.status == 'error' else TextColors.PROMPT
 
         config = (
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}", style=TextColors.INFO),
             TextColumn("{task.fields[status]}", style=Style(color=status_color)),
-            BarColumn(style=Style(color=TextColors.PROMPT), complete_style=Style(color=complete_color)),
+            BarColumn(),
             "[progress.percentage]{task.percentage:3.0f}%",
             TimeElapsedColumn(),
             "/",
