@@ -10,6 +10,8 @@ from logging import getLogger
 from threading import Thread
 from typing import Any, Dict, List, Tuple
 
+from messages import add_message
+
 logger = getLogger('harvest')
 
 
@@ -397,8 +399,6 @@ class HarvestRemoteJobAwaiter:
         # job to be complete, even if the percent is not 100.
         exit_loop_status_codes = (
             TaskStatusCodes.complete,
-            TaskStatusCodes.error,
-            TaskStatusCodes.skipped,
             self.desired_status
         )
 
@@ -453,9 +453,13 @@ class HarvestRemoteJobAwaiter:
                     if self.percent >= 100:
                         break
 
+                    if self.terminate:
+                        progress.stop()
+                        break
+
                 except KeyboardInterrupt:
                     add_message(self, 'INFO', True, f'Sending thread `{self.name}` to background.')
-                    self.with_progress_bar = True
+                    self.with_notification = True
                     break
 
                 except Exception as ex:
@@ -508,35 +512,44 @@ class HarvestRemoteJobAwaiter:
 
         return self
 
-    def _on_complete(self, was_timeout: bool):
-        if self.with_notification:
-            from CloudHarvestCLI.messages import add_message
-            final_status = 'timeout' if was_timeout else self.data.walk(self.status_key) or 'unknown'
-
-            add_message(self, 'INFO', True, f'{self.name} has finished with status: {final_status}')
-
     def _worker(self):
+        from CloudHarvestCLI.messages import add_message
+
         from datetime import datetime
         from time import sleep
 
         self.start_time = datetime.now()
         was_timeout = False
 
+        failed_attempts = 0
         while True:
-            if self.terminate:
-                break
+            try:
+                if self.terminate:
+                    break
 
-            self.fetch()
+                self.fetch()
 
-            if self.percent >= 100:
-                break
+                if self.percent >= 100:
+                    break
 
-            if self.timeout and (datetime.now() - self.start_time).total_seconds() > self.timeout:
-                was_timeout = True
-                break
+                if self.timeout and (datetime.now() - self.start_time).total_seconds() > self.timeout:
+                    self.terminate = True
+                    was_timeout = True
+                    break
+
+            except Exception as ex:
+                failed_attempts += 1
+
+                if failed_attempts >= 10:
+                    add_message(self, 'ERROR', True, f'{self.name} failed at least ten times to get the status of the task: {ex}')
+                    self.terminate = True
+                    break
 
             sleep(self.check_interval)
 
         self.end_time = datetime.now()
 
-        self._on_complete(was_timeout)
+        if was_timeout or self.with_notification:
+            final_status = 'timeout' if was_timeout else self.data.walk(self.status_key) or 'unknown'
+
+            add_message(self, 'INFO', True, f'{self.name} has finished with status: {final_status}')
