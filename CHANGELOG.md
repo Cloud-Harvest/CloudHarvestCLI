@@ -4,6 +4,8 @@
 - Fixed an issue where `docker-entrypoint` would not successfully start the container
 - CloudHarvestPluginManager will now install the plugins at startup (removed plugin install script)
 - Part of the [Redis Task Standardization Effort](https://github.com/Cloud-Harvest/CloudHarvestAgent/issues/8)
+- Implemented a progress bar for `harvest` and `report` commands
+- Reports successfully retrieved by `tasks/get_task_status` will now be deleted from the Redis database
 
 ## 0.3.0
 - `report` command
