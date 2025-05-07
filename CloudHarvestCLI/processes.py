@@ -276,7 +276,7 @@ class HarvestRemoteJobAwaiter:
     def __init__(self,
                  endpoint: str,
                  request_type: HTTP_REQUEST_TYPES = 'get',
-                 request_data: str = None,
+                 request_data: dict = None,
                  name_key: str = 'redis_name',
                  desired_status: str = 'complete',
                  position_key: str = 'position',
@@ -346,7 +346,7 @@ class HarvestRemoteJobAwaiter:
         """
 
         if isinstance(self.data, WalkableDict):
-            return self.data.get(self.name_key) or 'awaiting name'
+            return self.data.get(self.name_key) or 'awaiting task creation'
 
         else:
             return 'unknown'
