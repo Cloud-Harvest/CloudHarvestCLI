@@ -111,7 +111,7 @@ def to_table(data: (list or dict),
 
     # add headers to the table
     [
-        table.add_column(key)
+        table.add_column(key, overflow='fold')
         for key in keys or data.keys
     ]
 

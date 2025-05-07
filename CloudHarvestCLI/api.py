@@ -6,6 +6,7 @@ from requests import JSONDecodeError
 from CloudHarvestCLI.messages import add_message
 
 logger = getLogger('harvest')
+HTTP_REQUEST_TYPES = Literal['get', 'post', 'put', 'delete']
 
 
 class Api:
@@ -59,7 +60,7 @@ class Api:
             return result
 
 
-def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str, data: dict = None, **requests_kwargs) -> Any:
+def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, **requests_kwargs) -> Any:
     """
     Makes an API request to the CloudHarvest API.
 
@@ -78,8 +79,6 @@ def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str
     from uuid import uuid4
     request_id = str(uuid4())
 
-    response = None
-
     try:
         # Disable SSL warnings which are raised when using self-signed certificates
         import urllib3
@@ -94,7 +93,7 @@ def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str
                            headers={
                                'Authorization': f'Bearer {Api.token}'
                            },
-                           json=data,
+                           json=data or {},
                            verify=Api.verify,
                            **requests_kwargs)
 
@@ -109,3 +108,5 @@ def request(request_type: Literal['get', 'post', 'put', 'delete'], endpoint: str
 
         else:
             return Api.safe_decode(response)
+
+    return None

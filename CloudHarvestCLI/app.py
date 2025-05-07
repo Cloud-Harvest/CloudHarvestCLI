@@ -3,6 +3,7 @@ from cmd2.plugin import PrecommandData, PostcommandData
 from logging import getLogger
 
 from CloudHarvestCorePluginManager import register_all
+from CloudHarvestCorePluginManager.plugins import generate_plugins_file, install_plugins
 from CloudHarvestCLI.banner import get_banner
 from CloudHarvestCLI.configuration import HarvestConfiguration
 from CloudHarvestCLI.text import console
@@ -35,6 +36,16 @@ class Harvest(Cmd):
         if not Api.verify:
             from CloudHarvestCLI.messages import add_message
             add_message(self, 'WARN', True, 'API SSL verification is disabled. This is a security risk.')
+
+        if HarvestConfiguration.plugins:
+            from CloudHarvestCLI.messages import print_message
+            print_message('Loading plugins...', 'INFO', as_feedback=True)
+
+            # Create the plugin file
+            generate_plugins_file(HarvestConfiguration.plugins)
+
+            # Install plugins
+            install_plugins(quiet=True)
 
         # Load installed plugins
         register_all()
