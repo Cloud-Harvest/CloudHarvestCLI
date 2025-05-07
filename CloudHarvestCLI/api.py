@@ -79,8 +79,6 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
     from uuid import uuid4
     request_id = str(uuid4())
 
-    response = None
-
     try:
         # Disable SSL warnings which are raised when using self-signed certificates
         import urllib3
@@ -95,7 +93,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                            headers={
                                'Authorization': f'Bearer {Api.token}'
                            },
-                           json=data,
+                           json=data or {},
                            verify=Api.verify,
                            **requests_kwargs)
 
@@ -110,3 +108,5 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
 
         else:
             return Api.safe_decode(response)
+
+    return None
