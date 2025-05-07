@@ -60,6 +60,10 @@ class ReportCommand(CommandSet):
                 output = request(request_type='get', endpoint=f'tasks/get_task_result/{request_id}')
                 output = output.get('result') or {}
 
+                if output.get('errors'):
+                    for error in output.get('errors'):
+                        add_message(self, 'ERROR', True, error.get('message'))
+
                 if not isinstance(output.get('data'), list):
                     return
 

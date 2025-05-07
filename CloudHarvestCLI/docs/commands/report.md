@@ -46,7 +46,11 @@ Harvest supports the following operators for matching. Pay special attention to 
 | `<=`, `=<` | Less than or equal to    | `"-m Field<=Value"`          | Records where `Field` is less than or equal to `Value`.        |
 
 
-- `-m`, `--matches`: Provide matching statements. Matches are defined in several ways. For example, `-m Field=Value` just matches this field/value. One `-m` and multiple field/value pairs is an `AND`. Additional `-m` are an `OR`.
+>`-m`, `--matches`: Provide matching statements. Matches are defined in several ways. For example, `-m Field=Value` 
+> just matches this field/value. One `-m` and multiple field/value pairs is an `AND`. Additional `-m` are an `OR`.
+
+> For null value searches, provide the word 'null'. For example, `-m Field=null` will match all records where the field 
+> is a null object. Regex keys (`=` and `!=`) are converted to empty strings. 
 
 ## Formatting `--format`
 
