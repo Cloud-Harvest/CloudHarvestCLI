@@ -66,9 +66,6 @@ class ReportCommand(CommandSet):
                     for error in output.get('errors'):
                         add_message(self, 'ERROR', True, error.get('message'))
 
-                if not isinstance(output.get('data'), list):
-                    return
-
                 if args.refresh > 0:
                     from rich.live import Live
                     from os import system
