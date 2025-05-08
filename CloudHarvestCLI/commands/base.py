@@ -1,5 +1,6 @@
 from argparse import Namespace
 from cmd2 import Cmd2ArgumentParser, CommandSet
+from typing import List
 
 
 def get_subtask(parent: CommandSet, parser: Cmd2ArgumentParser, args: Namespace):
