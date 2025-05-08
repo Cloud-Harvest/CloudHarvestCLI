@@ -61,7 +61,6 @@ class ReportCommand(CommandSet):
                 # Get the report results
                 output = request(request_type='get', endpoint=f'tasks/get_task_result/{request_id}', data={'pop': True})
                 output = output.get('result') or {}
-
                 if output.get('errors'):
                     for error in output.get('errors'):
                         add_message(self, 'ERROR', True, error.get('message'))
@@ -136,6 +135,13 @@ class ReportCommand(CommandSet):
                            page=args.page,
                            with_record_count=False,
                            **kwargs)
+
+            if args.performance:
+                print_data(data=metrics,
+                           keys=['Position', 'Name', 'Class', 'Records', 'Status', 'Duration', 'Attempts', 'DataBytes'],
+                           output_format='table',
+                           page=args.page,
+                           with_record_count=False)
 
             if errors:
                 for error in errors:
