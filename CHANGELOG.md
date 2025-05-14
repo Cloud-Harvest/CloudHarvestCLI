@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.3.3
+- Updated to conform with CloudHarvestCoreTasks 0.6.6
+
+## 0.3.2
+- Updated to conform with CloudHarvestCoreTasks 0.6.5
+- Implemented `report --performance`
+- Some minor refactoring to make the code more accessible for other commands, such as `print_task_response()`
+
 ## 0.3.1
 - Fixed an issue where `docker-entrypoint` would not successfully start the container
 - CloudHarvestPluginManager will now install the plugins at startup (removed plugin install script)

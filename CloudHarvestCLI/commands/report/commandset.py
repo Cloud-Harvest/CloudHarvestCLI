@@ -10,6 +10,7 @@ class ReportCommand(CommandSet):
 
     @with_argparser(report_parser)
     def do_report(self, args):
+        from CloudHarvestCLI.text.printing import print_task_response
         from CloudHarvestCLI.messages import print_message
 
         try:
@@ -61,13 +62,9 @@ class ReportCommand(CommandSet):
                 # Get the report results
                 output = request(request_type='get', endpoint=f'tasks/get_task_result/{request_id}', data={'pop': True})
                 output = output.get('result') or {}
-
                 if output.get('errors'):
                     for error in output.get('errors'):
                         add_message(self, 'ERROR', True, error.get('message'))
-
-                if not isinstance(output.get('data'), list):
-                    return
 
                 if args.refresh > 0:
                     from rich.live import Live
@@ -80,13 +77,13 @@ class ReportCommand(CommandSet):
                                   color='INFO',
                                   as_feedback=True)
 
-                    self._print_report_output(report_response=output, args=args)
+                    print_task_response(report_response=output, args=args)
 
                     from time import sleep
                     sleep(args.refresh)
 
                 else:
-                    self._print_report_output(report_response=output, args=args)
+                    print_task_response(report_response=output, args=args)
                     break
 
         except KeyboardInterrupt:
@@ -107,42 +104,3 @@ class ReportCommand(CommandSet):
             from CloudHarvestCLI.exceptions import HarvestClientException
             return HarvestClientException(f'Harvest does not support files with the `{extension}` extension.',
                                           log_level='warning')
-
-    @staticmethod
-    def _print_report_output(report_response: List[dict] or dict, args: Namespace, **kwargs):
-        from CloudHarvestCLI.text.printing import print_data
-        from CloudHarvestCLI.messages import print_message
-
-        if isinstance(report_response, list):
-            # Recursively print each report in the list
-            [
-                ReportCommand._print_report_output(report_response=report, args=args, **kwargs)
-                for report in report_response
-            ]
-
-        elif isinstance(report_response, dict):
-            errors = report_response.get('errors') or []
-            data = report_response.get('data') or {}
-            meta = report_response.get('meta') or {}
-            metrics = report_response.get('metrics') or {}
-
-            if data:
-                print_data(data=report_response['data'],
-                           keys=meta.get('headers'),
-                           title=meta.get('title'),
-                           output_format='pretty-json' if args.describe else (args.format or 'table'),
-                           flatten=args.flatten,
-                           unflatten=args.unflatten,
-                           page=args.page,
-                           with_record_count=False,
-                           **kwargs)
-
-            if errors:
-                for error in errors:
-                    for key, value in error.items():
-                        print_message(text=f'{key}: {value}', color='ERROR', as_feedback=True)
-
-            if metrics and metrics[-1].get('Duration'):
-                    print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
-                                  color='INFO',
-                                  as_feedback=True)

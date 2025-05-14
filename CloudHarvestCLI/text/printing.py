@@ -1,3 +1,4 @@
+from argparse import Namespace
 from rich.console import Console
 from typing import List
 
@@ -88,3 +89,51 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
 
     if with_record_count and isinstance(data, list):
         add_message(None,'INFO', True, f'records: {len(data)}')
+
+
+def print_task_response(report_response: List[dict] or dict, args: Namespace, **kwargs):
+    from CloudHarvestCLI.messages import print_message
+
+    if isinstance(report_response, list):
+        # Recursively print each report in the list
+        [
+            print_task_response(report_response=report, args=args, **kwargs)
+            for report in report_response
+        ]
+
+    elif isinstance(report_response, dict):
+        data = report_response.get('data') or {}
+        meta = report_response.get('meta') or {}
+        metrics = report_response.get('metrics') or []
+
+        has_chain_errors = bool(report_response.get('errors') or [])
+        has_task_errors = any(bool(task.get('Errors')) for task in metrics or [])
+
+        if data:
+            print_data(data=report_response['data'],
+                       keys=meta.get('headers'),
+                       title=meta.get('title'),
+                       output_format='pretty-json' if args.describe else (args.format or 'table'),
+                       flatten=args.flatten,
+                       unflatten=args.unflatten,
+                       page=args.page,
+                       with_record_count=False,
+                       **kwargs)
+
+        if args.performance or has_task_errors:
+            print_data(data=metrics,
+                       keys=['Position', 'Name', 'Class', 'Records', 'Status', 'Duration', 'Attempts', 'DataBytes', 'Errors'],
+                       output_format='table',
+                       page=args.page,
+                       title='Error Report' if has_task_errors else 'Performance Report',
+                       with_record_count=False)
+
+        if has_chain_errors:
+            for error in report_response['errors']:
+                for key, value in error.items():
+                    print_message(text=f'{key}: {value}', color='ERROR', as_feedback=True)
+
+        if metrics and metrics[-1].get('Duration'):
+                print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
+                              color='INFO',
+                              as_feedback=True)
