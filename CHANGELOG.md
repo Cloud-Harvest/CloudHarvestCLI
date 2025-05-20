@@ -3,6 +3,7 @@
 ## 0.3.3
 - Updated to conform with CloudHarvestCoreTasks 0.6.6
 - `HarvestRemoteJobAwaiter()` will now downgrade the check_interval to 60 seconds if the user breaks from the progress bar
+- Added the `attach` command which allows users to monitor the progress of a task using a progress bar
 
 ## 0.3.2
 - Updated to conform with CloudHarvestCoreTasks 0.6.5
