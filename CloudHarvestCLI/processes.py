@@ -459,7 +459,11 @@ class HarvestRemoteJobAwaiter:
 
                 except KeyboardInterrupt:
                     add_message(self, 'INFO', True, f'Sending thread `{self.name}` to background.')
+                    # When going to background, make sure to notify the user when the task is complete
                     self.with_notification = True
+
+                    # Set the check interval to 60 seconds so we don't hammer the API
+                    self.check_interval = 60
                     break
 
                 except Exception as ex:
