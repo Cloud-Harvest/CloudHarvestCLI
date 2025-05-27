@@ -121,17 +121,8 @@ class Harvest(Cmd):
 
                 sleep(1)
 
-        from CloudHarvestCLI.processes import HarvestThread
-        t = HarvestThread(**{
-            'name': 'message_monitor',
-            'description': 'Delivers messages to users after commands are executed or when the system is idle.',
-            'target': _thread,
-            'daemon': True
-        })
-
-        from CloudHarvestCLI.processes import ConcurrentProcesses
-        ConcurrentProcesses.add(t)
-
+        from threading import Thread
+        t = Thread(name='message_monitor', target=_thread, daemon=True)
         t.start()
 
 def get_load_version_line() -> str:
