@@ -87,4 +87,9 @@ class HarvestCommand(CommandSet):
             request_parent_id = request_response['result']['parent']
 
             from CloudHarvestCLI.processes import HarvestRemoteJobAwaiter
-            HarvestRemoteJobAwaiter(endpoint=f'tasks/get_task_status/{request_parent_id}', with_progress_bar=True, timeout=3600).run()
+            HarvestRemoteJobAwaiter(
+                endpoint=f'tasks/get_task_status/{request_parent_id}',
+                check_interval=3,           # Harvest take longer than reports so we use a less aggressive check interval
+                with_progress_bar=True,
+                timeout=3600
+            ).run()

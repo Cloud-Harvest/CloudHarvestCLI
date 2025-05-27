@@ -57,7 +57,8 @@ class ReportCommand(CommandSet):
                 from CloudHarvestCLI.processes import HarvestRemoteJobAwaiter
                 HarvestRemoteJobAwaiter(
                     endpoint=f'tasks/get_task_status/{request_id}',
-                    with_progress_bar=True).run()
+                    with_progress_bar=True
+                ).run()
 
                 # Get the report results
                 output = request(request_type='get', endpoint=f'tasks/get_task_result/{request_id}', data={'pop': True})
