@@ -50,6 +50,7 @@ class Api:
         (dict) The decoded response.
         """
         result = None
+
         try:
             result = response.json()
 
@@ -85,7 +86,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
         from requests.api import request
-        logger.debug(f'request:{request_id}: {Api.host}:{Api.port}/{endpoint}')
+        logger.debug(f'request:{request_id}: [{request_type}] {Api.host}:{Api.port}/{endpoint}')
 
         response = request(method=request_type,
                            url=f'https://{Api.host}:{Api.port}/{endpoint}',
@@ -97,13 +98,18 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                            verify=Api.verify,
                            **requests_kwargs)
 
+    except KeyboardInterrupt:
+        return {}
+
     except Exception as e:
         add_message(None,'ERROR', True, f'An unexpected error occurred: {e}')
         logger.debug(f'request:{request_id}:An unexpected error occurred: {e}')
 
+        raise Exception from e
+
     else:
         if response.status_code != 200:
-            add_message(None,'ERROR', True, f'An unexpected error occurred: {response.text}')
+            add_message(None,'WARN', True, f'An unexpected error occurred: {response.text}')
             logger.debug(f'request:{request_id}:An unexpected error occurred: {response}')
 
         else:
