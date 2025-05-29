@@ -267,6 +267,9 @@ class HarvestRemoteJobAwaiter:
 
                 self.fetch()
 
+                # Reset the failed attempts counter when we successfully fetch data
+                failed_attempts = 0
+
                 if self.percent >= 100.0:
                     break
 
