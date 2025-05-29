@@ -7,6 +7,7 @@
 
 ## 0.3.4
 - Updated to conform with CloudHarvestCoreTasks 0.7.0
+- Added exponential backoff to the `Api.request()` method
 
 ## 0.3.3
 - Updated to conform with CloudHarvestCoreTasks 0.6.6
