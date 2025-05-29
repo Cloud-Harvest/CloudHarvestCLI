@@ -17,6 +17,7 @@ class HarvestRemoteJobAwaiter:
                  total_key: str = 'total',
                  status_key: str = 'status',
                  check_interval: int = 1,
+                 max_attempts: int = -1,
                  timeout: int = 300,
                  with_notification: bool = False,
                  with_progress_bar: bool = False):
@@ -43,6 +44,7 @@ class HarvestRemoteJobAwaiter:
         total_key: (str, optional) The key to use to get the total of the job. Defaults to 'total'.
         status_key: (str, optional) The key to use to get the status of the job. Defaults to 'status'.
         check_interval: (int, optional) The interval to wait between requests. Defaults to 1 second.
+        max_attempts: (int, optional) The maximum number of attempts to make before giving up. Defaults to -1 (no limit).
         timeout: (int, optional) The timeout to wait before giving up. Defaults to 300 seconds.
         with_notification: (bool, optional) Whether to show a notification when the job is complete. Defaults to False.
         with_progress_bar: (bool, optional) Whether to show a progress bar. Defaults to False.
@@ -59,6 +61,7 @@ class HarvestRemoteJobAwaiter:
         self.status_key = status_key
         self.check_interval = check_interval
         self.timeout = timeout
+        self.max_attempts = max_attempts
         self.with_notification = with_notification
         self.with_progress_bar = with_progress_bar
 
@@ -281,7 +284,7 @@ class HarvestRemoteJobAwaiter:
             except Exception as ex:
                 failed_attempts += 1
 
-                if failed_attempts >= 10:
+                if self.max_attempts > 0 and (failed_attempts >= self.max_attempts):
                     add_message(self, 'ERROR', True, f'{self.name} failed to get the status of the task ({failed_attempts}): {ex}')
                     self.terminate = True
                     break
