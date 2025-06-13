@@ -120,7 +120,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
             from requests.api import request
-            logger.debug(f'request:{request_id}: [{request_type}] {Api.host}:{Api.port}/{endpoint}')
+            logger.debug(f'request:{request_id}: [{request_type.upper()}] {Api.host}:{Api.port}/{endpoint}')
 
             response = request(method=request_type,
                                url=f'https://{Api.host}:{Api.port}/{endpoint}',
