@@ -141,7 +141,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                 if attempt < retries:
                     from time import sleep
 
-                    logger.debug(f'request:{request_id}: Retrying ({attempt + 1}/{retries})...')
+                    logger.debug(f'request:{request_id}: Got {_format_exception(ex)}. Retrying ({attempt + 1}/{retries})...')
                     sleep(1)  # Exponential backoff
                     continue
 
