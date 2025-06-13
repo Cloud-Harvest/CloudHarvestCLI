@@ -88,8 +88,7 @@ class Api:
         except JSONDecodeError as e:
             result = f'Failed to decode response JSON: {e}'
 
-        finally:
-            return result
+        return result
 
 
 def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, retries: int = 10, **requests_kwargs) -> Any:
@@ -139,7 +138,6 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
         except Exception as ex:
             if _retry_request(ex, response):
                 if attempt < retries:
-                    print_message(f'Attempting to retry request due to an error. ({attempt}/{retries})', 'WARN', True)
                     logger.debug(f'request:{request_id}: Got {_format_exception(ex)}. Retrying ({attempt + 1}/{retries})...')
                     from time import sleep
 
@@ -147,11 +145,11 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                     continue
 
                 else:
-                    print_message(f'[{request_id}] Too many retries ({retries}) for request. {_format_exception(ex)}', 'ERROR', True)
+                    add_message(None, 'ERROR', True, f'[{request_id}] Too many retries ({retries}) for request. {_format_exception(ex)}')
                     return {}
 
             else:
-                print_message(f'[{request_id}] An unexpected error occurred: {_format_exception(ex)}', 'ERROR', True)
+                add_message(None, 'ERROR', True, f'[{request_id}] An unexpected error occurred: {_format_exception(ex)}')
 
                 from traceback import format_exc
                 logger.debug(f'request:{request_id}:An unexpected error occurred:\n{format_exc()}')

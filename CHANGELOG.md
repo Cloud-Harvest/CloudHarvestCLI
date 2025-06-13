@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.3.6
+- Standardized some internals
+
 ## 0.3.5
 - Code cleanup
 - Improved API response resiliency and retries

@@ -74,10 +74,7 @@ class ReportCommand(CommandSet):
                     system('clear -x')
 
                     from datetime import datetime
-                    print_message(text=f'{args.report_name}: {datetime.now()} | refresh {args.refresh}/seconds',
-                                  color='INFO',
-                                  as_feedback=True)
-
+                    print_message('INFO', True, f'{args.report_name}: {datetime.now()} | refresh {args.refresh}/seconds')
                     print_task_response(report_response=output, args=args)
 
                     from time import sleep
@@ -88,7 +85,7 @@ class ReportCommand(CommandSet):
                     break
 
         except KeyboardInterrupt:
-            print_message('Keyboard interrupt acknowledged.', color='INFO', as_feedback=True)
+            print_message('INFO', True, 'Keyboard interrupt acknowledged.')
             return
 
     @staticmethod

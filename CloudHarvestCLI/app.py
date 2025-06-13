@@ -39,7 +39,7 @@ class Harvest(Cmd):
 
         if HarvestConfiguration.plugins:
             from CloudHarvestCLI.messages import print_message
-            print_message('Loading plugins...', 'INFO', as_feedback=True)
+            print_message('INFO', True, 'Loading plugins...')
 
             # Create the plugin file
             generate_plugins_file(HarvestConfiguration.plugins)
@@ -102,11 +102,13 @@ class Harvest(Cmd):
             from CloudHarvestCLI.messages import print_all_messages
             print_all_messages()
 
-        finally:
-            from datetime import datetime
-            self.last_command_timestamp = datetime.now().timestamp()
+        except Exception:
+            pass
 
-            return data
+        from datetime import datetime
+        self.last_command_timestamp = datetime.now().timestamp()
+
+        return data
 
     def _start_notify_unread_messages_thread(self):
         def _thread():

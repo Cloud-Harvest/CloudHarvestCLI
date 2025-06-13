@@ -25,7 +25,7 @@ class PluginCommand(CommandSet):
 
             # Check if the plugin is already configured
             if any(plugin['url_or_package_name'] == package for plugin in HarvestConfiguration.plugins or []):
-                print_message(text=f'Plugin `{package}` already configured', color='WARN')
+                print_message('WARN', False,f'Plugin `{package}` already configured')
                 return
 
             else:
@@ -41,14 +41,14 @@ class PluginCommand(CommandSet):
             # Regenerate local configuration from file
             HarvestConfiguration.update_config('plugins', read_plugins_file())
 
-            print_message(text=f'Added plugin {package}', color='INFO')
+            print_message('INFO', False, f'Added plugin {package}')
 
         elif args.subcommand == 'list':
             from CloudHarvestCLI.text.printing import print_data
             plugins = HarvestConfiguration().plugins
 
             if not plugins:
-                print_message(text='No plugins configured', color='WARN')
+                print_message('WARN', False, 'No plugins configured')
                 return
 
             else:
@@ -64,7 +64,7 @@ class PluginCommand(CommandSet):
             from CloudHarvestCLI.text.inputs import input_pick_choices
 
             if not HarvestConfiguration.plugins:
-                print_message(text='No plugins configured', color='WARN')
+                print_message('WARN', False, 'No plugins configured')
                 return
 
             # Let the user select the plugin to remove
@@ -86,7 +86,7 @@ class PluginCommand(CommandSet):
                         break
 
                 else:
-                    print_message('Invalid selection', color='ERROR')
+                    print_message('ERROR', False, 'Invalid selection')
                     return
 
             # If the index is valid, remove the plugin
@@ -100,11 +100,11 @@ class PluginCommand(CommandSet):
                 # Store the plugins in the plugins.txt file
                 generate_plugins_file()
 
-                print_message(text=f'Removed plugin {old_plugin["url_or_package_name"]}', color='INFO')
+                print_message('INFO',False, f'Removed plugin {old_plugin["url_or_package_name"]}',)
 
             else:
-                print_message('Invalid selection', color='ERROR')
+                print_message('ERROR', False, 'Invalid selection')
 
         else:
-            print_message('Invalid subcommand', color='ERROR')
+            print_message('ERROR', False, 'Invalid subcommand')
             plugin_parser.print_help()

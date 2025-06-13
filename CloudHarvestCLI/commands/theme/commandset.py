@@ -11,7 +11,7 @@ class ThemeCommand(CommandSet):
 
         themes = HarvestConfiguration.themes
 
-        print_message(f'The current theme is `{str(HarvestConfiguration.theme)}`.', 'INFO', True, )
+        print_message('INFO', True, f'The current theme is `{str(HarvestConfiguration.theme)}`.')
 
         if args.subcommand == 'list':
             from rich.table import Table, Row
@@ -47,12 +47,12 @@ class ThemeCommand(CommandSet):
                 from CloudHarvestCLI.app import HARVEST_CLI, get_prompt
                 HARVEST_CLI.prompt = get_prompt()
 
-                print_message(f'Set the theme to `{new_theme}`.', 'INFO', True, )
+                print_message('INFO', True, f'Set the theme to `{new_theme}`.')
 
             else:
-                print_message( f'Kept the `{new_theme}` theme.', 'INFO', True, )
+                print_message( 'INFO', True, f'Kept the `{new_theme}` theme.')
 
         else:
 
-            print_message('Invalid subcommand.', 'ERROR', True, )
+            print_message('ERROR', True, 'Invalid subcommand.')
             theme_parser.print_help()

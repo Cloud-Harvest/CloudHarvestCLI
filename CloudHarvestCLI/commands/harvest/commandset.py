@@ -66,7 +66,7 @@ class HarvestCommand(CommandSet):
 
             # If all the results were okay, just print the number of tasks queued
             if len(results.keys()) == 1 and 'OK' in results.keys():
-                print_message(f'Queued {results["OK"]} tasks in {(end - start).total_seconds()} seconds.', 'INFO', True)
+                print_message('INFO', True, f'Queued {results["OK"]} tasks in {(end - start).total_seconds()} seconds.')
 
             else:
                 # Otherwise, print the queue error messages

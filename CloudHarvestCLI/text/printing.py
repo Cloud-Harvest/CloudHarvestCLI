@@ -131,9 +131,7 @@ def print_task_response(report_response: List[dict] or dict, args: Namespace, **
         if has_chain_errors:
             for error in report_response['errors']:
                 for key, value in error.items():
-                    print_message(text=f'{key}: {value}', color='ERROR', as_feedback=True)
+                    print_message('ERROR', True, f'{key}: {value}')
 
         if metrics and metrics[-1].get('Duration'):
-                print_message(text=f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms',
-                              color='INFO',
-                              as_feedback=True)
+                print_message('INFO', True, f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms')

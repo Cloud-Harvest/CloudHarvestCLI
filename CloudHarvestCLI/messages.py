@@ -48,15 +48,16 @@ def print_all_messages():
     for message in read_messages():
         source, color, as_feedback, text = message
 
-        print_message(text=text, color=color, as_feedback=as_feedback)
+        print_message(color, as_feedback, text)
 
 
-def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = False):
+def print_message(color: VALID_TEXT_COLOR_NAMES, as_feedback: bool, *args):
     """
     Prints a rich formatted string.
-    :param text: Text to print
     :param color: Color code to use
     :param as_feedback: When True, output will use the feedback_console which writes information to stderr.
+    :param args: Arguments to print. If multiple arguments are provided, they will be joined with a space.
+
     This distinction is important when deciding if information should be capture by terminal routing operators such as >
     :return: None (prints information to feedback_ or output_console)
     """
@@ -70,5 +71,7 @@ def print_message(text: str, color: VALID_TEXT_COLOR_NAMES, as_feedback: bool = 
 
     else:
         console = output_console
+
+    text = ' '.join([str(a) for a in args])
 
     console.print(text, style=Style(color=getattr(TextColors, color.upper())))
