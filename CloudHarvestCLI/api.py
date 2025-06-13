@@ -1,13 +1,44 @@
-from typing import Any, Literal
-from logging import getLogger
-
-from requests import JSONDecodeError
-
 from CloudHarvestCLI.messages import add_message
 
-logger = getLogger('harvest')
-HTTP_REQUEST_TYPES = Literal['get', 'post', 'put', 'delete']
+from logging import getLogger
+from requests import JSONDecodeError, Response
+from requests.exceptions import (
+    ChunkedEncodingError,
+    ConnectionError,
+    ConnectTimeout,
+    HTTPError,
+    ProxyError,
+    ReadTimeout,
+    SSLError,
+    TooManyRedirects
+)
+from typing import Any, Literal
 
+from messages import print_message
+
+HTTP_REQUEST_TYPES = Literal['get', 'post', 'put', 'delete']
+logger = getLogger('harvest')
+
+
+RETRYABLE_EXCEPTIONS = (
+    ChunkedEncodingError,
+    ConnectionError,
+    ConnectTimeout,
+    ReadTimeout,
+    SSLError,
+    TooManyRedirects
+)
+
+RETRYABLE_HTTP_STATUS_CODES = (
+    408,  # Request Timeout
+    409,  # Conflict
+    429,  # Too Many Requests
+    500,  # Internal Server Error
+    502,  # Bad Gateway
+    503,  # Service Unavailable
+    504,  # Gateway Timeout
+    507  # Insufficient Storage
+)
 
 class Api:
     """
@@ -80,6 +111,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
 
     from uuid import uuid4
     request_id = str(uuid4())
+    response = None
 
     for attempt in range(retries + 1):
         try:
@@ -101,32 +133,71 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                                **requests_kwargs)
 
         except KeyboardInterrupt:
+            logger.debug(f'request:{request_id}: User interrupted the request.')
             return {}
 
-        except ConnectionResetError as cre:
-            if attempt < retries:
-                from time import sleep
+        except Exception as ex:
+            if _retry_request(ex, response):
+                if attempt < retries:
+                    from time import sleep
 
-                logger.debug(f'request:{request_id}: Retrying ({attempt + 1}/{retries})...')
-                sleep(2 ** attempt)  # Exponential backoff
-                continue
+                    logger.debug(f'request:{request_id}: Retrying ({attempt + 1}/{retries})...')
+                    sleep(2 ** attempt)  # Exponential backoff
+                    continue
+
+                else:
+                    print_message(f'[{request_id}] Too many retries ({retries}) for request. {_format_exception(ex)}', 'ERROR', True)
+                    break
 
             else:
-                add_message(None, 'ERROR', True, f'Connection reset error after {retries} retries: {cre}')
-                break
+                print_message(f'[{request_id}] An unexpected error occurred: {_format_exception(ex)}', 'ERROR', True)
 
-        except Exception as e:
-            add_message(None,'ERROR', True, f'An unexpected error occurred: {e}')
-            logger.debug(f'request:{request_id}:An unexpected error occurred: {e}')
-
-            raise Exception from e
+                from traceback import format_exc
+                logger.debug(f'request:{request_id}:An unexpected error occurred:\n{format_exc()}')
 
         else:
-            if response.status_code != 200:
-                add_message(None,'WARN', True, f'An unexpected error occurred: {response.text}')
-                logger.debug(f'request:{request_id}:An unexpected error occurred: {response}')
+            return Api.safe_decode(response)
 
-            else:
-                return Api.safe_decode(response)
+def _retry_request(exception: Exception, response: Response) -> bool:
+    """
+    Determines if a request should be retried based on the exception type.
 
-    return None
+    Arguments
+    exception: (Exception) The exception that occurred.
+    response: (Response) The response object from the request.
+
+    Returns
+    (bool) True if the request should be retried, False otherwise.
+    """
+    if isinstance(exception, HTTPError):
+        if response:
+            if response.status_code in RETRYABLE_HTTP_STATUS_CODES:
+                return True
+
+    elif isinstance(exception, RETRYABLE_EXCEPTIONS):
+        return True
+
+    return False
+
+def _format_exception(exception: Exception) -> str:
+    """
+    Formats an exception into a string.
+
+    Arguments
+    exception: (Exception) The exception to format.
+
+    Returns
+    (str) The formatted exception.
+    """
+    exception_message = ''
+
+    if isinstance(exception.args, tuple):
+        exception_message = ", ".join(map(str, exception.args))
+
+    elif isinstance(exception.args, str):
+        exception_message = exception.args
+
+    else:
+        exception_message = str(exception)
+
+    return f'{exception.__class__.__name__}: {exception_message}'
