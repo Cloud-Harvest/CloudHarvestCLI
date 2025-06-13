@@ -142,7 +142,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                     from time import sleep
 
                     logger.debug(f'request:{request_id}: Retrying ({attempt + 1}/{retries})...')
-                    sleep(2 ** attempt)  # Exponential backoff
+                    sleep(1)  # Exponential backoff
                     continue
 
                 else:
