@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.3.4
+## 0.3.5
 - Code cleanup
 - Improved responses from the API
 - Fixed some CloudHarvestCoreTasks references
