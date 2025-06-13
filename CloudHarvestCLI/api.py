@@ -190,10 +190,9 @@ def _format_exception(exception: Exception) -> str:
     Returns
     (str) The formatted exception.
     """
-    exception_message = ''
 
     if isinstance(exception.args, tuple):
-        exception_message = ", ".join(map(str, exception.args))
+        exception_message = ", ".join(exception.args)
 
     elif isinstance(exception.args, str):
         exception_message = exception.args
