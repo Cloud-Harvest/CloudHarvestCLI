@@ -147,13 +147,14 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
 
                 else:
                     print_message(f'[{request_id}] Too many retries ({retries}) for request. {_format_exception(ex)}', 'ERROR', True)
-                    break
+                    return {}
 
             else:
                 print_message(f'[{request_id}] An unexpected error occurred: {_format_exception(ex)}', 'ERROR', True)
 
                 from traceback import format_exc
                 logger.debug(f'request:{request_id}:An unexpected error occurred:\n{format_exc()}')
+                return {}
 
         else:
             return Api.safe_decode(response)
