@@ -139,9 +139,10 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
         except Exception as ex:
             if _retry_request(ex, response):
                 if attempt < retries:
+                    print_message(f'Attempting to retry request due to an error. ({attempt}/{retries})', 'WARN', True)
+                    logger.debug(f'request:{request_id}: Got {_format_exception(ex)}. Retrying ({attempt + 1}/{retries})...')
                     from time import sleep
 
-                    logger.debug(f'request:{request_id}: Got {_format_exception(ex)}. Retrying ({attempt + 1}/{retries})...')
                     sleep(1)
                     continue
 
