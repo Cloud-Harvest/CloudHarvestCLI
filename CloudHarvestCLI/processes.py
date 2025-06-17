@@ -83,7 +83,7 @@ class HarvestRemoteJobAwaiter:
         """
 
         if isinstance(self.data, WalkableDict):
-            return self.data.get(self.name_key) or 'awaiting task creation'
+            return self.data.get(self.name_key) or 'unknown'
 
         else:
             return 'unknown'
