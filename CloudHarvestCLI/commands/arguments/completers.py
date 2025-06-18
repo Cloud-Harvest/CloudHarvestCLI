@@ -52,9 +52,10 @@ class RemoteBaseCompleter(BaseCompleter):
         from datetime import datetime
         if self._last_checked:
             _conditions = any([
-                refresh,
-                (self._last_checked - datetime.now()).total_seconds() > self.refresh_delay,
-                isinstance(self.result, tuple)
+                not self.result,                                                                # No result has been set yet or it is a Falsy value
+                refresh,                                                                        # The user has requested a refresh
+                (self._last_checked - datetime.now()).total_seconds() > self.refresh_delay,     # The last check was more than the refresh delay ago
+                isinstance(self.result, tuple)                                                  # The result is a tuple, which indicates that it is not a valid response
             ])
 
             if _conditions:
