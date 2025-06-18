@@ -24,6 +24,7 @@ RETRYABLE_EXCEPTIONS = (
     ChunkedEncodingError,
     ConnectionError,
     ConnectTimeout,
+    ProxyError,
     ReadTimeout,
     SSLError,
     TooManyRedirects
