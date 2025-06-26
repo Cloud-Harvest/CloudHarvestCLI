@@ -35,6 +35,7 @@ class ReportCommand(CommandSet):
                 }
 
                 # Add the filters to the passable arguments
+                passable_args['describe'] = args.describe
                 passable_args['filters'] = filters
                 passable_args['variables'] = {
                     var.split('=')[0]: var.split('=')[1] for var in
