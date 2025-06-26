@@ -192,7 +192,7 @@ def _format_exception(exception: Exception) -> str:
     """
 
     if isinstance(exception.args, tuple):
-        exception_message = ", ".join(exception.args)
+        exception_message = ", ".join([str(s) for s in exception.args])
 
     elif isinstance(exception.args, str):
         exception_message = exception.args
