@@ -1,9 +1,9 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
 
-plugin_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter)
+plugin_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter, add_help=False)
 
-subparsers = plugin_parser.add_subparsers(dest='subcommand', help='Subcommands for theme management')
+subparsers = plugin_parser.add_subparsers(dest='plugins_subcommand', help='Subcommands for theme management')
 
 # Subparser for the 'add' subcommand
 add_parser = subparsers.add_parser('add', help='Add a plugin')

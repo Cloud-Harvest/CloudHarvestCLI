@@ -1,0 +1,1 @@
+from CloudHarvestCLI.commands.settings.commandset import SettingsCommand

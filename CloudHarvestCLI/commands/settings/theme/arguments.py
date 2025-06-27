@@ -1,13 +1,13 @@
 from cmd2 import Cmd2ArgumentParser
 from rich_argparse import RawTextRichHelpFormatter
 
-from CloudHarvestCLI.commands.theme.completers import ThemeCompleter
+from CloudHarvestCLI.commands.settings.theme.completers import ThemeCompleter
 
 
 theme_completer = ThemeCompleter()
-theme_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter)
+theme_parser = Cmd2ArgumentParser(formatter_class=RawTextRichHelpFormatter, add_help=False)
 
-subparsers = theme_parser.add_subparsers(dest='subcommand', help='Subcommands for theme management')
+subparsers = theme_parser.add_subparsers(dest='theme_subcommand', help='Subcommands for theme management')
 
 # Subparser for the 'list' subcommand
 list_parser = subparsers.add_parser('list', help='List the available themes')

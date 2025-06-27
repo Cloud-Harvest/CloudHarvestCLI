@@ -1,24 +1,17 @@
 from CloudHarvestCLI.commands.jobs.terminate.arguments import terminate_parser
 
-from cmd2 import with_default_category, CommandSet, with_argparser
+def do_terminate(args):
+    # TODO: Implement the logic to terminate a job.
 
+    from CloudHarvestCLI.messages import print_message
+    print_message('ERROR', True, 'This command is not implemented yet. Please check back later.')
+    return
 
-@with_default_category('Harvest')
-class TerminateCommand(CommandSet):
-
-    @with_argparser(terminate_parser)
-    def do_terminate(self, args):
-        # TODO: Implement the logic to terminate a job.
-
-        from CloudHarvestCLI.messages import print_message
-        print_message('ERROR', True, 'This command is not implemented yet. Please check back later.')
-        return
-
-        # task_id = args.job_id[5:] if args.job_id.startswith('task:') else args.job_id
-        #
-        # from CloudHarvestCLI.processes import HarvestRemoteJobAwaiter
-        # HarvestRemoteJobAwaiter(
-        #     endpoint=f'tasks/get_task_status/{task_id}',
-        #     with_progress_bar=True,
-        #     timeout=args.timeout
-        # ).run()
+    # task_id = args.job_id[5:] if args.job_id.startswith('task:') else args.job_id
+    #
+    # from CloudHarvestCLI.processes import HarvestRemoteJobAwaiter
+    # HarvestRemoteJobAwaiter(
+    #     endpoint=f'tasks/get_task_status/{task_id}',
+    #     with_progress_bar=True,
+    #     timeout=args.timeout
+    # ).run()
