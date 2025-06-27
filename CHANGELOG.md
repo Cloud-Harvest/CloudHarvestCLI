@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.3.7
+- - Updated to conform with CloudHarvestCoreTasks 0.8.0
+- Hidden tasks are filtered from the `report` command
+- `RemoteBaseCompleter` will always refresh when the stored result is a falsy value
+- Created the `settings` command
+  - Nested the `banner`, `plugins`, and `theme` commands 
+- Create the `jobs` command
+  - Nested `attach` command
+  - Added placeholder for the `terminate` command
+
 ## 0.3.6
 - Standardized some internals
 
