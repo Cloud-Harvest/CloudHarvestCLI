@@ -195,12 +195,20 @@ class HarvestRemoteJobAwaiter:
                         break
 
                 except KeyboardInterrupt:
-                    add_message(self, 'INFO', True, f'Sending thread `{self.name}` to background.')
-                    # When going to background, make sure to notify the user when the task is complete
-                    self.with_notification = True
+                    from CloudHarvestCLI.text.inputs import input_boolean
+                    send_to_background = input_boolean(f'Notify when remote process completes?')
 
-                    # Set the check interval to 60 seconds so we don't hammer the API
-                    self.check_interval = 60
+                    if send_to_background:
+                        add_message(self, 'INFO', True, f'Sending thread `{self.name}` to background.')
+                        # When going to background, make sure to notify the user when the task is complete
+                        self.with_notification = True
+
+                        # Set the check interval to 60 seconds so we don't hammer the API
+                        self.check_interval = 60
+
+                    else:
+                        add_message(self, 'INFO', True, f'No longer monitoring remote process `{self.name}`.')
+                        self.terminate = True
                     break
 
                 except Exception as ex:
