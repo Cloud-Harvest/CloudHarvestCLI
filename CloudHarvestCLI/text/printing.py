@@ -106,7 +106,6 @@ def print_task_response(report_response: List[dict] or dict, args: Namespace, **
         meta = report_response.get('meta') or {}
         metrics = report_response.get('metrics') or []
 
-        has_chain_errors = bool(report_response.get('errors') or [])
         has_task_errors = any(bool(task.get('Errors')) for task in metrics or [])
 
         if data:
@@ -127,11 +126,6 @@ def print_task_response(report_response: List[dict] or dict, args: Namespace, **
                        page=args.page,
                        title='Error Report' if has_task_errors else 'Performance Report',
                        with_record_count=False)
-
-        if has_chain_errors:
-            for error in report_response['errors']:
-                for key, value in error.items():
-                    print_message('ERROR', True, f'{key}: {value}')
 
         if metrics and metrics[-1].get('Duration'):
                 print_message('INFO', True, f'{len(data)} records in {metrics[-1]["Duration"] * 1000:.2f} ms')

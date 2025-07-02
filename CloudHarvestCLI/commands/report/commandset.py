@@ -66,7 +66,7 @@ class ReportCommand(CommandSet):
                 output = output.get('result') or {}
                 if output.get('errors'):
                     for error in output.get('errors'):
-                        add_message(self, 'ERROR', True, error.get('message'))
+                        add_message(self, 'ERROR', True, error)
 
                 if args.refresh > 0:
                     from rich.live import Live
