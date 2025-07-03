@@ -2,6 +2,7 @@ from CloudHarvestCLI.api import HTTP_REQUEST_TYPES, request
 from CloudHarvestCoreTasks.dataset import WalkableDict
 
 from logging import getLogger
+from typing import Any
 
 logger = getLogger('harvest')
 
@@ -76,29 +77,50 @@ class HarvestRemoteJobAwaiter:
         # Terminate
         self.terminate = False
 
+        self._name = None
+        self._status = None
+        self._position = None
+        self._total = None
+
+    def _set_property(self, name: str, data_key: str = None, default = None) -> Any:
+        """
+        Sets the property value based on the data from the API or the instance's default value.
+
+        Arguments
+        name: (str) The name of the property to set.
+        data_key: (str, optional) The key to use to get the value from the data. Defaults to None, which uses the name.
+        default: (Any, optional) The default value to use if the data is not available. Defaults to None.
+        """
+        data_key = data_key or name
+
+        if isinstance(self.data, WalkableDict):
+            value = self.data.get(data_key)
+
+            # Priority: 1) value from data, 2) value from the instance, 3) default value
+            new_value = value or getattr(self, f'_{name}') or default
+
+        else:
+            new_value = getattr(self, f'_{name}') or default
+
+        # Set the property value if it has changed
+        setattr(self, f'_{name}', new_value)
+
+        # Return the new value of the property
+        return new_value
+
     @property
     def name(self):
         """
         Returns the name of the job.
         """
-
-        if isinstance(self.data, WalkableDict):
-            return self.data.get(self.name_key) or 'unknown'
-
-        else:
-            return 'unknown'
+        return self._set_property('name', default='unknown')
 
     @property
     def status(self) -> str:
         """
         Returns the status of the job.
         """
-
-        if isinstance(self.data, WalkableDict):
-            return self.data.get(self.status_key) or 'unknown'
-
-        else:
-            return 'unknown'
+        return self._set_property('status', default='unknown')
 
     @property
     def position(self) -> int:
@@ -106,11 +128,7 @@ class HarvestRemoteJobAwaiter:
         Returns the position of the job.
         """
 
-        if isinstance(self.data, WalkableDict):
-            return self.data.get(self.position_key) or 0
-
-        else:
-            return 0
+        return self._set_property('position', data_key=self.position_key,  default=0)
 
     @property
     def total(self) -> int:
@@ -118,11 +136,7 @@ class HarvestRemoteJobAwaiter:
         Returns the total of the job.
         """
 
-        if isinstance(self.data, WalkableDict):
-            return self.data.get(self.total_key) or 0
-
-        else:
-            return 0
+        return self._set_property('total', data_key=self.total_key, default=0)
 
     @property
     def percent(self) -> float:
