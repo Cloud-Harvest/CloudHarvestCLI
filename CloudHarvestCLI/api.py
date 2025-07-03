@@ -146,11 +146,11 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
                     continue
 
                 else:
-                    add_message(None, 'ERROR', True, f'[{request_id}] Too many retries ({retries}) for request. {_format_exception(ex)}')
+                    add_message(None, 'ERROR', True, f'[Too many retries ({retries}) for request. {_format_exception(ex)}')
                     return {}
 
             else:
-                add_message(None, 'ERROR', True, f'[{request_id}] An unexpected error occurred: {_format_exception(ex)}')
+                add_message(None, 'ERROR', True, f'An unexpected error occurred: {_format_exception(ex)}')
 
                 from traceback import format_exc
                 logger.debug(f'request:{request_id}:An unexpected error occurred:\n{format_exc()}')
