@@ -54,7 +54,7 @@ done
 echo "All required binaries are installed."
 
 # Fetch the version number from pyproject.toml using bash and standard libraries/binaries only
-version=$(grep -oP '(?<=^version = ")[^"]+(?=")' pyproject.toml pyproject.toml)
+version=$(grep -oP '(?<=^version = ")[^"]+(?=")' pyproject.toml)
 
 echo "Version number fetched from pyproject.toml: $version"
 
