@@ -1,0 +1,40 @@
+[build-system]
+requires = ["flit-core>=3.7"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.sdist]
+include = [
+    "templates/**/*.yaml",
+    "pyproject.toml",
+]
+
+[project]
+authors = [ { name = "Cloud Harvest" } ]
+classifiers = [ "Programming Language :: Python :: 3.13" ]
+dependencies = [
+    "CloudHarvestCoreTasks @ git+https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git@0.8.1",
+    "PyYAML",
+    "cmd2",
+    "gnureadline",
+    "flatten-json",
+    "natsort",
+    "pandas",
+    "requests",
+    "rich",
+    "rich-argparse",
+    "setuptools",
+    "pytest",
+    "toml",
+    "urllib3"
+]
+description = "This is the CLI for CloudHarvest, providing a command-line interface to interact with the CloudHarvest API and execute tasks."
+name = "CloudHarvestCLI"
+readme = "README.md"
+requires-python = ">=3.13"
+version = "0.3.8"
+
+[project.license]
+file = "LICENSE"
+
+[project.urls]
+homepage = "https://github.com/Cloud-Harvest/CloudHarvestCLI"
