@@ -53,10 +53,10 @@ done
 
 echo "All required binaries are installed."
 
-# Fetch the version number from meta.json using bash and standard libraries/binaries only
-version=$(grep -oP '(?<="version": ")[^"]*' meta.json)
+# Fetch the version number from pyproject.toml using bash and standard libraries/binaries only
+version=$(grep -oP '(?<=^version = ")[^"]+(?=")' pyproject.toml pyproject.toml)
 
-echo "Version number fetched from meta.json: $version"
+echo "Version number fetched from pyproject.toml: $version"
 
 # Check that all commits have been pushed to git
 if [ $dry_run -eq 0 ]; then

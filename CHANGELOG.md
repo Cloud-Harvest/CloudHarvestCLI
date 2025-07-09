@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.8
+- Updated python build model
+- Updated to conform with CloudHarvestCoreTasks 0.8.1
+
 ## 0.3.7
 - - Updated to conform with CloudHarvestCoreTasks 0.8.0
 - Hidden tasks are filtered from the `report` command
