@@ -37,11 +37,11 @@ class HarvestConfiguration:
         for key, value in config.items():
             setattr(HarvestConfiguration, key, value)
 
-        from json import load
-        with open('./meta.json', 'r') as meta_file_stream:
+        from tomli import load
+        with open('./pyproject.toml', 'br') as meta_file_stream:
             meta = load(meta_file_stream)
 
-        HarvestConfiguration.version = meta['version']
+        HarvestConfiguration.version = meta['project']['version']
 
         # get the YAML files in CloudHarvestCLI/config/
         from os import listdir
