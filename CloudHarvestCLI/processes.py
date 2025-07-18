@@ -2,7 +2,7 @@ from CloudHarvestCLI.api import HTTP_REQUEST_TYPES, request
 from CloudHarvestCoreTasks.dataset import WalkableDict
 
 from logging import getLogger
-from typing import Any
+from typing import Any, Tuple
 
 logger = getLogger('harvest')
 
@@ -82,7 +82,7 @@ class HarvestRemoteJobAwaiter:
         self._position = None
         self._total = None
 
-    def _set_property(self, name: str, data_key: str = None, default = None) -> Any:
+    def _set_property(self, name: str, data_key: Tuple[str] or str = None, default = None) -> Any:
         """
         Sets the property value based on the data from the API or the instance's default value.
 
@@ -91,7 +91,18 @@ class HarvestRemoteJobAwaiter:
         data_key: (str, optional) The key to use to get the value from the data. Defaults to None, which uses the name.
         default: (Any, optional) The default value to use if the data is not available. Defaults to None.
         """
-        data_key = data_key or name
+        realized_data_key = None
+
+        if data_key:
+            if isinstance(data_key, tuple):
+                for dk in data_key:
+                    if dk in self.data:
+                        realized_data_key = dk
+                        break
+            else:
+                realized_data_key = data_key
+
+        data_key = realized_data_key or name
 
         if isinstance(self.data, WalkableDict):
             value = self.data.get(data_key)
@@ -111,9 +122,9 @@ class HarvestRemoteJobAwaiter:
     @property
     def name(self):
         """
-        Returns the name of the job.
+        Returns the name of the job. When no name is provided, it will return the id and name from the data.
         """
-        return self._set_property('name', default='unknown')
+        return self._set_property('name', data_key=('redis_name', 'id', 'name'), default='unknown')
 
     @property
     def status(self) -> str:
