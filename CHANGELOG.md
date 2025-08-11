@@ -3,6 +3,7 @@
 ## 0.3.8
 - Updated python build model
 - Updated to conform with CloudHarvestCoreTasks 0.8.1
+- Commented out client-side sorting; sorting is now done server-side
 
 ## 0.3.7
 - - Updated to conform with CloudHarvestCoreTasks 0.8.0

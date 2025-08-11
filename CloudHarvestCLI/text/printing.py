@@ -47,7 +47,7 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
         ]
 
         _keys = list(set(_keys))
-        _keys.sort()
+        # _keys.sort()
 
     else:
         _keys = keys
@@ -58,9 +58,9 @@ def print_data(data: (dict, List[dict]), keys: (list, tuple) = None, flatten: st
         if record_index_keyname not in _keys:
             _keys += [record_index_keyname]
 
-    if sort_by_keys:
-        from natsort import natsorted
-        data = natsorted(data, key=lambda d: [d.get(k) for k in _keys])
+    # if sort_by_keys:
+    #     from natsort import natsorted
+    #     data = natsorted(data, key=lambda d: [d.get(k) for k in _keys])
 
     match output_format:
         case 'csv':
