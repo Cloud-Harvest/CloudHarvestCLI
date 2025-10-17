@@ -215,7 +215,7 @@ class HarvestRemoteJobAwaiter:
                     if self.percent >= 100:
                         break
 
-                    if self.terminate:
+                    if self.terminate or self.status == 'error':
                         progress.stop()
                         break
 
