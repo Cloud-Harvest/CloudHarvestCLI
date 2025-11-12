@@ -188,7 +188,7 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
         elif is_active:
             if last_seen:
                 from datetime import datetime, timezone
-                record_age = (last_seen - datetime.now(tz=timezone.utc)).total_seconds()
+                record_age = (datetime.now(tz=timezone.utc) - last_seen).total_seconds()
 
                 if record_age < fresh.max_second_age:
                     fresh_code = fresh
