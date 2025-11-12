@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.9
+- Added the freshness column to report outputs
+- Added `report --suppress-freshness` to exclude freshness from reports
+
 ## 0.3.8
 - Updated python build model
 - Updated to conform with CloudHarvestCoreTasks 0.8.1

@@ -30,6 +30,7 @@ report_parser.add_argument('--sort', nargs='*', type=str,
                                            'Example: `--sort key1 key2:asc key3:desc`',
                                            'When not provided, the report will use the default sort order based on'
                                            ' the visible fields.']))
+report_parser.add_argument('--suppress-freshness', action='store_true', help='Disables the report freshness column.')
 report_parser.add_argument('--timeout', type=int, default=15,
                            help='\n'.join(['The maximum number of seconds to wait for the report to complete. If the timeout is',
                                 ' exceeded, the user will be returned to the prompt. The report itself may still',

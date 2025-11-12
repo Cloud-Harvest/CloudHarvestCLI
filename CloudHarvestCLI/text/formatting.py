@@ -103,6 +103,7 @@ def to_table(data: (list or dict),
 
     from rich.table import Table
     from rich.box import SIMPLE
+    from rich.text import Text
 
     table = Table(box=SIMPLE, title=title)
 
@@ -136,6 +137,10 @@ def to_table(data: (list or dict),
 
             elif isinstance(v, list):
                 r.append(list_separator.join([str(s) for s in v]))
+
+            # If the text was previously formatted, preserve it as-is
+            elif isinstance(v, Text):
+                r.append(v)
 
             else:
                 r.append(str(v))
