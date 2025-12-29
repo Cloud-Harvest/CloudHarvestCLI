@@ -332,8 +332,8 @@ def _get_eligible_banners(banner_configuration: dict) -> list:
 
                     # start 11, end 3
                     if start_date['month'] > end_date['month']:
-                        start = date(**start_date, year=now.year - 1)
-                        end = date(**end_date, year=now.year)
+                        start = date(**start_date, year=now.year)
+                        end = date(**end_date, year=now.year + 1)
 
                     else:
                         start = date(**start_date, year=now.year)

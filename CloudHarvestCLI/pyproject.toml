@@ -14,8 +14,8 @@ classifiers = [ "Programming Language :: Python :: 3.13" ]
 dependencies = [
     "CloudHarvestCoreTasks @ git+https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git@0.8.1",
     "PyYAML",
-    "cmd2",
-    "gnureadline",
+    "cmd2<3",
+#    "gnureadline",
     "flatten-json",
     "natsort",
     "pandas",
@@ -31,7 +31,7 @@ description = "This is the CLI for CloudHarvest, providing a command-line interf
 name = "CloudHarvestCLI"
 readme = "README.md"
 requires-python = ">=3.13"
-version = "0.3.9"
+version = "0.3.10"
 
 [project.license]
 file = "LICENSE"

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.3.10
+- Fixed an issue where banners with start months greater than the end month would not be included in the banner rotation
+- Package hygiene
+  - Set the `cmd2` package to `<3` to avoid compatibility issues with future releases
+  - Commented out `gnureadline` due to broader compatibility issues
+
 ## 0.3.9
 - Added the freshness column to report outputs
 - Added `report --suppress-freshness` to exclude freshness from reports
