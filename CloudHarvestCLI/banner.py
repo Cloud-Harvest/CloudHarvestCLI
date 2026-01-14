@@ -332,8 +332,16 @@ def _get_eligible_banners(banner_configuration: dict) -> list:
 
                     # start 11, end 3
                     if start_date['month'] > end_date['month']:
-                        start = date(**start_date, year=now.year)
-                        end = date(**end_date, year=now.year + 1)
+                        # We have not crossed the year boundary because the current month is greater than or equal to
+                        # the start month. We add a year to the end date to get the correct range.
+                        if now.month >= start_date['month']:
+                            start = date(**start_date, year=now.year)
+                            end = date(**end_date, year=now.year + 1)
+                        # We have crossed the year boundary because the current month is less than or equal to the
+                        # start month. We subtract a year from the start date to get the correct range.
+                        else:
+                            start = date(**start_date, year=now.year - 1)
+                            end = date(**end_date, year=now.year)
 
                     else:
                         start = date(**start_date, year=now.year)
@@ -343,8 +351,12 @@ def _get_eligible_banners(banner_configuration: dict) -> list:
                         include_banner = True
 
             if include_banner:
-                banners.append(config | {'footer': rule.get('footer')})
+                banners.append(config | {'footer': rule.get('footer'), 'name': name})
                 break
+
+    # Don't produce the default banner if other banners matched.
+    if len(banners) > 1:
+        banners = [b for b in banners if b['name'] != 'default']
 
     # date range
     return banners

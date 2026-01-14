@@ -18,6 +18,31 @@
 #        start: (Optional|Default 0)
 #        end: (Optional|Default None)
 #        color: '#763284'  # Denim
+default:
+  colors:
+    0:
+      - color: '#f0f0f0'  # Very light gray
+    1:
+      - color: '#d9d9d9'  # Light gray
+    2:
+      - color: '#bfbfbf'  # Medium gray
+    3:
+      - color: '#a6a6a6'  # Dark gray
+    4:
+      - color: '#8c8c8c'  # Gray
+    5:
+      - color: '#737373'  # Very dark gray
+
+  rules:
+    - date:
+        between:
+          start:
+            month: 1
+            day: 1
+          end:
+            month: 12
+            day: 31
+
 winter:
   colors:
     0:

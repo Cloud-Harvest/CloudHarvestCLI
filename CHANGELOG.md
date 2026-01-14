@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.11
+- Added a default banner which is displayed if no other banners can be displayed.
+- More banner eligibility logic improvements and fixes
+
 ## 0.3.10
 - Fixed an issue where banners with start months greater than the end month would not be included in the banner rotation
 - Package hygiene
