@@ -175,7 +175,7 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
         is_active = record.walk('Harvest.Active')
         last_seen = record.walk('Harvest.Dates.LastSeen')
 
-        if str(last_seen):
+        if isinstance(last_seen, str):
             from datetime import datetime
             last_seen = datetime.fromisoformat(last_seen)
 
