@@ -44,7 +44,7 @@ class Api:
         Api.verify = verify
 
     @staticmethod
-    def init_session(pool_connections: int = 10, pool_maxsize: int = 10, backoff_factor: float = 0.3, total: int = 10,
+    def init_session(pool_connections: int = 3, pool_maxsize: int = 5, backoff_factor: float = 0.3, total: int = 10,
                      connect: int = 10, other: int = 10, status:int = 10, read: int = 10, redirect: int = 10) -> Session:
         """
         Initializes a session for making requests to the API.
@@ -65,10 +65,22 @@ class Api:
         """
 
         # Return the existing session if it exists and the token has not changed
-        if Api.session is not None and Api.token == Api.previous_token:
-            return Api.session
+        if Api.session is not None:
+            # If the token has changed, close the existing session and create a new one
+            if Api.token == Api.previous_token:
+                try:
+                    Api.session.close()
+
+                except Exception as e:
+                    pass
+
+            # If the token has not changed, return the existing session
+            else:
+                return Api.session
 
         session = Session()
+        # Update the previous token so we can detect changes
+        Api.previous_token = Api.token
         session.headers.update({'Authorization': f'Bearer {Api.token}' if Api.token else ''})
 
         # Create the Retry object which will be used to configure the HTTPAdapter.
