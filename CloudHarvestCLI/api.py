@@ -92,7 +92,11 @@ class Api:
             redirect=redirect,
             status=status,
             backoff_factor=backoff_factor,
+            status_forcelist={429, 500, 502, 503, 504},
+            allowed_methods=frozenset({"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),
+            raise_on_status=False,
         )
+
         adapter = HTTPAdapter(pool_connections=pool_connections, pool_maxsize=pool_maxsize, max_retries=retry)
         session.mount('https://', adapter)
         session.mount('http://', adapter)
@@ -100,28 +104,8 @@ class Api:
 
         return session
 
-    @staticmethod
-    def safe_decode(response) -> Any:
-        """
-        Safely decodes a response from the API.
 
-        Arguments
-        response: (dict) The response to decode.
-
-        Returns
-        (dict) The decoded response.
-        """
-
-        try:
-            result = response.json()
-
-        except JSONDecodeError as e:
-            result = f'Failed to decode response JSON: {e}'
-
-        return result
-
-
-def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, session_kwargs: dict = None, **requests_kwargs) -> Any:
+def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, max_attempts: int = 10, session_kwargs: dict = None, **requests_kwargs) -> Any:
     """
     Makes an API request to the CloudHarvest API.
 
@@ -132,6 +116,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
     request_type: (str) The type of request to make (GET, POST, PUT, DELETE).
     endpoint: (str) The endpoint to make the request to.
     data: (dict) The data to send with the request.
+    max_attempts: (int) The maximum number of attempts to make the request.
     session_kwargs: (dict, optional) Additional keyword arguments to pass to the session initializer.
     **requests_kwargs: Additional keyword arguments to pass to the requests library.
 
@@ -144,20 +129,30 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
     import urllib3
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    try:
-        response = Api.session.request(
-            method=request_type,
-            url=f'https://{Api.host}:{Api.port}/{endpoint}',
-            cert=Api.pem,
-            json=data or {},
-            verify=Api.verify,
-            **requests_kwargs
-        )
+    attempt = 0
+    while True:
+        try:
+            response = Api.session.request(
+                method=request_type,
+                url=f'https://{Api.host}:{Api.port}/{endpoint}',
+                cert=Api.pem,
+                json=data or {},
+                verify=Api.verify,
+                **requests_kwargs
+            )
 
-        return response.json()
+            return response.json()
 
-    except KeyboardInterrupt:
-        print_message('INFO', True, 'Acknowledged user interrupt.')
+        except KeyboardInterrupt:
+            print_message('INFO', True, 'Acknowledged user interrupt.')
 
-    except Exception as e:
-        print_message('ERROR', True, f'An error occurred while making the request: {e}')
+        except ConnectionError:
+            from time import sleep
+            attempt += 1
+            if attempt >= max_attempts:
+                raise
+
+            sleep(attempt * .1)
+
+        except Exception as e:
+            print_message('ERROR', True, f'An error occurred while making the request: {e}')
