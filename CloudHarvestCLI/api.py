@@ -154,11 +154,10 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
             **requests_kwargs
         )
 
+        return response.json()
+
     except KeyboardInterrupt:
         print_message('INFO', True, 'Acknowledged user interrupt.')
 
     except Exception as e:
         print_message('ERROR', True, f'An error occurred while making the request: {e}')
-
-    else:
-        return Api.safe_decode(response)

@@ -7,6 +7,7 @@
 - Cleaned up some inverse boolean logic in the text printing functions
 - Updated dockerfile to use `python:3.14-trixie` as the base image
 - Updated the docker publishing script to support bypassing the git check when needed
+- Fixed an issue where invalid responses from the API could cause unhandled exceptions in the `harvest` command
 
 ## 0.3.11
 - Added a default banner which is displayed if no other banners can be displayed.
