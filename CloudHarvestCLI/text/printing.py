@@ -182,10 +182,7 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
         # Default freshness code
         fresh_code = unknown
 
-        if is_active is False:
-            fresh_code = inactive
-
-        elif is_active:
+        if is_active:
             if last_seen:
                 from datetime import datetime, timezone
                 record_age = (datetime.now(tz=timezone.utc) - last_seen).total_seconds()
@@ -198,6 +195,8 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
 
                 else:
                     fresh_code = old
+        else:
+            fresh_code = inactive
 
         # Apply Text Style encoding to the record
         from rich.text import Text
