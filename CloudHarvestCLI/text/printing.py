@@ -165,11 +165,11 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
 
     # We define these on each report in case the theme changes. TODO: implement an event handler for theme changes.
     from CloudHarvestCLI.text.styling import TextColors
-    fresh = FreshnessCode('F', 'fresh', TextColors.INFO, max_second_age=3600)
-    aging = FreshnessCode('A', 'aging', TextColors.WARN, max_second_age=7200)
-    old = FreshnessCode('O', 'old', TextColors.ERROR)
-    inactive = FreshnessCode('I', 'inactive', TextColors.HEADER)  # , row_format={'italic': True}
-    unknown = FreshnessCode('U', 'unknown', TextColors.PROMPT)
+    fresh = FreshnessCode('F', 'fresh', TextColors.FRESH_ACTIVE, max_second_age=3600)
+    aging = FreshnessCode('A', 'aging', TextColors.FRESH_AGING, max_second_age=7200)
+    old = FreshnessCode('O', 'old', TextColors.FRESH_OLD)
+    inactive = FreshnessCode('I', 'inactive', TextColors.FRESH_INACTIVE)  # , row_format={'italic': True}
+    unknown = FreshnessCode('U', 'unknown', TextColors.FRESH_UNKNOWN)
 
     for record in data:
         is_active = record.walk('Harvest.Active')

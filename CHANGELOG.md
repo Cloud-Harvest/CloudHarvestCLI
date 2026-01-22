@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.0
+- Updated to conform with CloudHarvestCoreTasks 0.8.2
+- Refactored the API request handling to improve reliability and performance
+- Reintroduced `gnureadline` for better command-line experience on Unix-like systems
+- Cleaned up some inverse boolean logic in the text printing functions
+
 ## 0.3.11
 - Added a default banner which is displayed if no other banners can be displayed.
 - More banner eligibility logic improvements and fixes

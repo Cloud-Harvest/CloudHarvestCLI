@@ -17,6 +17,11 @@ default:
   INFO: '#75BFEC'          # Light Steel Blue
   WARN: '#EED202'          # Goldenrod
   ERROR: '#FF0F0F'         # Red
+  FRESH_ACTIVE: '#4AF626'  # Bright Green (active)
+  FRESH_AGING: '#EED202'   # Goldenrod (aging)
+  FRESH_OLD: '#FF0F0F'     # Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 # Old school themes
 solarized-dark:
@@ -25,6 +30,11 @@ solarized-dark:
   INFO: '#839496'          # Light Slate Gray
   WARN: '#b58900'          # Dark Goldenrod
   ERROR: '#dc322f'         # Firebrick
+  FRESH_ACTIVE: '#859900'  # Muted Green (active)
+  FRESH_AGING: '#b58900'   # Dark Goldenrod (aging)
+  FRESH_OLD: '#dc322f'     # Firebrick (old)
+  FRESH_INACTIVE: '#586e75'# Slate Gray (inactive)
+  FRESH_UNKNOWN: '#D33682' # Magenta (unknown)
 
 solarized-light:
   HEADER: '#657b83'        # Light Slate Gray
@@ -32,6 +42,11 @@ solarized-light:
   INFO: '#839496'          # Light Slate Gray
   WARN: '#b58900'          # Dark Goldenrod
   ERROR: '#dc322f'         # Firebrick
+  FRESH_ACTIVE: '#859900'  # Muted Green (active)
+  FRESH_AGING: '#b58900'   # Dark Goldenrod (aging)
+  FRESH_OLD: '#dc322f'     # Firebrick (old)
+  FRESH_INACTIVE: '#657b83'# Light Slate Gray (inactive)
+  FRESH_UNKNOWN: '#D33682' # Magenta (unknown)
 
 tango-light:
   HEADER: '#2E3436'        # Dark Slate Gray
@@ -39,6 +54,11 @@ tango-light:
   INFO: '#C4A000'          # Dark Goldenrod
   WARN: '#CE5C00'          # Dark Orange
   ERROR: '#CC0000'         # Red
+  FRESH_ACTIVE: '#4E9A06'  # Tango Green (active)
+  FRESH_AGING: '#FCE94F'   # Tango Yellow (aging)
+  FRESH_OLD: '#CC0000'     # Red (old)
+  FRESH_INACTIVE: '#555753'# Dim Gray (inactive)
+  FRESH_UNKNOWN: '#AD7FA8' # Mauve/Magenta (unknown)
 
 tango-dark:
   HEADER: '#555753'        # Dim Gray
@@ -46,6 +66,11 @@ tango-dark:
   INFO: '#C4A000'          # Dark Goldenrod
   WARN: '#F57900'          # Dark Orange
   ERROR: '#EF2929'         # Firebrick
+  FRESH_ACTIVE: '#4E9A06'  # Tango Green (active)
+  FRESH_AGING: '#FCE94F'   # Tango Yellow (aging)
+  FRESH_OLD: '#EF2929'     # Firebrick (old)
+  FRESH_INACTIVE: '#555753'# Dim Gray (inactive)
+  FRESH_UNKNOWN: '#AD7FA8' # Mauve/Magenta (unknown)
 
 # Seasonal / Nature themes
 spring:
@@ -54,6 +79,11 @@ spring:
   INFO: '#32CD32'          # Lime Green
   WARN: '#ADFF2F'          # Green Yellow
   ERROR: '#7FFF00'         # Chartreuse
+  FRESH_ACTIVE: '#32CD32'  # Lime Green (active)
+  FRESH_AGING: '#ADFF2F'   # Green Yellow (aging)
+  FRESH_OLD: '#B22222'     # Firebrick (old - red)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 summer:
   HEADER: '#FFA500'        # Orange
@@ -61,6 +91,11 @@ summer:
   INFO: '#FFD700'          # Gold
   WARN: '#32CD32'          # Lime Green
   ERROR: '#008000'         # Green
+  FRESH_ACTIVE: '#32CD32'  # Lime Green (active)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#FF4500'     # Orange Red (old/red-leaning)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 autumn:
   HEADER: '#FF4500'        # Orange Red
@@ -68,6 +103,11 @@ autumn:
   INFO: '#FFA500'          # Orange
   WARN: '#FFD700'          # Gold
   ERROR: '#B8860B'         # Dark Goldenrod
+  FRESH_ACTIVE: '#6B8E23'  # Olive Drab (green - autumnal)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#FF4500'     # Orange Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#D02090' # Violet Red / Magenta (unknown)
 
 winter:
   HEADER: '#ADD8E6'        # Light Blue
@@ -75,6 +115,11 @@ winter:
   INFO: '#00BFFF'          # Deep Sky Blue
   WARN: '#1E90FF'          # Dodger Blue
   ERROR: '#0000FF'         # Blue
+  FRESH_ACTIVE: '#2E8B57'  # Sea Green (active)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#8B0000'     # Dark Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 sakura-morning:
   HEADER: '#FFB7C5'        # Pink
@@ -82,6 +127,11 @@ sakura-morning:
   INFO: '#FF1493'          # Deep Pink
   WARN: '#C71585'          # Medium Violet Red
   ERROR: '#8B008B'         # Dark Magenta
+  FRESH_ACTIVE: '#32CD32'  # Lime Green (active)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#FF0000'     # Red (old)
+  FRESH_INACTIVE: '#C0C0C0'# Silver (inactive)
+  FRESH_UNKNOWN: '#8B008B' # Dark Magenta (unknown)
 
 sakura-night:
   HEADER: '#FF34B3'        # Deep Pink
@@ -89,6 +139,11 @@ sakura-night:
   INFO: '#CD2990'          # Deep Pink
   WARN: '#8B1C62'          # Dark Magenta
   ERROR: '#711A56'         # Dark Magenta
+  FRESH_ACTIVE: '#32CD32'  # Lime Green (active)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#B22222'     # Firebrick (old)
+  FRESH_INACTIVE: '#696969'# Dim Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 # Just for fun!
 lcars:
@@ -97,6 +152,11 @@ lcars:
   INFO: '#CCCC99'          # Khaki
   WARN: '#CC9999'          # Rosy Brown
   ERROR: '#CC6666'         # Red
+  FRESH_ACTIVE: '#77DD77'  # Pastel Green (active)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#CC6666'     # Red (old)
+  FRESH_INACTIVE: '#999999'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF66CC' # Bright Magenta (unknown)
 
 synthwave:
   HEADER: '#FF00FF'        # Magenta
@@ -104,6 +164,11 @@ synthwave:
   INFO: '#007FFF'          # Azure
   WARN: '#FFD700'          # Gold
   ERROR: '#FF0000'         # Red
+  FRESH_ACTIVE: '#39FF14'  # Neon Green (active)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#FF0000'     # Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 soft-pastels:
   HEADER: '#FED7D7'        # Light Pink
@@ -111,6 +176,11 @@ soft-pastels:
   INFO: '#B2F7EF'          # Pale Turquoise
   WARN: '#C6F6D5'          # Pale Green
   ERROR: '#F9A8D4'         # Light Pink
+  FRESH_ACTIVE: '#C6F6D5'  # Pale Green (active)
+  FRESH_AGING: '#FEEBC8'   # Light Yellow (aging)
+  FRESH_OLD: '#FF6B6B'     # Soft Red (old)
+  FRESH_INACTIVE: '#C0C0C0'# Silver (inactive)
+  FRESH_UNKNOWN: '#F9A8D4' # Light Magenta (unknown)
 
 bright-pastels:
   HEADER: '#77DD77'        # Pastel Green
@@ -118,9 +188,128 @@ bright-pastels:
   INFO: '#B19CD9'          # Pastel Purple
   WARN: '#FFB347'          # Pastel Orange
   ERROR: '#FF6961'         # Pastel Red
+  FRESH_ACTIVE: '#77DD77'  # Pastel Green (active)
+  FRESH_AGING: '#FFB347'   # Pastel Orange (aging)
+  FRESH_OLD: '#FF6961'     # Pastel Red (old)
+  FRESH_INACTIVE: '#AEC6CF'# Pastel Blue / Gray (inactive)
+  FRESH_UNKNOWN: '#D98ED9' # Pastel Magenta (unknown)
 
 # Flags of the World
+# Country themes (flags + complementary accents)
+# The inclusion of these countries is arbitrary and for demonstration purposes only. The inclusion or exclusion of any
+# country does not imply any political stance or endorsement by the developers of this software. Future contributors are
+# welcome to add more country themes to represent their nations of interest. Please ensure that the colors chosen
+# accurately reflect the national flags and symbols of the respective countries.
 
+# Harvest is for everyone, everywhere.
+
+Australia:
+  HEADER: '#002868'        # Flag Navy Blue (field)
+  PROMPT: '#FFFFFF'        # White (stars/union jack)
+  INFO: '#C8102E'          # Union Jack Red (accent)
+  WARN: '#FFD700'          # Golden Accent (complement)
+  ERROR: '#8B0000'         # Dark Red (error)
+  FRESH_ACTIVE: '#3CB371'  # Medium Sea Green (active - eucalypt nod)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#8B0000'     # Dark Red (old)
+  FRESH_INACTIVE: '#696969'# Dim Gray (inactive)
+  FRESH_UNKNOWN: '#800080' # Purple Magenta (unknown)
+
+Canada:
+  HEADER: '#FF0000'        # Maple Red (primary)
+  PROMPT: '#FFFFFF'        # White (background)
+  INFO: '#F5F5F5'          # Soft White (neutral)
+  WARN: '#FFB347'          # Warm Orange (complement/accent)
+  ERROR: '#8B0000'         # Dark Maroon (error)
+  FRESH_ACTIVE: '#228B22'  # Forest Green (active - nature/forests)
+  FRESH_AGING: '#FFB347'   # Warm Orange (aging)
+  FRESH_OLD: '#8B0000'     # Dark Maroon (old)
+  FRESH_INACTIVE: '#D3D3D3'# Light Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Bright Magenta (unknown)
+
+European_Union:
+  HEADER: '#003399'        # EU Royal Blue (field)
+  PROMPT: '#FFD700'        # EU Gold (stars)
+  INFO: '#99CCFF'          # Pale Sky Blue (support)
+  WARN: '#FFCC00'          # Golden Yellow (aging)
+  ERROR: '#CC0000'         # Strong Red (error)
+  FRESH_ACTIVE: '#009E60'  # Emerald Green (active - complementary)
+  FRESH_AGING: '#FFCC00'   # Golden Yellow (aging)
+  FRESH_OLD: '#CC0000'     # Strong Red (old)
+  FRESH_INACTIVE: '#A9A9A9'# Dark Gray (inactive)
+  FRESH_UNKNOWN: '#800080' # Purple Magenta (unknown)
+
+Japan:
+  HEADER: '#BC002D'        # Vermilion Red (hinomaru)
+  PROMPT: '#FFFFFF'        # White (field)
+  INFO: '#F0F0F0'          # Very Light Gray (subtle)
+  WARN: '#FFD700'          # Gold (complementary accent)
+  ERROR: '#8B0000'         # Deep Red (error)
+  FRESH_ACTIVE: '#4CAF50'  # Lively Green (active - distinct from Canada)
+  FRESH_AGING: '#FFD700'   # Gold (aging)
+  FRESH_OLD: '#8B0000'     # Deep Red (old)
+  FRESH_INACTIVE: '#696969'# Dim Gray (inactive)
+  FRESH_UNKNOWN: '#C71585' # Medium Violet Red (unknown)
+
+India:
+  HEADER: '#FF9933'        # Saffron (top band)
+  PROMPT: '#FFFFFF'        # White (middle band)
+  INFO: '#138808'          # India Green (bottom band)
+  WARN: '#000080'          # Indigo/Navy (Ashoka Chakra)
+  ERROR: '#B22222'         # Brick Red (error)
+  FRESH_ACTIVE: '#138808'  # India Green (active)
+  FRESH_AGING: '#FFD54F'   # Muted Saffron/Gold (aging)
+  FRESH_OLD: '#B22222'     # Brick Red (old)
+  FRESH_INACTIVE: '#C0C0C0'# Silver Gray (inactive)
+  FRESH_UNKNOWN: '#3F00FF' # Indigo Magenta (unknown)
+
+Malaysia:
+  HEADER: '#0C2C84'        # Deep Royal Blue (canton)
+  PROMPT: '#FF0000'        # Banner Red (stripes)
+  INFO: '#FFFFFF'          # White (stripes/stars)
+  WARN: '#FFD700'          # Yellow (crescent & star)
+  ERROR: '#8B0000'         # Dark Red (error)
+  FRESH_ACTIVE: '#2EA44F'  # Vivid Green (active)
+  FRESH_AGING: '#FFD700'   # Yellow (aging)
+  FRESH_OLD: '#8B0000'     # Dark Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#D02090' # Vivid Magenta (unknown)
+
+Mali:
+  HEADER: '#0B6623'        # Deep Green (left band)
+  PROMPT: '#F7E017'        # Bright Yellow (middle band)
+  INFO: '#D72600'          # Warm Red (right band)
+  WARN: '#FFD700'          # Gold (complement)
+  ERROR: '#8B0000'         # Dark Red (error)
+  FRESH_ACTIVE: '#0B6623'  # Deep Green (active)
+  FRESH_AGING: '#F7E017'   # Bright Yellow (aging)
+  FRESH_OLD: '#D72600'     # Warm Red (old)
+  FRESH_INACTIVE: '#9E9E9E'# Neutral Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
+
+Mexico:
+  HEADER: '#006341'        # Deep Mexican Green (left band)
+  PROMPT: '#FFFFFF'        # White (center)
+  INFO: '#CE1126'          # Mexican Red (right band)
+  WARN: '#F5C400'          # Emblem Gold (complement)
+  ERROR: '#8B0000'         # Dark Red (error)
+  FRESH_ACTIVE: '#2E8B57'  # Sea Green (active - contrasts flag colors)
+  FRESH_AGING: '#F5C400'   # Emblem Gold (aging)
+  FRESH_OLD: '#8B0000'     # Dark Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#800080' # Purple Magenta (unknown)
+
+United_States:
+  HEADER: '#002F6C'        # Dark Navy Blue (flag canton)
+  PROMPT: '#B22234'        # Old Glory Red (stripes)
+  INFO: '#FFFFFF'          # White (stars/stripes)
+  WARN: '#FFD100'          # Warm Gold (complement to blue)
+  ERROR: '#A51C30'         # Deep Crimson (error/red accent)
+  FRESH_ACTIVE: '#2E8B57'  # Sea Green (active - contrasts red/blue)
+  FRESH_AGING: '#FFD100'   # Warm Gold (aging)
+  FRESH_OLD: '#A51C30'     # Deep Crimson (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#800080' # Purple Magenta (unknown)
 
 # Color Vision Deficiency (CVD) Themes
 
@@ -132,6 +321,11 @@ protanopia:
   INFO: '#4B0082'          # Indigo
   WARN: '#7B68EE'          # Medium Slate Blue
   ERROR: '#483D8B'         # Dark Slate Blue
+  FRESH_ACTIVE: '#00FF00'  # Bright Green (active - high contrast)
+  FRESH_AGING: '#FFD700'   # Gold (aging - high contrast)
+  FRESH_OLD: '#FF0000'     # Red (old - high contrast)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 # Deuteranopia (green CVD): This type of CVD makes it hard to see greens, yellows, and oranges.
 # Blues and violets are easier to distinguish.
@@ -141,6 +335,11 @@ deuteranopia:
   INFO: '#4B0082'          # Indigo
   WARN: '#7B68EE'          # Medium Slate Blue
   ERROR: '#483D8B'         # Dark Slate Blue
+  FRESH_ACTIVE: '#00FF00'  # Bright Green (active - high contrast)
+  FRESH_AGING: '#FFD700'   # Gold (aging - high contrast)
+  FRESH_OLD: '#FF0000'     # Red (old - high contrast)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 # Tritanopia (blue-yellow CVD): This type of CVD makes it hard to see blues and yellows.
 # Reds and greens are easier to distinguish.
@@ -150,6 +349,11 @@ tritanopia:
   INFO: '#006400'          # Dark Green
   WARN: '#FF0000'          # Red
   ERROR: '#8B0000'         # Dark Red
+  FRESH_ACTIVE: '#32CD32'  # Lime Green (active)
+  FRESH_AGING: '#ADFF2F'   # Green Yellow (aging)
+  FRESH_OLD: '#8B0000'     # Dark Red (old)
+  FRESH_INACTIVE: '#808080'# Gray (inactive)
+  FRESH_UNKNOWN: '#FF00FF' # Magenta (unknown)
 
 # Achromatopsia (total CVD): This type of CVD makes it hard to see any colors.
 # Grays are the easiest to distinguish.
@@ -159,3 +363,8 @@ achromatopsia:
   INFO: '#C0C0C0'          # Silver
   WARN: '#D3D3D3'          # Light Gray
   ERROR: '#696969'         # Dim Gray
+  FRESH_ACTIVE: '#808080'  # Gray (maps to green/active)
+  FRESH_AGING: '#A9A9A9'   # Dark Gray (maps to yellow/aging)
+  FRESH_OLD: '#696969'     # Dim Gray (maps to red/old)
+  FRESH_INACTIVE: '#C0C0C0'# Silver (inactive)
+  FRESH_UNKNOWN: '#BEBEBE' # Gray (maps to magenta/unknown)
