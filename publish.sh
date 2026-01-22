@@ -88,6 +88,7 @@ commit=$(git rev-parse --short HEAD)
 echo "Git commit's short name: $commit"
 
 name_version_commit="$image_name:$version-$commit"
+name_version="$image_name:$version"
 
 # Build the docker container with --no-persistent_silo
 docker build --no-cache --progress $progress -t "$name_version_commit" .
@@ -103,6 +104,12 @@ echo "Built docker container with tag: $name_version_commit"
 # Check the value of dry_run
 if [ $dry_run -eq 0 ]; then
     # Push the image to docker_namespace/image_name
+
+    # First push the version tags
+    docker tag "$name_version_commit" "$name_version"
+    docker push "$name_version"
+
+    # Then push the version-commit tag
     docker tag "$name_version_commit" "$name_version_commit"
     docker push "$name_version_commit"
 
