@@ -1,45 +1,15 @@
-from CloudHarvestCLI.messages import add_message
+from CloudHarvestCLI.messages import print_message
 
 from logging import getLogger
-from requests import JSONDecodeError, Response
-from requests.exceptions import (
-    ChunkedEncodingError,
-    ConnectionError,
-    ConnectTimeout,
-    HTTPError,
-    ProxyError,
-    ReadTimeout,
-    SSLError,
-    TooManyRedirects
-)
+from requests.adapters import HTTPAdapter
+from requests import JSONDecodeError, Session
 from typing import Any, Literal
+from urllib3.util.retry import Retry
 
-from messages import print_message
 
 HTTP_REQUEST_TYPES = Literal['get', 'post', 'put', 'delete']
 logger = getLogger('harvest')
 
-
-RETRYABLE_EXCEPTIONS = (
-    ChunkedEncodingError,
-    ConnectionError,
-    ConnectTimeout,
-    ProxyError,
-    ReadTimeout,
-    SSLError,
-    TooManyRedirects
-)
-
-RETRYABLE_HTTP_STATUS_CODES = (
-    408,  # Request Timeout
-    409,  # Conflict
-    429,  # Too Many Requests
-    500,  # Internal Server Error
-    502,  # Bad Gateway
-    503,  # Service Unavailable
-    504,  # Gateway Timeout
-    507  # Insufficient Storage
-)
 
 class Api:
     """
@@ -51,9 +21,12 @@ class Api:
     token = None
     pem = None
     verify = None
+    session: Session | None = None
+
+    previous_token = None
 
     @staticmethod
-    def config(host: str, port: int, token: str = None, pem: str = None, verify: (bool, str) = False):
+    def config(host: str, port: int, token: str = None, pem: str = None, verify: (bool | str) = False):
         """
         Configures the Api object.
 
@@ -71,6 +44,51 @@ class Api:
         Api.verify = verify
 
     @staticmethod
+    def init_session(pool_connections: int = 10, pool_maxsize: int = 10, backoff_factor: float = 0.3, total: int = 10,
+                     connect: int = 10, other: int = 10, status:int = 10, read: int = 10, redirect: int = 10) -> Session:
+        """
+        Initializes a session for making requests to the API.
+
+        Arguments
+        pool_connections: (int) The number of connections to keep in the pool.
+        pool_maxsize: (int) The maximum number of connections to keep in the pool.
+        backoff_factor: (float) The backoff factor to use for retries.
+        total: (int) The total number of retries to allow.
+        connect: (int) The number of retries to allow on connection errors.
+        other: (int) The number of retries to allow on other errors.
+        status: (int) The number of retries to allow on status errors.
+        read: (int) The number of retries to allow on read errors.
+        redirect: (int) The number of retries to allow on redirect errors.
+
+        Returns
+        (Session) The initialized session.
+        """
+
+        # Return the existing session if it exists and the token has not changed
+        if Api.session is not None and Api.token == Api.previous_token:
+            return Api.session
+
+        session = Session()
+        session.headers.update({'Authorization': f'Bearer {Api.token}' if Api.token else ''})
+
+        # Create the Retry object which will be used to configure the HTTPAdapter.
+        retry = Retry(
+            total=total,
+            connect=connect,
+            other=other,
+            read=read,
+            redirect=redirect,
+            status=status,
+            backoff_factor=backoff_factor,
+        )
+        adapter = HTTPAdapter(pool_connections=pool_connections, pool_maxsize=pool_maxsize, max_retries=retry)
+        session.mount('https://', adapter)
+        session.mount('http://', adapter)
+        Api.session = session
+
+        return session
+
+    @staticmethod
     def safe_decode(response) -> Any:
         """
         Safely decodes a response from the API.
@@ -81,7 +99,6 @@ class Api:
         Returns
         (dict) The decoded response.
         """
-        result = None
 
         try:
             result = response.json()
@@ -92,7 +109,7 @@ class Api:
         return result
 
 
-def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, retries: int = 10, **requests_kwargs) -> Any:
+def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, session_kwargs: dict = None, **requests_kwargs) -> Any:
     """
     Makes an API request to the CloudHarvest API.
 
@@ -103,101 +120,33 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
     request_type: (str) The type of request to make (GET, POST, PUT, DELETE).
     endpoint: (str) The endpoint to make the request to.
     data: (dict) The data to send with the request.
-    retries: (int) The number of times to retry the request if it fails.
+    session_kwargs: (dict, optional) Additional keyword arguments to pass to the session initializer.
+    **requests_kwargs: Additional keyword arguments to pass to the requests library.
 
-    Returns
-    (Any) The response from the API.
     """
 
-    from uuid import uuid4
-    request_id = str(uuid4())
-    response = None
+    # Initialize the session
+    Api.init_session(**(session_kwargs or {}))
 
-    for attempt in range(retries + 1):
-        try:
-            # Disable SSL warnings which are raised when using self-signed certificates
-            import urllib3
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # Disable SSL warnings which are raised when using self-signed certificates
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-            from requests.api import request
-            logger.debug(f'request:{request_id}: [{request_type.upper()}] {Api.host}:{Api.port}/{endpoint}')
+    try:
+        response = Api.session.request(
+            method=request_type,
+            url=f'https://{Api.host}:{Api.port}/{endpoint}',
+            cert=Api.pem,
+            json=data or {},
+            verify=Api.verify,
+            **requests_kwargs
+        )
 
-            response = request(method=request_type,
-                               url=f'https://{Api.host}:{Api.port}/{endpoint}',
-                               cert=Api.pem,
-                               headers={
-                                   'Authorization': f'Bearer {Api.token}'
-                               },
-                               json=data or {},
-                               verify=Api.verify,
-                               **requests_kwargs)
+    except KeyboardInterrupt:
+        print_message('INFO', True, 'Acknowledged user interrupt.')
 
-        except KeyboardInterrupt:
-            logger.debug(f'request:{request_id}: User interrupted the request.')
-            return {}
-
-        except Exception as ex:
-            if _retry_request(ex, response):
-                if attempt < retries:
-                    logger.debug(f'request:{request_id}: Got {_format_exception(ex)}. Retrying ({attempt + 1}/{retries})...')
-                    from time import sleep
-
-                    sleep(1)
-                    continue
-
-                else:
-                    add_message(None, 'ERROR', True, f'[Too many retries ({retries}) for request. {_format_exception(ex)}')
-                    return {}
-
-            else:
-                add_message(None, 'ERROR', True, f'An unexpected error occurred: {_format_exception(ex)}')
-
-                from traceback import format_exc
-                logger.debug(f'request:{request_id}:An unexpected error occurred:\n{format_exc()}')
-                return {}
-
-        else:
-            return Api.safe_decode(response)
-
-def _retry_request(exception: Exception, response: Response) -> bool:
-    """
-    Determines if a request should be retried based on the exception type.
-
-    Arguments
-    exception: (Exception) The exception that occurred.
-    response: (Response) The response object from the request.
-
-    Returns
-    (bool) True if the request should be retried, False otherwise.
-    """
-    if isinstance(exception, HTTPError):
-        if response:
-            if response.status_code in RETRYABLE_HTTP_STATUS_CODES:
-                return True
-
-    elif isinstance(exception, RETRYABLE_EXCEPTIONS):
-        return True
-
-    return False
-
-def _format_exception(exception: Exception) -> str:
-    """
-    Formats an exception into a string.
-
-    Arguments
-    exception: (Exception) The exception to format.
-
-    Returns
-    (str) The formatted exception.
-    """
-
-    if isinstance(exception.args, tuple):
-        exception_message = ", ".join([str(s) for s in exception.args])
-
-    elif isinstance(exception.args, str):
-        exception_message = exception.args
+    except Exception as e:
+        print_message('ERROR', True, f'An error occurred while making the request: {e}')
 
     else:
-        exception_message = str(exception)
-
-    return f'{exception.__class__.__name__}: {exception_message}'
+        return Api.safe_decode(response)
