@@ -6,6 +6,11 @@
 #   INFO:           The color of the info text in hex format.
 #   WARN:           The color of the warning text in hex format.
 #   ERROR:          The color of the error text in hex format.
+#   FRESH_ACTIVE:   The color indicating the record has been recently updated in hex format.
+#   FRESH_AGING:    The color indicating the record has not been refresh recently status in hex format.
+#   FRESH_OLD:      The color indicating the record is stale in hex format.
+#   FRESH_INACTIVE: The color indicating the record is inactive in hex format.
+#   FRESH_UNKNOWN:  The color indicating the record's freshness is unknown in hex format.
 #
 # Considerations:
 # - Limitations of the operator's terminal may prevent some themes from displaying correctly.
@@ -195,7 +200,9 @@ bright-pastels:
   FRESH_UNKNOWN: '#D98ED9' # Pastel Magenta (unknown)
 
 # Flags of the World
-# Country themes (flags + complementary accents)
+# #####################################################################################################################
+# DISCLAIMER
+# #####################################################################################################################
 # The inclusion of these countries is arbitrary and for demonstration purposes only. The inclusion or exclusion of any
 # country does not imply any political stance or endorsement by the developers of this software. Future contributors are
 # welcome to add more country themes to represent their nations of interest. Please ensure that the colors chosen
