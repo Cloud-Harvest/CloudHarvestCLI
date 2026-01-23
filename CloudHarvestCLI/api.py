@@ -145,6 +145,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
 
         except KeyboardInterrupt:
             print_message('INFO', True, 'Acknowledged user interrupt.')
+            break
 
         except ConnectionError:
             from time import sleep
@@ -156,3 +157,4 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
 
         except Exception as e:
             print_message('ERROR', True, f'An error occurred while making the request: {e}')
+            break
