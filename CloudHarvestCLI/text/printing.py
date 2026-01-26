@@ -175,14 +175,14 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
         is_active = record.walk('Harvest.Active')
         last_seen = record.walk('Harvest.Dates.LastSeen')
 
-        if isinstance(last_seen, str):
-            from datetime import datetime
-            last_seen = datetime.fromisoformat(last_seen)
+        if isinstance(last_seen, (str, int)):
+            from dateutil.parser import parse
+            last_seen = parse(last_seen)
 
         # Default freshness code
         fresh_code = unknown
 
-        if is_active:
+        if is_active is True:
             if last_seen:
                 from datetime import datetime, timezone
                 record_age = (datetime.now(tz=timezone.utc) - last_seen).total_seconds()
@@ -195,7 +195,8 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
 
                 else:
                     fresh_code = old
-        else:
+
+        elif is_active is False:
             fresh_code = inactive
 
         # Apply Text Style encoding to the record

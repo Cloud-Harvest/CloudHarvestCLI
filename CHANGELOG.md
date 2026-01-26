@@ -9,6 +9,7 @@
 - Updated the docker publishing script to support bypassing the git check when needed
 - Fixed an issue where invalid responses from the API could cause unhandled exceptions in the `harvest` command
 - Added retry logic to the API request handling to improve resilience against transient network issues
+- Fixed some freshness logic
 
 ## 0.3.11
 - Added a default banner which is displayed if no other banners can be displayed.
