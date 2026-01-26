@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## 0.4.0
-- Updated to conform with CloudHarvestCoreTasks 0.8.2
+- Updated to conform with CloudHarvestCoreTasks 0.9.0
 - Refactored the API request handling to improve reliability and performance
 - Reintroduced `gnureadline` for better command-line experience on Unix-like systems
 - Cleaned up some inverse boolean logic in the text printing functions
