@@ -127,7 +127,7 @@ def print_task_response(report_response: List[dict] or dict, args: Namespace, **
                        unflatten=args.unflatten,
                        page=args.page,
                        with_record_count=False,
-                       with_freshness=not args.suppress_freshness,
+                       with_freshness=not args.no_freshness,
                        **kwargs)
 
         if args.performance or has_task_errors:
