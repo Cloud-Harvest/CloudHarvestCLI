@@ -73,6 +73,7 @@ key_manipulation_parser_group.add_argument('-H', '--header-order', nargs='+', de
 refresh_parser = ArgumentParser(add_help=False)
 refresh_parser_group = refresh_parser.add_argument_group('Refresh')
 refresh_parser_group.add_argument('--refresh', type=float, default=0, help='Refresh the output n seconds.')
+refresh_parser_group.add_argument('--refresh-all', type=float, default=0, help='Refresh all records of the PSTAR n seconds.')
 
 # Thread Controls
 thread_parser = ArgumentParser(add_help=False)
