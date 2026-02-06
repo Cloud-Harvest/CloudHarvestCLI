@@ -96,7 +96,7 @@ class ReportCommand(CommandSet):
 
                 # Escape the loop if no data is returned and --refresh-all is not set.
                 if not output.get('data') and not args.refresh_all:
-                    print_message('WARNING', True, 'The report did not return any data. Ending refresh.')
+                    print_message('WARN', True, 'The report did not return any data. Ending refresh.')
                     break
 
                 # Wait for the specified refresh interval before refreshing the report.
