@@ -116,6 +116,10 @@ class ReportCommand(CommandSet):
                     }
                 )
 
+                if not data_collection_output:
+                    print_message('ERROR', True, 'No response from the server when trying to queue data collection task to refresh the report.')
+                    return
+
                 # Get the data collection request ID
                 data_collection_request_id = data_collection_output.get('result', {}).get('parent_id')
 
