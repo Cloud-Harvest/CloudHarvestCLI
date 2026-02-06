@@ -126,7 +126,7 @@ class ReportCommand(CommandSet):
                 # Warn the user if any records were not queued for data collection.
                 not_queued = data_collection_output.get('result', {}).get('not_queued', [])
                 if not_queued:
-                    print_message('WARNING', True, f'The following records were not queued for data collection: {not_queued}')
+                    print_message('WARN', True, f'The following records were not queued for data collection: {not_queued}')
                     print_data(data=not_queued, keys=['unique_identifier', 'reason'], as_feedback=True)
 
                 # If we could not queue the data collection task, exit the refresh loop.
