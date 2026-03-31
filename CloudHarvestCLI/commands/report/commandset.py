@@ -4,7 +4,7 @@ from argparse import Namespace
 
 from CloudHarvestCLI.messages import add_message
 from CloudHarvestCLI.commands.report.arguments import report_parser
-from text.printing import print_data
+from CloudHarvestCLI.text.printing import print_data
 
 
 @with_default_category('Harvest')
