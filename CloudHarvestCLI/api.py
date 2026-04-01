@@ -67,7 +67,7 @@ class Api:
         # Return the existing session if it exists and the token has not changed
         if Api.session is not None:
             # If the token has changed, close the existing session and create a new one
-            if Api.token == Api.previous_token:
+            if Api.token != Api.previous_token:
                 try:
                     Api.session.close()
 
