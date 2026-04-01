@@ -1,3 +1,5 @@
+import requests.exceptions
+
 from CloudHarvestCLI.messages import print_message
 
 from logging import getLogger
@@ -144,7 +146,7 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
             print_message('INFO', True, 'Acknowledged user interrupt.')
             break
 
-        except ConnectionError:
+        except requests.exceptions.ConnectionError:
             from time import sleep
             attempt += 1
             if attempt >= max_attempts:
