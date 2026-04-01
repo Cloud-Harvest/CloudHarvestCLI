@@ -38,11 +38,12 @@ class ReportCommand(CommandSet):
             # Add the filters to the passable arguments
             passable_args['describe'] = args.describe
             passable_args['filters'] = filters
-            passable_args['variables'] = {
-                var.split('=')[0]: var.split('=')[1] for var in
-                args.variables or []
-                if '=' in var
-            }
+            passable_variables = {}
+            for var in passable_args['variables'] or []:
+                key, value = var.split('=', 1)
+                passable_variables[key] = value
+
+            passable_args['variables'] = passable_variables
 
             # Initiate the report printing loop. This loop will continue to print the report until the user
             # interrupts it or if the report is not set to refresh.
