@@ -110,9 +110,6 @@ def request(request_type: HTTP_REQUEST_TYPES, endpoint: str, data: dict = None, 
     Makes an API request to the CloudHarvest API.
 
     Arguments
-    host: (str) The host of the API.
-    port: (int) The port of the API.
-    token: (str) The token to authenticate with the API.
     request_type: (str) The type of request to make (GET, POST, PUT, DELETE).
     endpoint: (str) The endpoint to make the request to.
     data: (dict) The data to send with the request.
