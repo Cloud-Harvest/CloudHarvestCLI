@@ -1,4 +1,22 @@
-# provides seasonal and commemorative banners
+# Provides seasonal and commemorative banners
+
+# #####################################################################################################################
+# DISCLAIMER
+# #####################################################################################################################
+# The inclusion of banners in this space is for aesthetic and commemorative purposes. While the Harvest team does not
+# officially endorse any particular cause or holiday, we recognize the importance of representation and celebration
+# within the tech community. These banners are intended to foster an inclusive environment and acknowledge significant
+# events and contributions from diverse communities. Contributors are encouraged to add additional banners, provided
+# they align with Harvest's values of inclusivity and respect.
+
+# The Harvest team discourages the removal of banners except when technical limitations necessitate it. We believe that
+# maintaining a diverse set of banners enriches the user experience and reflects our commitment to celebrating all
+# members of the tech community.
+
+# #####################################################################################################################
+# SCHEMA
+# #####################################################################################################################
+
 # schema
 #  winter:
 #    rules:
@@ -33,6 +51,7 @@ default:
     5:
       - color: '#737373'  # Very dark gray
 
+  # The default banner is always active; however, it will never override the other banners presented here.
   rules:
     - date:
         between:
@@ -156,7 +175,7 @@ black-history:
         month: 2
       footer: |
         Black History Month is here! Learn more at:
-        https://www.blackhistorymonth.gov/
+        https://en.wikipedia.org/wiki/African-American_history
     - date:
         month: 6
         day: 19
@@ -229,4 +248,4 @@ womens-history:
         month: 3
       footer: |
         Women's History Month
-        https://www.womenshistorymonth.gov/
+        https://en.wikipedia.org/wiki/Women%27s_history

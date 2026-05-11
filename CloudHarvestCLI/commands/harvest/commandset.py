@@ -39,7 +39,11 @@ class HarvestCommand(CommandSet):
 
         end = datetime.now()
 
-        # Escape if there's an error
+        # Escape if no valid response
+        if not isinstance(request_response, dict):
+            return
+
+        # Escape if the request failed
         if request_response['success'] is False:
             add_message(self, 'ERROR', True, 'Error retrieving PSTAR information.', request_response['reason'])
             return

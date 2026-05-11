@@ -1,16 +1,21 @@
 from typing import Literal
 from rich.text import Text, Style
 
-VALID_TEXT_COLOR_NAMES = Literal['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR']
+VALID_TEXT_COLOR_NAMES = Literal['HEADER', 'PROMPT', 'INFO', 'WARN', 'ERROR', 'FRESH_ACTIVE', 'FRESH_AGING', 'FRESH_OLD', 'FRESH_INACTIVE', 'FRESH_UNKNOWN']
 
 
 class TextColors:
     # default colors
-    HEADER = '#4AF626'      # terminal green
-    PROMPT = '#00FFFF'      # cyan
-    INFO = '#75BFEC'        # light blue
-    WARN = '#EED202'        # warning yellow
-    ERROR = '#FF0F0F'       # bright red
+    HEADER = '#4AF626'          # terminal green
+    PROMPT = '#00FFFF'          # cyan
+    INFO = '#75BFEC'            # light blue
+    WARN = '#EED202'            # warning yellow
+    ERROR = '#FF0F0F'           # bright red
+    FRESH_ACTIVE = '#4AF626'    # Bright Green (active)
+    FRESH_AGING = '#EED202'     # Goldenrod (aging)
+    FRESH_OLD = '#FF0F0F'       # Red (old)
+    FRESH_INACTIVE = '#808080'  # Gray (inactive)
+    FRESH_UNKNOWN = '#FF00FF'   # Magenta (unknown)
 
     @staticmethod
     def set_colors(**kwargs):

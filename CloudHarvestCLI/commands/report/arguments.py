@@ -22,6 +22,7 @@ report_parser.add_argument('--count', action='store_true', help='Displays a coun
 report_parser.add_argument('--describe', action='store_true',
                            help='Show the report headers, description, and logic.')
 report_parser.add_argument('--limit', type=int, help='Maximum number of records to return.')
+report_parser.add_argument('--no-freshness', action='store_true', help='Disables the report freshness column.')
 report_parser.add_argument('--performance', action='store_true',
                            help='Returns performance statistics for the report.')
 report_parser.add_argument('--sort', nargs='*', type=str,
@@ -30,7 +31,6 @@ report_parser.add_argument('--sort', nargs='*', type=str,
                                            'Example: `--sort key1 key2:asc key3:desc`',
                                            'When not provided, the report will use the default sort order based on'
                                            ' the visible fields.']))
-report_parser.add_argument('--suppress-freshness', action='store_true', help='Disables the report freshness column.')
 report_parser.add_argument('--timeout', type=int, default=15,
                            help='\n'.join(['The maximum number of seconds to wait for the report to complete. If the timeout is',
                                 ' exceeded, the user will be returned to the prompt. The report itself may still',

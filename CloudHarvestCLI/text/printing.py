@@ -127,7 +127,7 @@ def print_task_response(report_response: List[dict] or dict, args: Namespace, **
                        unflatten=args.unflatten,
                        page=args.page,
                        with_record_count=False,
-                       with_freshness=not args.suppress_freshness,
+                       with_freshness=not args.no_freshness,
                        **kwargs)
 
         if args.performance or has_task_errors:
@@ -165,27 +165,24 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
 
     # We define these on each report in case the theme changes. TODO: implement an event handler for theme changes.
     from CloudHarvestCLI.text.styling import TextColors
-    fresh = FreshnessCode('F', 'fresh', TextColors.INFO, max_second_age=3600)
-    aging = FreshnessCode('A', 'aging', TextColors.WARN, max_second_age=7200)
-    old = FreshnessCode('O', 'old', TextColors.ERROR)
-    inactive = FreshnessCode('I', 'inactive', TextColors.HEADER)  # , row_format={'italic': True}
-    unknown = FreshnessCode('U', 'unknown', TextColors.PROMPT)
+    fresh = FreshnessCode('F', 'fresh', TextColors.FRESH_ACTIVE, max_second_age=3600)
+    aging = FreshnessCode('A', 'aging', TextColors.FRESH_AGING, max_second_age=7200)
+    old = FreshnessCode('O', 'old', TextColors.FRESH_OLD)
+    inactive = FreshnessCode('I', 'inactive', TextColors.FRESH_INACTIVE)  # , row_format={'italic': True}
+    unknown = FreshnessCode('U', 'unknown', TextColors.FRESH_UNKNOWN)
 
     for record in data:
         is_active = record.walk('Harvest.Active')
         last_seen = record.walk('Harvest.Dates.LastSeen')
 
-        if isinstance(last_seen, str):
-            from datetime import datetime
-            last_seen = datetime.fromisoformat(last_seen)
+        if isinstance(last_seen, (str, int)):
+            from dateutil.parser import parse
+            last_seen = parse(last_seen)
 
         # Default freshness code
         fresh_code = unknown
 
-        if is_active is False:
-            fresh_code = inactive
-
-        elif is_active:
+        if is_active is True:
             if last_seen:
                 from datetime import datetime, timezone
                 record_age = (datetime.now(tz=timezone.utc) - last_seen).total_seconds()
@@ -198,6 +195,9 @@ def _add_freshness(data: (list or dict), include_row_formatting: bool = False, i
 
                 else:
                     fresh_code = old
+
+        elif is_active is False:
+            fresh_code = inactive
 
         # Apply Text Style encoding to the record
         from rich.text import Text
