@@ -39,7 +39,7 @@ class ReportCommand(CommandSet):
             passable_args['describe'] = args.describe
             passable_args['filters'] = filters
             passable_variables = {}
-            for var in passable_args['variables'] or []:
+            for var in passable_args.get('variables') or []:
                 key, value = var.split('=', 1)
                 passable_variables[key] = value
 
