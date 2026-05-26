@@ -12,7 +12,7 @@ include = [
 authors = [ { name = "Cloud Harvest" } ]
 classifiers = [ "Programming Language :: Python :: 3.13" ]
 dependencies = [
-    "CloudHarvestCoreTasks @ git+https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git@0.9.0",
+    "CloudHarvestCoreTasks @ git+https://github.com/Cloud-Harvest/CloudHarvestCoreTasks.git@0.10.0",
     "PyYAML",
     "cmd2<3",
     "gnureadline",      # this is absolutely needed in order for tab completion to work in unix environments
